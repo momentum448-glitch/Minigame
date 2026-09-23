@@ -11,20 +11,20 @@ const bottomOrder = [11, 10, 9, 8, 7];
 const wait = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms));
 
 function eventDelay(event: MoveEvent, reducedMotion: boolean): number {
-  if (reducedMotion) return 28;
+  if (reducedMotion) return 60;
   switch (event.type) {
     case 'pickup':
-      return 330;
+      return 650;
     case 'continue-pickup':
-      return 290;
+      return 650;
     case 'drop':
-      return 175;
+      return 500;
     case 'capture':
-      return 480;
+      return 750;
     case 'refill':
-      return 155;
+      return 500;
     case 'turn-end':
-      return 220;
+      return 320;
   }
 }
 
@@ -277,7 +277,7 @@ export default function App() {
         <p>Nếu đầu lượt cả 5 ô dân đều trống, người chơi dùng 5 dân đã ăn để rải lại; thiếu thì ghi nợ và trừ khi kết thúc ván.</p>
       </details>
 
-      <footer>Minigame Việt · AI {difficultyText} · Bản thử nghiệm v0.2</footer>
+      <footer>Minigame Việt · AI {difficultyText} · Bản thử nghiệm v0.2.1</footer>
     </main>
   );
 }

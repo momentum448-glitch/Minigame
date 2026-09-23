@@ -68,7 +68,7 @@ select { min-height: 44px; border: 1px solid #a67a55; border-radius: 12px; backg
   border-radius: 999px;
   background: rgba(255,246,221,.94);
   box-shadow: 0 7px 18px rgba(78,48,27,.15);
-  animation: hand-lift .24s ease-out;
+  animation: hand-lift .45s ease-out;
 }
 .hand-bundle .stones { inset: 6px 64px 6px 8px; }
 .hand-bundle .stone { width: 15px; height: 13px; }
@@ -126,14 +126,18 @@ button.pit:disabled { opacity: 1; }
 }
 .pit.anim-pickup,
 .pit.anim-continue-pickup {
-  animation: pit-pickup .3s ease-out;
+  animation: pit-pickup .55s ease-out;
+}
+.pit.anim-drop,
+.pit.anim-refill {
+  animation: pit-drop-glow .5s ease-out;
 }
 .pit.anim-drop .stone:last-child,
 .pit.anim-refill .stone:last-child {
-  animation: stone-drop .17s cubic-bezier(.18,.82,.28,1.2);
+  animation: stone-drop .48s cubic-bezier(.18,.82,.28,1.2);
 }
 .pit.anim-capture {
-  animation: capture-pulse .42s ease-out;
+  animation: capture-pulse .68s ease-out;
 }
 .pit.anim-capture::after {
   content: attr(data-capture);
@@ -149,7 +153,7 @@ button.pit:disabled { opacity: 1; }
   font-weight: 900;
   font-size: .82rem;
   pointer-events: none;
-  animation: capture-score .46s ease-out forwards;
+  animation: capture-score .72s ease-out forwards;
 }
 .direction-panel {
   display: flex; justify-content: space-between; align-items: center; gap: 12px;
@@ -172,9 +176,15 @@ footer { text-align: center; color: #8b705e; font-size: .82rem; padding-top: 10p
   45% { outline: 7px solid rgba(255,237,178,.75); }
   100% { outline: 0 solid rgba(255,237,178,0); }
 }
+@keyframes pit-drop-glow {
+  0% { background: rgba(255,239,190,.72); box-shadow: inset 0 0 0 6px rgba(255,232,154,.78); }
+  55% { background: rgba(245,211,151,.62); box-shadow: inset 0 0 0 4px rgba(255,238,178,.45); }
+  100% { background: rgba(238,194,130,.38); box-shadow: inset 0 8px 20px rgba(92,51,28,.18); }
+}
 @keyframes stone-drop {
-  from { opacity: .2; translate: 0 -34px; scale: .55; }
-  to { opacity: 1; translate: 0 0; scale: 1; }
+  0% { opacity: .1; translate: 0 -52px; scale: .45; }
+  58% { opacity: 1; translate: 0 5px; scale: 1.12; }
+  100% { opacity: 1; translate: 0 0; scale: 1; }
 }
 @keyframes capture-pulse {
   0% { filter: brightness(1); }

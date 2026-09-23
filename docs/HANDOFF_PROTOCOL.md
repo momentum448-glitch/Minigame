@@ -14,6 +14,13 @@ Một chat mới trong cùng dự án có thể tiếp tục mà không cần ng
 
 Nếu có mâu thuẫn, kiểm tra trạng thái repo/CI rồi sửa lại handoff.
 
+## Quy tắc kiểm tra quyền truy cập GitHub
+
+- GitHub connector là đường truy cập repo ưu tiên và là nguồn xác nhận quyền truy cập.
+- Lỗi từ web search, raw URL, container hoặc `git clone` **không đồng nghĩa** với việc mất quyền repo.
+- Trước khi báo bị chặn vì không truy cập được GitHub, bắt buộc phải thử GitHub connector (`mcp__GitHub__*`) trước.
+- Nếu connector đọc/ghi repo được thì tiếp tục làm việc bình thường, không yêu cầu người dùng cấp lại quyền.
+
 ## Quy trình khi mở chat mới
 
 1. Đọc `PROJECT_START_HERE.md`.
