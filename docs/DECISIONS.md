@@ -56,3 +56,10 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Nhịp pickup / bốc tiếp chậm hơn drop một chút; capture có khoảng nghỉ riêng.
 - Nếu sau QC thực tế cần đổi, ưu tiên giữ cảm giác rõ ràng ngoài đời hơn là tối đa tốc độ.
 - Quyết định: CHỐT ngày 2026-09-23.
+
+
+## D-009 — Flying pebble path
+- Mỗi lần rải/refill phải thấy một viên sỏi **rời vùng tay và bay tới đúng ô đích** trước khi quân được cộng vào ô.
+- Quỹ đạo cong nhẹ, có chuyển động xoay và nhịp landing; tổng nhịp vẫn khoảng 500 ms/quân.
+- Engine và move trace vẫn là source of truth; quỹ đạo chỉ là lớp biểu diễn.
+- Quyết định: CHỐT ngày 2026-09-23.
