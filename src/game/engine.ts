@@ -163,7 +163,7 @@ export function evaluateState(state: GameState, perspective: Player): number {
   const opponent: Player = perspective === 0 ? 1 : 0;
   const boardMine = PLAYER_PITS[perspective].reduce((sum, i) => sum + state.pits[i].dan, 0);
   const boardOpp = PLAYER_PITS[opponent].reduce((sum, i) => sum + state.pits[i].dan, 0);
-  const quanPotential = QUAN_PITS.reduce((sum, i) => sum + (state.pits[i].quan ? state.pits[i].dan : 0), 0);
+  const quanPotential = QUAN_PITS.reduce<number>((sum, i) => sum + (state.pits[i].quan ? state.pits[i].dan : 0), 0);
   const scoreDelta = state.score[perspective] - state.score[opponent];
   const debtDelta = state.debt[opponent] - state.debt[perspective];
   const terminal = state.gameOver
