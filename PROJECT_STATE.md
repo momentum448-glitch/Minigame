@@ -60,6 +60,10 @@ Outcome hiện tại: hoàn thiện Ô ăn quan thành một minigame web chơi 
 - GitHub Actions build/test/deploy.
 - GitHub Pages live.
 - Hệ thống handoff tự động trong repo.
+- Trang khởi đầu **Kho game** ở URL gốc.
+- Ô ăn quan là game số 1 trong kho, mở bằng hash route `#/o-an-quan` để tương thích GitHub Pages.
+- Trong Ô ăn quan có nút **← Kho game** để quay lại trang chọn game.
+- Home hiện có các thẻ placeholder `Sắp có` cho game tương lai; tên placeholder chỉ mang tính minh họa, chưa phải roadmap chốt.
 - Move trace/event sequence tách khỏi UI.
 - Animation `pickup`: nhấc toàn bộ quân khỏi ô vào "tay".
 - Animation `drop`: rải từng quân một, số quân trên tay giảm dần; tempo hiện tại khoảng **500 ms/quân**.
@@ -73,7 +77,8 @@ Outcome hiện tại: hoàn thiện Ô ăn quan thành một minigame web chơi 
 - Sửa mapping nút trái/phải theo vị trí hiển thị của từng người chơi, tránh nhãn hướng bị ngược với đường rải trên bàn.
 
 ### QC đã xác nhận
-- Deploy workflow #18 cho commit `23d29fdc295e8a2a56fc86beda16b82f93021eb0`: success.
+- Deploy workflow #19 cho commit `f8c94c10b3d7df4ef175df94d137260a71a8d200`: success.
+- Home → Ô ăn quan route build/deploy pass trên GitHub Pages.
 - Run #17 từng fail do TypeScript narrowing ở lớp visual bay sỏi; đã sửa ở run #18, test/build/deploy đều pass.
 - `npm install`: pass trên GitHub Actions.
 - `npm test`: **7/7 pass**.
@@ -86,7 +91,9 @@ Outcome hiện tại: hoàn thiện Ô ăn quan thành một minigame web chơi 
 
 ## 5. Pain / thiếu sót hiện tại
 
-Hệ animation đã có về mặt logic và UX cơ bản, nhưng **cảm giác thực tế** cần QC trực tiếp trên điện thoại/PC:
+Website đã có kho game làm trang vào mặc định. Cần QC thực tế cả **hub + Ô ăn quan** trên mobile/PC.
+
+Hệ animation đã có về mặt logic và UX cơ bản, nhưng **cảm giác thực tế** vẫn cần QC:
 - tempo đã tăng từ ~175 ms lên **~500 ms/quân** theo QC người dùng; cần xác nhận cảm giác thực tế đã đủ rõ chưa;
 - viên sỏi đã bay từ vùng tay tới ô thật; **visual bàn tay** vẫn đang là UI tượng trưng, chưa phải bàn tay/cup tự nhiên;
 - capture hiện dùng highlight + điểm nổi, có thể cần cảm giác thu quân rõ hơn;
@@ -96,15 +103,17 @@ Hệ animation đã có về mặt logic và UX cơ bản, nhưng **cảm giác 
 ## 6. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC thực tế animation v0.2.2: viên sỏi bay từ tay vào từng ô, giữ tempo ~500 ms/quân.**
+**QC thực tế trang Kho game + điều hướng vào Ô ăn quan, đồng thời tiếp tục QC animation v0.2.2.**
 
 ### Cần kiểm tra
-1. Chọn ô 5 dân: có thấy rõ từng viên sỏi rời vùng tay, bay theo quỹ đạo và đáp đúng từng ô không.
-2. Chuỗi bốc tiếp/rải tiếp: người chơi có theo kịp diễn biến không.
-3. Capture: có hiểu rõ ô nào vừa bị ăn và bao nhiêu điểm không.
-4. Tốc độ rải hiện tại (~500 ms mỗi quân) đã đủ chậm và rõ chưa, hay cần tinh chỉnh tiếp.
-5. Mobile: thao tác chọn ô, chọn hướng, cuộn bàn có ổn không.
-6. AI: khi máy đi, animation có đủ rõ để người chơi hiểu nước máy vừa thực hiện không.
+1. Mở URL gốc: phải thấy trang Kho game, không mở thẳng Ô ăn quan.
+2. Bấm thẻ Ô ăn quan: vào đúng game; nút `← Kho game` quay về home.
+3. Mobile: grid game và hero không tràn ngang, nút vào game dễ bấm.
+4. Chọn ô 5 dân: có thấy rõ từng viên sỏi rời vùng tay, bay theo quỹ đạo và đáp đúng từng ô không.
+5. Chuỗi bốc tiếp/rải tiếp: người chơi có theo kịp diễn biến không.
+6. Capture: có hiểu rõ ô nào vừa bị ăn và bao nhiêu điểm không.
+7. Tốc độ rải hiện tại (~500 ms mỗi quân) đã đủ chậm và rõ chưa.
+8. AI: khi máy đi, animation có đủ rõ để người chơi hiểu nước máy vừa thực hiện không.
 
 ### Hướng cải tiến nếu QC yêu cầu
 - thay "tay tượng trưng" bằng hand/cup visual tự nhiên hơn;
@@ -126,7 +135,6 @@ Hệ animation đã có về mặt logic và UX cơ bản, nhưng **cảm giác 
 - Tutorial/onboarding.
 - QC đầy đủ trên nhiều kích thước mobile.
 - Bộ test luật toàn diện.
-- Trang home chứa nhiều game.
 - Minigame thứ 2.
 
 ## 9. Quy tắc cập nhật state
