@@ -28,7 +28,7 @@ jobs:
         run: |
           mkdir -p docs
 
-          CURRENT_RUN_ID="$(grep -Eo 'Workflow run ID: `[0-9]+`' docs/AUTO_TECH_STATUS.md 2>/dev/null | grep -Eo '[0-9]+' | head -1 || true)"
+          CURRENT_RUN_ID="$(grep -Eo 'Workflow run ID: [0-9]+' docs/AUTO_TECH_STATUS.md 2>/dev/null | grep -Eo '[0-9]+' | head -1 || true)"
           CURRENT_RUN_ID="${CURRENT_RUN_ID:-0}"
 
           if [ "$RUN_ID" -le "$CURRENT_RUN_ID" ]; then
@@ -38,27 +38,27 @@ jobs:
 
           UPDATED_AT="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
 
-          cat > docs/AUTO_TECH_STATUS.md <<EOF
-          # AUTO TECH STATUS
-
-          > Generated automatically after a successful GitHub Pages deployment. Do not use this file for product decisions; use `PROJECT_STATE.md` and `docs/DECISIONS.md`.
-
-          - Status: `$CONCLUSION`
-          - Branch: `main`
-          - Workflow run ID: `$RUN_ID`
-          - Workflow run number: `$RUN_NUMBER`
-          - Deployed commit SHA: `$HEAD_SHA`
-          - Updated at UTC: `$UPDATED_AT`
-          - Workflow: $RUN_URL
-          - Live: https://momentum448-glitch.github.io/Minigame/
-          - Build/test/deploy: all passed because the deploy workflow completed successfully.
-
-          ## Read next
-
-          1. `PROJECT_STATE.md`
-          2. `docs/DECISIONS.md`
-          3. Relevant source files for the current NEXT ACTION.
-          EOF
+          {
+            echo "# AUTO TECH STATUS"
+            echo
+            echo "> Generated automatically after a successful GitHub Pages deployment. Product decisions live in PROJECT_STATE.md and docs/DECISIONS.md."
+            echo
+            echo "- Status: $CONCLUSION"
+            echo "- Branch: main"
+            echo "- Workflow run ID: $RUN_ID"
+            echo "- Workflow run number: $RUN_NUMBER"
+            echo "- Deployed commit SHA: $HEAD_SHA"
+            echo "- Updated at UTC: $UPDATED_AT"
+            echo "- Workflow: $RUN_URL"
+            echo "- Live: https://momentum448-glitch.github.io/Minigame/"
+            echo "- Build/test/deploy: all passed because the deploy workflow completed successfully."
+            echo
+            echo "## Read next"
+            echo
+            echo "1. PROJECT_STATE.md"
+            echo "2. docs/DECISIONS.md"
+            echo "3. Relevant source files for the current NEXT ACTION."
+          } > docs/AUTO_TECH_STATUS.md
 
       - name: Commit snapshot if changed
         run: |
