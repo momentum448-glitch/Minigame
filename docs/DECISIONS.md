@@ -63,3 +63,12 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Quỹ đạo cong nhẹ, có chuyển động xoay và nhịp landing; tổng nhịp vẫn khoảng 500 ms/quân.
 - Engine và move trace vẫn là source of truth; quỹ đạo chỉ là lớp biểu diễn.
 - Quyết định: CHỐT ngày 2026-09-23.
+
+
+## D-010 — Game hub entry
+- URL gốc của website mở **Kho game**, không mở thẳng một game.
+- Mỗi game có route riêng; Ô ăn quan hiện dùng `#/o-an-quan` để tương thích GitHub Pages.
+- Trang home hiển thị các game dưới dạng thẻ; game playable có CTA vào chơi, game chưa làm chỉ hiện `Sắp có`.
+- Từ game phải có đường quay lại Kho game.
+- Các tên game placeholder trên home không mặc định trở thành roadmap đã chốt.
+- Quyết định: CHỐT ngày 2026-09-23.
