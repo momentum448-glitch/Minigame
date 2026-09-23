@@ -23,3 +23,39 @@ export interface Move {
   pit: number;
   direction: Direction;
 }
+
+export type MoveEvent =
+  | {
+      type: 'pickup' | 'continue-pickup';
+      pit: number;
+      count: number;
+      hand: number;
+    }
+  | {
+      type: 'drop';
+      pit: number;
+      hand: number;
+    }
+  | {
+      type: 'capture';
+      pit: number;
+      dan: number;
+      quan: boolean;
+      points: number;
+      hand: 0;
+    }
+  | {
+      type: 'refill';
+      player: Player;
+      pit: number;
+      borrowed: number;
+      hand: number;
+    }
+  | {
+      type: 'turn-end';
+      player: Player;
+      nextPlayer: Player | null;
+      captured: number;
+      gameOver: boolean;
+      hand: 0;
+    };

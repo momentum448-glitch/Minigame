@@ -1,4 +1,4 @@
-import type { Direction, GameState, Move, Player } from './types';
+import type { Direction, GameState, Move, MoveEvent, Player } from './types';
 
 export const QUAN_PITS = [0, 6] as const;
 export const PLAYER_PITS: Record<Player, readonly number[]> = {
@@ -7,6 +7,8 @@ export const PLAYER_PITS: Record<Player, readonly number[]> = {
 };
 export const QUAN_VALUE = 10;
 export const QUAN_NON_MIN_DAN = 5;
+
+export type MoveObserver = (event: MoveEvent, state: GameState) => void;
 
 const next = (index: number, direction: Direction) => (index + direction + 12) % 12;
 const isQuanPit = (index: number) => index === 0 || index === 6;
@@ -37,6 +39,10 @@ export function cloneState(state: GameState): GameState {
   };
 }
 
+function emit(observer: MoveObserver | undefined, event: MoveEvent, state: GameState) {
+  observer?.(event, cloneState(state));
+}
+
 export function legalMoves(state: GameState, player: Player = state.currentPlayer): Move[] {
   if (state.gameOver) return [];
   const moves: Move[] = [];
@@ -50,18 +56,31 @@ export function needsRefill(state: GameState, player: Player = state.currentPlay
   return PLAYER_PITS[player].every((index) => state.pits[index].dan === 0);
 }
 
-export function refillSide(state: GameState, player: Player): GameState {
+function refillSideCore(state: GameState, player: Player, observer?: MoveObserver): GameState {
   if (!needsRefill(state, player) || state.gameOver) return state;
+
   const nextState = cloneState(state);
   const paid = Math.min(5, Math.max(0, nextState.score[player]));
   const borrowed = 5 - paid;
   nextState.score[player] -= paid;
   nextState.debt[player] += borrowed;
-  for (const index of PLAYER_PITS[player]) nextState.pits[index].dan = 1;
+
+  let hand = 5;
+  for (const index of PLAYER_PITS[player]) {
+    nextState.pits[index].dan = 1;
+    hand -= 1;
+    emit(observer, { type: 'refill', player, pit: index, borrowed, hand }, nextState);
+  }
+
   nextState.lastMessage = borrowed > 0
     ? `Người chơi ${player + 1} vay ${borrowed} dân để tiếp tục.`
     : `Người chơi ${player + 1} dùng 5 dân đã ăn để rải lại.`;
+
   return nextState;
+}
+
+export function refillSide(state: GameState, player: Player): GameState {
+  return refillSideCore(state, player);
 }
 
 function canCaptureQuan(pit: GameState['pits'][number]): boolean {
@@ -101,9 +120,10 @@ export function finalizeGame(state: GameState): GameState {
   return nextState;
 }
 
-export function applyMove(input: GameState, move: Move): GameState {
-  let state = refillSide(input, input.currentPlayer);
+export function executeMove(input: GameState, move: Move, observer?: MoveObserver): GameState {
+  let state = refillSideCore(input, input.currentPlayer, observer);
   if (state.gameOver) return state;
+
   const player = state.currentPlayer;
   if (!PLAYER_PITS[player].includes(move.pit) || state.pits[move.pit].dan <= 0) return state;
 
@@ -113,11 +133,14 @@ export function applyMove(input: GameState, move: Move): GameState {
   let cursor = move.pit;
   let captured = 0;
 
+  emit(observer, { type: 'pickup', pit: move.pit, count: hand, hand }, state);
+
   while (true) {
     while (hand > 0) {
       cursor = next(cursor, move.direction);
       state.pits[cursor].dan += 1;
       hand -= 1;
+      emit(observer, { type: 'drop', pit: cursor, hand }, state);
     }
 
     const after = next(cursor, move.direction);
@@ -127,6 +150,7 @@ export function applyMove(input: GameState, move: Move): GameState {
       hand = afterPit.dan;
       afterPit.dan = 0;
       cursor = after;
+      emit(observer, { type: 'continue-pickup', pit: after, count: hand, hand }, state);
       continue;
     }
 
@@ -135,10 +159,26 @@ export function applyMove(input: GameState, move: Move): GameState {
       while (true) {
         const target = next(emptyCursor, move.direction);
         if (!canCapturePit(target, state)) break;
+
         const targetPit = state.pits[target];
-        captured += pitValue(targetPit);
+        const capturedDan = targetPit.dan;
+        const capturedQuan = targetPit.quan;
+        const points = pitValue(targetPit);
+
+        captured += points;
+        state.score[player] += points;
         targetPit.dan = 0;
         targetPit.quan = false;
+
+        emit(observer, {
+          type: 'capture',
+          pit: target,
+          dan: capturedDan,
+          quan: capturedQuan,
+          points,
+          hand: 0
+        }, state);
+
         const following = next(target, move.direction);
         const followingPit = state.pits[following];
         if (followingPit.dan !== 0 || followingPit.quan) break;
@@ -148,15 +188,41 @@ export function applyMove(input: GameState, move: Move): GameState {
     break;
   }
 
-  state.score[player] += captured;
-  if (bothQuanCaptured(state)) return finalizeGame(state);
+  if (bothQuanCaptured(state)) {
+    state = finalizeGame(state);
+    emit(observer, {
+      type: 'turn-end',
+      player,
+      nextPlayer: null,
+      captured,
+      gameOver: true,
+      hand: 0
+    }, state);
+    return state;
+  }
 
   state.currentPlayer = player === 0 ? 1 : 0;
   state.turn += 1;
   state.lastMessage = captured > 0
     ? `Người chơi ${player + 1} ăn ${captured} điểm.`
     : `Đến lượt người chơi ${state.currentPlayer + 1}.`;
-  return refillSide(state, state.currentPlayer);
+
+  state = refillSideCore(state, state.currentPlayer, observer);
+
+  emit(observer, {
+    type: 'turn-end',
+    player,
+    nextPlayer: state.currentPlayer,
+    captured,
+    gameOver: false,
+    hand: 0
+  }, state);
+
+  return state;
+}
+
+export function applyMove(input: GameState, move: Move): GameState {
+  return executeMove(input, move);
 }
 
 export function evaluateState(state: GameState, perspective: Player): number {
