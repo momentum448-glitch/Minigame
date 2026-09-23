@@ -1,0 +1,74 @@
+name: Refresh Handoff Snapshot
+
+on:
+  workflow_run:
+    workflows: ["Deploy GitHub Pages"]
+    types: [completed]
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Refresh technical handoff snapshot
+        env:
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_NUMBER: ${{ github.event.workflow_run.run_number }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: |
+          mkdir -p docs
+
+          CURRENT_RUN_ID="$(grep -Eo 'Workflow run ID: `[0-9]+`' docs/AUTO_TECH_STATUS.md 2>/dev/null | grep -Eo '[0-9]+' | head -1 || true)"
+          CURRENT_RUN_ID="${CURRENT_RUN_ID:-0}"
+
+          if [ "$RUN_ID" -le "$CURRENT_RUN_ID" ]; then
+            echo "Snapshot is already newer or equal. Nothing to update."
+            exit 0
+          fi
+
+          UPDATED_AT="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+
+          cat > docs/AUTO_TECH_STATUS.md <<EOF
+          # AUTO TECH STATUS
+
+          > Generated automatically after a successful GitHub Pages deployment. Do not use this file for product decisions; use `PROJECT_STATE.md` and `docs/DECISIONS.md`.
+
+          - Status: `$CONCLUSION`
+          - Branch: `main`
+          - Workflow run ID: `$RUN_ID`
+          - Workflow run number: `$RUN_NUMBER`
+          - Deployed commit SHA: `$HEAD_SHA`
+          - Updated at UTC: `$UPDATED_AT`
+          - Workflow: $RUN_URL
+          - Live: https://momentum448-glitch.github.io/Minigame/
+          - Build/test/deploy: all passed because the deploy workflow completed successfully.
+
+          ## Read next
+
+          1. `PROJECT_STATE.md`
+          2. `docs/DECISIONS.md`
+          3. Relevant source files for the current NEXT ACTION.
+          EOF
+
+      - name: Commit snapshot if changed
+        run: |
+          if git diff --quiet -- docs/AUTO_TECH_STATUS.md; then
+            echo "No snapshot change."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/AUTO_TECH_STATUS.md
+          git commit -m "chore: refresh handoff tech snapshot [skip ci]"
+          git push origin main
