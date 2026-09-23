@@ -43,6 +43,7 @@ Outcome hiện tại: hoàn thiện Ô ăn quan thành một minigame web chơi 
   - dùng 5 dân đã ăn để rải lại;
   - thiếu thì vay và ghi nợ.
 - Ván kết thúc khi cả hai Quan đã bị ăn.
+- Animation gameplay mô phỏng thao tác ngoài đời: bốc cả nắm -> rải từng quân -> bốc tiếp -> capture/refill theo nhịp.
 
 ## 4. Trạng thái triển khai hiện tại
 
@@ -56,82 +57,72 @@ Outcome hiện tại: hoàn thiện Ô ăn quan thành một minigame web chơi 
 - Tính điểm / kết thúc ván.
 - Chế độ local 2 người.
 - AI Dễ / Vừa / Khó.
-- Unit test engine cơ bản.
 - GitHub Actions build/test/deploy.
 - GitHub Pages live.
+- Hệ thống handoff tự động trong repo.
+- Move trace/event sequence tách khỏi UI.
+- Animation `pickup`: nhấc toàn bộ quân khỏi ô vào "tay".
+- Animation `drop`: rải từng quân một, số quân trên tay giảm dần.
+- Animation `continue-pickup`: bốc tiếp ô dân có quân rồi tiếp tục rải.
+- Animation `capture`: nhịp ăn quân/Quan và hiển thị điểm ăn.
+- Animation `refill`: rải lại từng quân khi bên mình hết dân.
+- Khóa input trong toàn bộ chuỗi animation.
+- AI cũng phát cùng chuỗi animation khi đi.
+- Hỗ trợ `prefers-reduced-motion`.
+- Sửa mapping nút trái/phải theo vị trí hiển thị của từng người chơi, tránh nhãn hướng bị ngược với đường rải trên bàn.
 
 ### QC đã xác nhận
+- Deploy workflow #15 cho commit `e2a147dcb9f1a5cffbf8f26bc71935d7bdb15e94`: success.
 - `npm install`: pass trên GitHub Actions.
-- `npm test`: 3/3 test pass ở mốc v0.1 ban đầu.
+- `npm test`: **7/7 pass**.
+  - 3 test engine cũ.
+  - 4 test move trace mới.
+- Test xác nhận `trace.finalState === applyMove(...)` cho các nước mở đầu và case capture.
 - `npm run build`: pass.
-- Deploy GitHub Pages: pass.
+- GitHub Pages deploy: pass.
 - Xem `docs/AUTO_TECH_STATUS.md` để biết snapshot kỹ thuật mới nhất.
 
 ## 5. Pain / thiếu sót hiện tại
 
-Gameplay hiện đang cập nhật trạng thái bàn gần như tức thì sau khi chọn hướng.
-
-Điều này chưa đạt trải nghiệm ngoài đời mà người dùng yêu cầu:
-- phải có cảm giác **cầm toàn bộ quân trong ô lên tay**;
-- sau đó **rải từng quân một**;
-- nhìn thấy từng viên di chuyển/rơi vào từng ô theo nhịp;
-- nếu gặp ô dân có quân và tiếp tục bốc/rải, cũng phải biểu diễn bằng hoạt ảnh;
-- nếu ăn quân, cần có nhịp capture riêng thay vì điểm nhảy tức thời.
+Hệ animation đã có về mặt logic và UX cơ bản, nhưng **cảm giác thực tế** cần QC trực tiếp trên điện thoại/PC:
+- tốc độ từng viên có thể cần nhanh/chậm hơn;
+- "tay cầm quân" hiện là UI tượng trưng, chưa phải bàn tay/viên quân bay theo quỹ đạo thật;
+- capture hiện dùng highlight + điểm nổi, có thể cần cảm giác thu quân rõ hơn;
+- cần kiểm tra chuỗi nước rất dài xem có cảm giác lê thê không;
+- cần QC touch/scroll trên mobile vì bàn hiện có thể cuộn ngang ở màn hẹp.
 
 ## 6. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-Xây **realistic sowing animation system** cho Ô ăn quan.
+**QC thực tế animation v0.2 và tinh chỉnh cảm giác rải quân.**
 
-### Hướng kiến trúc đã chọn sơ bộ
-Không nhét animation trực tiếp vào `applyMove()`.
+### Cần kiểm tra
+1. Chọn ô 5 dân: có cảm giác bốc cả nắm rồi rải từng viên rõ ràng không.
+2. Chuỗi bốc tiếp/rải tiếp: người chơi có theo kịp diễn biến không.
+3. Capture: có hiểu rõ ô nào vừa bị ăn và bao nhiêu điểm không.
+4. Tốc độ rải hiện tại (~175 ms mỗi quân) có quá nhanh/chậm không.
+5. Mobile: thao tác chọn ô, chọn hướng, cuộn bàn có ổn không.
+6. AI: khi máy đi, animation có đủ rõ để người chơi hiểu nước máy vừa thực hiện không.
 
-Thay vào đó:
-1. Giữ engine deterministic hiện tại phục vụ AI/test.
-2. Thêm một lớp tạo **move trace / event sequence** từ một nước đi.
-3. UI phát lần lượt các event để tạo animation.
-4. Sau khi animation hoàn tất, state cuối phải giống kết quả engine hiện tại.
-
-### Event dự kiến
-- `pickup`: nhấc toàn bộ quân khỏi ô.
-- `drop`: thả 1 quân vào một ô.
-- `continue-pickup`: bốc quân ở ô tiếp theo để tiếp tục rải.
-- `capture`: thu quân/Quan về phía người chơi.
-- `refill`: rải lại 1 dân mỗi ô khi bên mình hết dân.
-- `turn-end`: kết thúc animation và chuyển lượt.
-
-### Yêu cầu UX
-- Trong lúc animation chạy, khóa thao tác chọn nước mới.
-- Quân phải rải **từng viên**, không teleport cả cụm.
-- Tốc độ đủ nhìn rõ nhưng không lê thê.
-- Mobile phải mượt.
-- Respect `prefers-reduced-motion`: có thể rút ngắn/chuyển trạng thái nhanh hơn.
-- AI cũng dùng cùng hệ animation khi đi.
-- Không được làm thay đổi kết quả luật/AI.
-
-### Acceptance criteria tối thiểu
-- Chọn ô 5 dân -> nhìn thấy 5 lần rải riêng biệt.
-- Nước đi nối chuỗi -> có animation bốc ô tiếp theo rồi rải tiếp.
-- Ăn quân -> animation capture sau ô trống.
-- Không thể click nước khác khi chuỗi chưa xong.
-- State cuối animation = `applyMove()` cho cùng một nước.
-- Test engine cũ vẫn pass.
-- Bổ sung test cho event trace.
-- CI build/test pass và Pages deploy thành công.
+### Hướng cải tiến nếu QC yêu cầu
+- thêm quỹ đạo viên quân từ "tay" xuống ô;
+- thay "tay tượng trưng" bằng hand/cup visual tự nhiên hơn;
+- thêm easing/squash nhẹ khi viên quân rơi;
+- thêm animation thu quân về vùng điểm;
+- cho phép tốc độ animation Nhanh / Thường / Chậm nếu thật sự cần.
 
 ## 7. Rủi ro cần kiểm chứng
 
-- Mapping chiều trái/phải trên UI phải khớp vòng index engine.
-- Chuỗi rải dài có thể tạo nhiều event; cần giới hạn/đảm bảo không loop vô hạn.
-- Hard AI depth 5 hiện chạy đồng bộ; trên máy yếu có thể cần tối ưu sau, nhưng chưa phải task hiện tại.
-- Bộ test hiện còn mỏng, chưa bao phủ đủ Quan non/capture chain/refill/debt.
+- Chuỗi rải dài có thể tạo nhiều event và kéo dài cảm giác chờ.
+- Hard AI depth 5 hiện chạy đồng bộ; trên máy yếu có thể cần tối ưu sau.
+- Bộ test luật vẫn chưa bao phủ đủ Quan non/capture chain/refill/debt.
+- Cần test mobile thật để xác nhận scroll + touch trong animation.
 
 ## 8. Việc chưa làm, không được tự coi là đã xong
 
-- Hoạt ảnh rải quân thật.
-- Hoạt ảnh cầm quân/ăn quân/refill.
-- Tutorial/onboarding.
+- Visual bàn tay/quỹ đạo viên quân ở mức "giống tay thật".
 - Sound design.
+- Tutorial/onboarding.
 - QC đầy đủ trên nhiều kích thước mobile.
 - Bộ test luật toàn diện.
 - Trang home chứa nhiều game.
