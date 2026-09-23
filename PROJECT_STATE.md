@@ -63,6 +63,7 @@ Outcome hiện tại: hoàn thiện Ô ăn quan thành một minigame web chơi 
 - Move trace/event sequence tách khỏi UI.
 - Animation `pickup`: nhấc toàn bộ quân khỏi ô vào "tay".
 - Animation `drop`: rải từng quân một, số quân trên tay giảm dần; tempo hiện tại khoảng **500 ms/quân**.
+- Mỗi quân `drop/refill` có **viên sỏi bay từ vùng tay tới đúng ô đích** theo quỹ đạo cong nhẹ (~390 ms), sau đó mới cập nhật cụm sỏi trong ô (~110 ms landing).
 - Animation `continue-pickup`: bốc tiếp ô dân có quân rồi tiếp tục rải.
 - Animation `capture`: nhịp ăn quân/Quan và hiển thị điểm ăn.
 - Animation `refill`: rải lại từng quân khi bên mình hết dân.
@@ -72,7 +73,8 @@ Outcome hiện tại: hoàn thiện Ô ăn quan thành một minigame web chơi 
 - Sửa mapping nút trái/phải theo vị trí hiển thị của từng người chơi, tránh nhãn hướng bị ngược với đường rải trên bàn.
 
 ### QC đã xác nhận
-- Deploy workflow #16 cho commit `f94061ef33701db7c6325247b236963b501caada`: success.
+- Deploy workflow #18 cho commit `23d29fdc295e8a2a56fc86beda16b82f93021eb0`: success.
+- Run #17 từng fail do TypeScript narrowing ở lớp visual bay sỏi; đã sửa ở run #18, test/build/deploy đều pass.
 - `npm install`: pass trên GitHub Actions.
 - `npm test`: **7/7 pass**.
   - 3 test engine cũ.
@@ -86,7 +88,7 @@ Outcome hiện tại: hoàn thiện Ô ăn quan thành một minigame web chơi 
 
 Hệ animation đã có về mặt logic và UX cơ bản, nhưng **cảm giác thực tế** cần QC trực tiếp trên điện thoại/PC:
 - tempo đã tăng từ ~175 ms lên **~500 ms/quân** theo QC người dùng; cần xác nhận cảm giác thực tế đã đủ rõ chưa;
-- "tay cầm quân" hiện là UI tượng trưng, chưa phải bàn tay/viên quân bay theo quỹ đạo thật;
+- viên sỏi đã bay từ vùng tay tới ô thật; **visual bàn tay** vẫn đang là UI tượng trưng, chưa phải bàn tay/cup tự nhiên;
 - capture hiện dùng highlight + điểm nổi, có thể cần cảm giác thu quân rõ hơn;
 - cần kiểm tra chuỗi nước rất dài xem có cảm giác lê thê không;
 - cần QC touch/scroll trên mobile vì bàn hiện có thể cuộn ngang ở màn hẹp.
@@ -94,10 +96,10 @@ Hệ animation đã có về mặt logic và UX cơ bản, nhưng **cảm giác 
 ## 6. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC thực tế animation v0.2.1 ở tempo ~500 ms/quân.**
+**QC thực tế animation v0.2.2: viên sỏi bay từ tay vào từng ô, giữ tempo ~500 ms/quân.**
 
 ### Cần kiểm tra
-1. Chọn ô 5 dân: có cảm giác bốc cả nắm rồi rải từng viên rõ ràng không.
+1. Chọn ô 5 dân: có thấy rõ từng viên sỏi rời vùng tay, bay theo quỹ đạo và đáp đúng từng ô không.
 2. Chuỗi bốc tiếp/rải tiếp: người chơi có theo kịp diễn biến không.
 3. Capture: có hiểu rõ ô nào vừa bị ăn và bao nhiêu điểm không.
 4. Tốc độ rải hiện tại (~500 ms mỗi quân) đã đủ chậm và rõ chưa, hay cần tinh chỉnh tiếp.
@@ -105,7 +107,6 @@ Hệ animation đã có về mặt logic và UX cơ bản, nhưng **cảm giác 
 6. AI: khi máy đi, animation có đủ rõ để người chơi hiểu nước máy vừa thực hiện không.
 
 ### Hướng cải tiến nếu QC yêu cầu
-- thêm quỹ đạo viên quân từ "tay" xuống ô;
 - thay "tay tượng trưng" bằng hand/cup visual tự nhiên hơn;
 - easing/squash và glow khi viên quân rơi đã được tăng độ rõ ở v0.2.1; tiếp tục tinh chỉnh nếu QC thực tế yêu cầu.
 - thêm animation thu quân về vùng điểm;
@@ -120,7 +121,7 @@ Hệ animation đã có về mặt logic và UX cơ bản, nhưng **cảm giác 
 
 ## 8. Việc chưa làm, không được tự coi là đã xong
 
-- Visual bàn tay/quỹ đạo viên quân ở mức "giống tay thật".
+- Visual bàn tay/cup ở mức tự nhiên hơn; quỹ đạo viên sỏi đã có.
 - Sound design.
 - Tutorial/onboarding.
 - QC đầy đủ trên nhiều kích thước mobile.
