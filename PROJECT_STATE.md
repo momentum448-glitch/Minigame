@@ -62,7 +62,7 @@ Outcome hiện tại: hoàn thiện Ô ăn quan thành một minigame web chơi 
 - Hệ thống handoff tự động trong repo.
 - Move trace/event sequence tách khỏi UI.
 - Animation `pickup`: nhấc toàn bộ quân khỏi ô vào "tay".
-- Animation `drop`: rải từng quân một, số quân trên tay giảm dần.
+- Animation `drop`: rải từng quân một, số quân trên tay giảm dần; tempo hiện tại khoảng **500 ms/quân**.
 - Animation `continue-pickup`: bốc tiếp ô dân có quân rồi tiếp tục rải.
 - Animation `capture`: nhịp ăn quân/Quan và hiển thị điểm ăn.
 - Animation `refill`: rải lại từng quân khi bên mình hết dân.
@@ -72,7 +72,7 @@ Outcome hiện tại: hoàn thiện Ô ăn quan thành một minigame web chơi 
 - Sửa mapping nút trái/phải theo vị trí hiển thị của từng người chơi, tránh nhãn hướng bị ngược với đường rải trên bàn.
 
 ### QC đã xác nhận
-- Deploy workflow #15 cho commit `e2a147dcb9f1a5cffbf8f26bc71935d7bdb15e94`: success.
+- Deploy workflow #16 cho commit `f94061ef33701db7c6325247b236963b501caada`: success.
 - `npm install`: pass trên GitHub Actions.
 - `npm test`: **7/7 pass**.
   - 3 test engine cũ.
@@ -85,7 +85,7 @@ Outcome hiện tại: hoàn thiện Ô ăn quan thành một minigame web chơi 
 ## 5. Pain / thiếu sót hiện tại
 
 Hệ animation đã có về mặt logic và UX cơ bản, nhưng **cảm giác thực tế** cần QC trực tiếp trên điện thoại/PC:
-- tốc độ từng viên có thể cần nhanh/chậm hơn;
+- tempo đã tăng từ ~175 ms lên **~500 ms/quân** theo QC người dùng; cần xác nhận cảm giác thực tế đã đủ rõ chưa;
 - "tay cầm quân" hiện là UI tượng trưng, chưa phải bàn tay/viên quân bay theo quỹ đạo thật;
 - capture hiện dùng highlight + điểm nổi, có thể cần cảm giác thu quân rõ hơn;
 - cần kiểm tra chuỗi nước rất dài xem có cảm giác lê thê không;
@@ -94,20 +94,20 @@ Hệ animation đã có về mặt logic và UX cơ bản, nhưng **cảm giác 
 ## 6. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC thực tế animation v0.2 và tinh chỉnh cảm giác rải quân.**
+**QC thực tế animation v0.2.1 ở tempo ~500 ms/quân.**
 
 ### Cần kiểm tra
 1. Chọn ô 5 dân: có cảm giác bốc cả nắm rồi rải từng viên rõ ràng không.
 2. Chuỗi bốc tiếp/rải tiếp: người chơi có theo kịp diễn biến không.
 3. Capture: có hiểu rõ ô nào vừa bị ăn và bao nhiêu điểm không.
-4. Tốc độ rải hiện tại (~175 ms mỗi quân) có quá nhanh/chậm không.
+4. Tốc độ rải hiện tại (~500 ms mỗi quân) đã đủ chậm và rõ chưa, hay cần tinh chỉnh tiếp.
 5. Mobile: thao tác chọn ô, chọn hướng, cuộn bàn có ổn không.
 6. AI: khi máy đi, animation có đủ rõ để người chơi hiểu nước máy vừa thực hiện không.
 
 ### Hướng cải tiến nếu QC yêu cầu
 - thêm quỹ đạo viên quân từ "tay" xuống ô;
 - thay "tay tượng trưng" bằng hand/cup visual tự nhiên hơn;
-- thêm easing/squash nhẹ khi viên quân rơi;
+- easing/squash và glow khi viên quân rơi đã được tăng độ rõ ở v0.2.1; tiếp tục tinh chỉnh nếu QC thực tế yêu cầu.
 - thêm animation thu quân về vùng điểm;
 - cho phép tốc độ animation Nhanh / Thường / Chậm nếu thật sự cần.
 
