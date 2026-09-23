@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { chooseAiMove } from './game/ai';
 import { createInitialState, PLAYER_PITS } from './game/engine';
 import { createMoveTrace } from './game/trace';
@@ -7,6 +7,19 @@ import { StonePile } from './components/StonePile';
 
 const topOrder = [1, 2, 3, 4, 5];
 const bottomOrder = [11, 10, 9, 8, 7];
+const STONE_FLIGHT_MS = 390;
+
+interface FlyingStone {
+  id: number;
+  pit: number;
+  startX: number;
+  startY: number;
+  midX: number;
+  midY: number;
+  endX: number;
+  endY: number;
+  duration: number;
+}
 
 const wait = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms));
 
@@ -55,9 +68,59 @@ export default function App() {
   const [selectedPit, setSelectedPit] = useState<number | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [activeEvent, setActiveEvent] = useState<MoveEvent | null>(null);
+  const [flyingStone, setFlyingStone] = useState<FlyingStone | null>(null);
+
   const animationToken = useRef(0);
+  const flightSequence = useRef(0);
+  const handOriginRef = useRef<HTMLDivElement | null>(null);
+  const pitRefs = useRef<Array<HTMLElement | null>>(Array(12).fill(null));
 
   const aiThinking = mode === 'ai' && state.currentPlayer === 1 && !state.gameOver && !isAnimating;
+
+  const flyStoneToPit = async (pit: number, token: number, duration: number) => {
+    const origin = handOriginRef.current;
+    const target = pitRefs.current[pit];
+
+    if (!origin || !target) {
+      await wait(duration);
+      return;
+    }
+
+    const originRect = origin.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const id = ++flightSequence.current;
+
+    const startX = originRect.left + originRect.width / 2 - 9;
+    const startY = originRect.top + originRect.height / 2 - 8;
+
+    const spreadX = ((id * 13) % 25) - 12;
+    const spreadY = ((id * 7) % 15) - 7;
+    const endX = targetRect.left + targetRect.width / 2 - 9 + spreadX;
+    const endY = targetRect.top + targetRect.height / 2 - 8 + spreadY;
+
+    const dx = endX - startX;
+    const dy = endY - startY;
+    const distance = Math.hypot(dx, dy);
+    const arc = Math.min(118, Math.max(46, distance * 0.18));
+
+    setFlyingStone({
+      id,
+      pit,
+      startX,
+      startY,
+      midX: dx * 0.52,
+      midY: dy * 0.48 - arc,
+      endX: dx,
+      endY: dy,
+      duration
+    });
+
+    await wait(duration);
+
+    if (animationToken.current === token) {
+      setFlyingStone(null);
+    }
+  };
 
   const animateMove = async (baseState: GameState, move: Move) => {
     if (isAnimating) return;
@@ -73,14 +136,31 @@ export default function App() {
 
     for (const step of trace.steps) {
       if (animationToken.current !== token) return;
+
+      const delay = eventDelay(step.event, reducedMotion);
+      const isStonePlacement = step.event.type === 'drop' || step.event.type === 'refill';
+
+      if (isStonePlacement && !reducedMotion) {
+        setActiveEvent(step.event);
+        await flyStoneToPit(step.event.pit, token, STONE_FLIGHT_MS);
+
+        if (animationToken.current !== token) return;
+
+        setState(step.state);
+        await wait(Math.max(0, delay - STONE_FLIGHT_MS));
+        continue;
+      }
+
       setState(step.state);
       setActiveEvent(step.event);
-      await wait(eventDelay(step.event, reducedMotion));
+      await wait(delay);
     }
 
     if (animationToken.current !== token) return;
+
     setState(trace.finalState);
     setActiveEvent(null);
+    setFlyingStone(null);
     setIsAnimating(false);
   };
 
@@ -116,6 +196,7 @@ export default function App() {
     animationToken.current += 1;
     setIsAnimating(false);
     setActiveEvent(null);
+    setFlyingStone(null);
   };
 
   const restart = () => {
@@ -142,6 +223,12 @@ export default function App() {
 
   const animationClass = (pit: number) => {
     if (!activeEvent || !('pit' in activeEvent) || activeEvent.pit !== pit) return '';
+    if (
+      flyingStone?.pit === pit &&
+      (activeEvent.type === 'drop' || activeEvent.type === 'refill')
+    ) {
+      return 'anim-flight-target';
+    }
     return `anim-${activeEvent.type}`;
   };
 
@@ -153,9 +240,11 @@ export default function App() {
   const pitButton = (pit: number) => {
     const data = state.pits[pit];
     const selectable = canSelect(pit);
+
     return (
       <button
         key={pit}
+        ref={(node) => { pitRefs.current[pit] = node; }}
         type="button"
         className={`pit ${selectedPit === pit ? 'selected' : ''} ${animationClass(pit)}`}
         disabled={!selectable}
@@ -172,6 +261,18 @@ export default function App() {
   const score2Label = mode === 'ai' ? 'Máy' : 'Người chơi 2';
   const difficultyText = useMemo(() => ({ easy: 'Dễ', medium: 'Vừa', hard: 'Khó' }[level]), [level]);
   const handCount = activeEvent?.hand ?? 0;
+
+  const flyingStoneStyle = flyingStone
+    ? ({
+        left: flyingStone.startX,
+        top: flyingStone.startY,
+        animationDuration: `${flyingStone.duration}ms`,
+        '--flight-mid-x': `${flyingStone.midX}px`,
+        '--flight-mid-y': `${flyingStone.midY}px`,
+        '--flight-end-x': `${flyingStone.endX}px`,
+        '--flight-end-y': `${flyingStone.endY}px`
+      } as CSSProperties & Record<string, string | number>)
+    : undefined;
 
   return (
     <main className="app-shell">
@@ -220,7 +321,11 @@ export default function App() {
       <section className="game-card">
         <div className="status" role="status" aria-live="polite">{status}</div>
 
-        <div className={`hand-zone ${handCount > 0 ? 'has-hand' : ''}`} aria-hidden="true">
+        <div
+          ref={handOriginRef}
+          className={`hand-zone ${handCount > 0 ? 'has-hand' : ''}`}
+          aria-hidden="true"
+        >
           {handCount > 0 && (
             <div className="hand-bundle">
               <StonePile count={handCount} />
@@ -230,9 +335,19 @@ export default function App() {
           )}
         </div>
 
+        {flyingStone && (
+          <span
+            key={flyingStone.id}
+            className="flying-stone"
+            style={flyingStoneStyle}
+            aria-hidden="true"
+          />
+        )}
+
         <div className="board-wrap">
           <div className={`board ${isAnimating ? 'is-animating' : ''}`} aria-label="Bàn Ô ăn quan" aria-busy={isAnimating}>
             <div
+              ref={(node) => { pitRefs.current[0] = node; }}
               className={`quan pit quan-left ${animationClass(0)}`}
               data-capture={captureLabel(0)}
             >
@@ -243,6 +358,7 @@ export default function App() {
             <div className="small-pits top-row">{topOrder.map(pitButton)}</div>
             <div className="small-pits bottom-row">{bottomOrder.map(pitButton)}</div>
             <div
+              ref={(node) => { pitRefs.current[6] = node; }}
               className={`quan pit quan-right ${animationClass(6)}`}
               data-capture={captureLabel(6)}
             >
@@ -277,7 +393,7 @@ export default function App() {
         <p>Nếu đầu lượt cả 5 ô dân đều trống, người chơi dùng 5 dân đã ăn để rải lại; thiếu thì ghi nợ và trừ khi kết thúc ván.</p>
       </details>
 
-      <footer>Minigame Việt · AI {difficultyText} · Bản thử nghiệm v0.2.1</footer>
+      <footer>Minigame Việt · AI {difficultyText} · Bản thử nghiệm v0.2.2</footer>
     </main>
   );
 }
