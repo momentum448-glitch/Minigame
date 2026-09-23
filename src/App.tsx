@@ -138,9 +138,8 @@ export default function App() {
       if (animationToken.current !== token) return;
 
       const delay = eventDelay(step.event, reducedMotion);
-      const isStonePlacement = step.event.type === 'drop' || step.event.type === 'refill';
 
-      if (isStonePlacement && !reducedMotion) {
+      if ((step.event.type === 'drop' || step.event.type === 'refill') && !reducedMotion) {
         setActiveEvent(step.event);
         await flyStoneToPit(step.event.pit, token, STONE_FLIGHT_MS);
 
