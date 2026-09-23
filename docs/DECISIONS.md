@@ -49,3 +49,10 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
   - capture/refill cũng có nhịp biểu diễn.
 - Không được thay engine luật bằng logic animation.
 - Quyết định: CHỐT ngày 2026-09-23.
+
+
+## D-008 — Animation tempo
+- Tốc độ rải mặc định khoảng **500 ms cho mỗi quân** để người chơi theo dõi rõ từng viên.
+- Nhịp pickup / bốc tiếp chậm hơn drop một chút; capture có khoảng nghỉ riêng.
+- Nếu sau QC thực tế cần đổi, ưu tiên giữ cảm giác rõ ràng ngoài đời hơn là tối đa tốc độ.
+- Quyết định: CHỐT ngày 2026-09-23.
