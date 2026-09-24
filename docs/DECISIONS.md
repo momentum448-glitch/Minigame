@@ -210,3 +210,15 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Câu hô thai trong web là câu mới do dự án biên soạn, không giả là lời cổ truyền chuẩn.
 - Nguồn và danh sách 27 con: `docs/BAI_CHOI_RULES.md`.
 - Quyết định: CHỐT ngày 2026-09-24.
+
+
+## D-025 — Bài Chòi sound + mobile cards
+- Bài Chòi phải có audio thật, không chỉ chữ mô phỏng âm thanh.
+- v0.2 dùng Web Audio tổng hợp trực tiếp trong trình duyệt:
+  - trống ngắn khi bắt đầu Hô thai;
+  - tiếng mõ khi một chòi trúng;
+  - nhịp thắng hội khi TỚI.
+- Khi xướng tên con bài, game thử đọc tên bằng Speech Synthesis `vi-VN`; nếu thiết bị không có giọng Việt thì mõ/trống vẫn hoạt động.
+- Có nút **Âm thanh Bật/Tắt**, mặc định bật; tương tác Hô thai/Xướng tên là user gesture để mở khóa audio trên mobile.
+- Trên mobile, chòi người chơi được ưu tiên toàn chiều ngang và 3 thẻ được phóng lớn; chòi máy vẫn giữ layout gọn.
+- Quyết định: CHỐT ngày 2026-09-24.

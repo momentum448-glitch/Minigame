@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
   createBaiChoiState,
   drawNextBaiChoiCard,
@@ -57,6 +57,8 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
   const [pending, setPending] = useState<BaiChoiCard | null>(null);
   const [phase, setPhase] = useState<'ready' | 'thai'>('ready');
   const [revealFlash, setRevealFlash] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const audioContextRef = useRef<AudioContext | null>(null);
 
   const winner = useMemo(
     () => state.winnerHutId === null
@@ -65,25 +67,149 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
     [state]
   );
 
+  const ensureAudio = () => {
+    if (!soundEnabled) return null;
+
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioContext();
+    }
+
+    const context = audioContextRef.current;
+    if (context.state === 'suspended') {
+      void context.resume();
+    }
+
+    return context;
+  };
+
+  const playTone = (
+    frequency: number,
+    duration: number,
+    offset = 0,
+    type: OscillatorType = 'sine',
+    volume = .18
+  ) => {
+    const context = ensureAudio();
+    if (!context) return;
+
+    const start = context.currentTime + offset;
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+
+    oscillator.type = type;
+    oscillator.frequency.setValueAtTime(frequency, start);
+    oscillator.frequency.exponentialRampToValueAtTime(
+      Math.max(40, frequency * .72),
+      start + duration
+    );
+
+    gain.gain.setValueAtTime(.0001, start);
+    gain.gain.exponentialRampToValueAtTime(volume, start + .012);
+    gain.gain.exponentialRampToValueAtTime(.0001, start + duration);
+
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+    oscillator.start(start);
+    oscillator.stop(start + duration + .03);
+  };
+
+  const playDrumCue = () => {
+    playTone(128, .18, 0, 'sine', .24);
+    playTone(92, .22, .18, 'sine', .2);
+  };
+
+  const playWoodKnock = () => {
+    playTone(720, .075, 0, 'triangle', .18);
+    playTone(520, .09, .11, 'triangle', .16);
+  };
+
+  const playWinnerFanfare = () => {
+    playTone(105, .2, 0, 'sine', .25);
+    playTone(132, .2, .22, 'sine', .25);
+    playTone(168, .32, .44, 'sine', .27);
+    playTone(720, .07, .06, 'triangle', .14);
+    playTone(720, .07, .28, 'triangle', .14);
+    playTone(720, .07, .5, 'triangle', .14);
+  };
+
+  const speakCardName = (name: string) => {
+    if (!soundEnabled || !('speechSynthesis' in window)) return;
+
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(name);
+    utterance.lang = 'vi-VN';
+    utterance.rate = .86;
+    utterance.pitch = .94;
+    utterance.volume = .9;
+
+    const vietnameseVoice = window.speechSynthesis
+      .getVoices()
+      .find((voice) => voice.lang.toLowerCase().startsWith('vi'));
+
+    if (vietnameseVoice) utterance.voice = vietnameseVoice;
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const toggleSound = () => {
+    const next = !soundEnabled;
+    setSoundEnabled(next);
+
+    if (!next) {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      return;
+    }
+
+    const context = audioContextRef.current ?? new AudioContext();
+    audioContextRef.current = context;
+    if (context.state === 'suspended') void context.resume();
+
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.type = 'triangle';
+    oscillator.frequency.value = 640;
+    gain.gain.setValueAtTime(.0001, context.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.13, context.currentTime + .01);
+    gain.gain.exponentialRampToValueAtTime(.0001, context.currentTime + .09);
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+    oscillator.start();
+    oscillator.stop(context.currentTime + .11);
+  };
+
   const reset = (nextMode = mode) => {
     setMode(nextMode);
     setState(createBaiChoiState(nextMode));
     setPending(null);
     setPhase('ready');
     setRevealFlash(false);
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
   };
 
   const beginThai = () => {
     if (state.winnerHutId !== null || phase !== 'ready') return;
     const next = peekNextBaiChoiCard(state);
     if (!next) return;
+
+    playDrumCue();
     setPending(next);
     setPhase('thai');
   };
 
   const revealCard = () => {
     if (!pending || phase !== 'thai') return;
-    setState((current) => drawNextBaiChoiCard(current));
+
+    const nextState = drawNextBaiChoiCard(state);
+    const owner = nextState.huts.find((hut) => hutHasCard(hut, pending.id)) ?? null;
+
+    speakCardName(pending.name);
+    if (owner) {
+      window.setTimeout(() => playWoodKnock(), 180);
+    }
+    if (nextState.winnerHutId !== null) {
+      window.setTimeout(() => playWinnerFanfare(), 520);
+    }
+
+    setState(nextState);
     setRevealFlash(true);
     window.setTimeout(() => setRevealFlash(false), 520);
     setPending(null);
@@ -127,6 +253,16 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
             <option value="local">2 người local · 7 chòi máy</option>
           </select>
         </label>
+
+        <button
+          className={`bc-sound-toggle ${soundEnabled ? 'on' : 'off'}`}
+          type="button"
+          aria-pressed={soundEnabled}
+          onClick={toggleSound}
+        >
+          {soundEnabled ? '🔊 Âm thanh: Bật' : '🔇 Âm thanh: Tắt'}
+        </button>
+
         <div className="rule-chip">9 chòi · 27 con · đủ 3 là TỚI</div>
       </section>
 
@@ -257,7 +393,7 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
       </section>
 
       <details className="rules bc-rules" open>
-        <summary>Luật Bài Chòi v0.1 · cách chơi hội 9 chòi</summary>
+        <summary>Luật Bài Chòi v0.2 · cách chơi hội 9 chòi</summary>
         <div className="bc-rule-grid">
           <section>
             <b>1 · Chia bài</b>
@@ -269,20 +405,21 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
           </section>
           <section>
             <b>3 · Gõ mõ</b>
-            <p>Chòi có đúng con bài vừa xướng sẽ được ghi một lần trúng. Trong bản web, game tự đánh dấu để tránh bỏ sót.</p>
+            <p>Chòi có đúng con bài vừa xướng được ghi một lần trúng, đồng thời phát tiếng mõ nếu âm thanh đang bật.</p>
           </section>
           <section>
             <b>4 · Tới</b>
-            <p>Chòi nào trúng đủ cả 3 con bài trước tiên sẽ “TỚI!” và thắng hội.</p>
+            <p>Chòi nào trúng đủ cả 3 con bài trước tiên sẽ “TỚI!”, phát nhịp trống thắng hội và dừng ván.</p>
           </section>
         </div>
         <p className="bc-cultural-note">
           Bài Chòi vừa là trò chơi vừa là nghệ thuật diễn xướng. Các câu hô thai trong bản web là
           <strong> câu minh họa mới do dự án biên soạn</strong>, không phải lời cổ truyền nguyên bản.
+          Âm thanh v0.2 được tổng hợp trực tiếp bằng trình duyệt; phần đọc tên quân dùng giọng tiếng Việt của thiết bị nếu có.
         </p>
       </details>
 
-      <footer>Minigame Việt · Bài Chòi v0.1 · Hội 9 chòi</footer>
+      <footer>Minigame Việt · Bài Chòi v0.2 · Hội 9 chòi</footer>
     </main>
   );
 }
