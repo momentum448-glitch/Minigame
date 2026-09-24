@@ -361,28 +361,40 @@ Nguồn đối chiếu:
 - Trận chia theo round.
 - Hai bên **luân phiên kích hoạt từng quái**.
 - Mỗi quái còn sống có tối đa **1 hành động mỗi round**.
-- Hành động có thể gồm di chuyển, tấn công, dùng skill, nhặt vật phẩm/EXP hoặc tương tác đặc biệt.
+- Hành động có thể gồm di chuyển, tấn công, dùng skill hoặc tương tác đặc biệt.
+- Đi qua/đứng vào ô chứa item hoặc EXP nhỏ sẽ **auto-pickup**, không tiêu tốn action riêng.
 - Thứ tự kích hoạt quái là một phần chiến thuật.
+- **Tối đa 5 quái/đội** để chặn việc đội spam quái 1★ thắng bằng action economy thuần.
 
 ### Board / map
 - Dùng **hex grid**, không dùng ô vuông.
-- Quy mô làm việc tương đương khoảng **8×8 / ~64 hex**; hình học cụ thể sẽ chốt ở vòng tiếp theo.
-- Mỗi ván có **bản đồ ngẫu nhiên** thay vì một bàn cố định.
-- Map có thể random terrain, vật cản, điểm spawn và vật phẩm, nhưng phải giữ fairness giữa hai phía.
-- Vật phẩm/EXP spawn theo hướng **ngẫu nhiên trên map**, không khóa điểm spawn cố định.
+- Shape nền v0.1: **hexagon bán kính 4 = 61 ô**, gần quy mô 8×8 nhưng tự nhiên cho hex.
+- Mỗi ván có **bản đồ ngẫu nhiên**.
+- Khung địa hình chiến thuật sinh theo hướng **đối xứng/cân bằng**, còn item/EXP có thể random có kiểm soát.
+- Terrain nền v0.1:
+  - **Ground**: đi/đứng bình thường;
+  - **Blocker**: không đi xuyên, không đứng được, chặn line-of-sight;
+  - **Cover**: đứng được và tạo lợi thế phòng thủ trước ranged.
+- Vật phẩm/EXP spawn ngẫu nhiên trên map.
+- Đi vào ô có item/EXP nhỏ thì **auto-pickup**, không tốn action.
 
 ### Combat
-- Combat chủ yếu tính toán được nhưng có **một lượng RNG nhỏ**.
-- Không dùng RNG nặng làm mất tính cờ/puzzle.
-- Chi tiết RNG như accuracy/crit/damage spread/status proc chưa chốt.
+- Combat có RNG nhỏ nhưng rõ ràng và hữu hạn.
+- Đòn tấn công cơ bản có:
+  - **10% miss**;
+  - **10% crit**;
+  - xác suất còn lại gây hit thường.
+- Không dùng RNG nặng hơn mặc định; các proc/status đặc biệt chỉ xuất hiện nếu skill/unit ghi rõ.
+- Crit multiplier và cách cover tác động lên hit/damage chưa chốt.
 
 ### EXP / tiến hóa
+- EXP là **riêng từng quái**, không dùng thanh EXP chung cả đội.
 - Mỗi quái vật có hệ tiến hóa riêng.
 - Có tối đa **2 lần tiến hóa trong một trận**.
 - Mỗi lần tiến hóa người chơi chọn **1 trong 3 option tăng tiến**.
 - Các option có thể đổi stat, skill, phạm vi, pattern tấn công hoặc vai trò.
 - Cùng một quái có thể đi theo build khác nhau giữa các ván.
-- Nguồn EXP có thể gồm combat, nhặt orb/EXP và objective; trọng số chưa chốt.
+- Nguồn EXP dự kiến gồm combat, nhặt orb/EXP và objective; trọng số/threshold chưa chốt.
 
 ### Mode nền
 - Định hướng có cả **PvP local** và cấu trúc **roguelite**.
@@ -394,13 +406,13 @@ Nguồn đối chiếu:
 **Chốt ruleset nền Game 07 trước khi prototype.**
 
 ### Cần chốt tiếp
-1. Hình học hex map: 8×8 axial rhombus, hexagon bán kính cố định hay map shape biến thiên nhưng xấp xỉ 64 ô.
-2. Cách random map vẫn công bằng: mirror/symmetric generation, seed cân bằng hay bất đối xứng có compensation.
-3. Combat RNG nhỏ sẽ nằm ở đâu: damage spread, crit, accuracy, status proc hay kết hợp giới hạn.
-4. Cơ chế range/line-of-sight/cover trên hex.
-5. Cách nhận EXP và threshold tiến hóa I / II.
-6. Item economy: nhặt item có tốn action không, item giữ trong inventory hay dùng ngay.
-7. Xử lý chênh lệch action economy giữa đội nhiều quái 1★ và đội ít quái cao sao.
+1. Một **action** có cho phép vừa di chuyển vừa tấn công không, hay mỗi action chỉ là một loại thao tác.
+2. Skill dùng cooldown, resource riêng, hay giới hạn số lần dùng mỗi trận.
+3. Initiative đầu round: bên nào kích hoạt trước và có đổi quyền đi trước giữa các round không.
+4. Cách cover/line-of-sight tác động chính xác lên ranged attack.
+5. Crit multiplier mặc định và tương tác crit với armor/cover.
+6. Nguồn EXP cụ thể + threshold tiến hóa I / II + thời điểm chọn tiến hóa.
+7. Item chủ động mạnh: dùng ngay khi nhặt, cất inventory, hay tốn action để kích hoạt.
 
 ### Sau khi chốt
 - Viết ruleset v0.1.
