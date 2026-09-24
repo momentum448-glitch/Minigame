@@ -4,7 +4,7 @@
 
 ## 1. Mục tiêu dự án
 
-Xây một website chứa nhiều minigame Việt Nam. Mỗi game là module riêng nhưng dùng chung shell/kho game.
+Xây một website chứa nhiều minigame theo mô hình **sảnh game đa danh mục**. Game dân gian Việt Nam là một bộ sưu tập lớn bên trong, bên cạnh game dân gian thế giới, game hiện đại, giải đố, chiến thuật, party... Mỗi game là module riêng nhưng dùng chung shell/registry.
 
 ### Game playable
 1. **Ô ăn quan** — Game 01.
@@ -14,7 +14,7 @@ Xây một website chứa nhiều minigame Việt Nam. Mỗi game là module ri�
 5. **Tam Cúc** — Game 05, playable v0.2 UX.
 6. **Bài Chòi** — Game 06, playable v0.4 pre-rendered voice-pack baseline.
 
-Mốc đang active: **QC Bài Chòi v0.4 pre-rendered voice-pack + Android voice fallback**.
+Mốc đang active: **QC Home v2 / Sảnh game đa danh mục**. Bài Chòi vẫn tạm dừng ở v0.4.
 
 ## 2. Repo / Deploy
 
@@ -27,15 +27,41 @@ Mốc đang active: **QC Bài Chòi v0.4 pre-rendered voice-pack + Android voice
 
 ## 3. Kiến trúc website
 
-- URL gốc mở **Kho game**.
+### Home v2 / Sảnh game
+- URL gốc mở **Sảnh game / Kho Minigame**, không mở thẳng danh sách game Việt.
+- Branding hiển thị: **Kho Minigame**.
+- Điều hướng chuẩn: **Sảnh game → Danh mục → Game**.
+- Trang chủ gồm:
+  - các card danh mục;
+  - khu **Game nổi bật / Chơi nhanh**.
+- Một game có thể thuộc nhiều danh mục thông qua registry trong `src/App.tsx`.
+
+### Danh mục nền tảng
+- `#/category/vietnamese-folk` — **Dân gian Việt Nam** — 6 game hiện tại.
+- `#/category/world-folk` — **Dân gian thế giới** — đang chuẩn bị.
+- `#/category/modern` — **Game hiện đại** — đang chuẩn bị.
+- `#/category/puzzle` — **Giải đố & Logic** — đang chuẩn bị.
+- `#/category/strategy` — **Chiến thuật** — hiện có Cờ Gánh, Cờ Hùm, Cờ Lúa Ngô.
+- `#/category/party` — **May rủi & Party** — hiện có Tam Cúc, Bài Chòi.
+
+### Route game giữ nguyên
 - Ô ăn quan: `#/o-an-quan`.
 - Cờ Gánh: `#/co-ganh`.
 - Cờ Hùm: `#/co-hum`.
 - Cờ Lúa Ngô: `#/co-lua-ngo`.
 - Tam Cúc: `#/tam-cuc`.
 - Bài Chòi: `#/bai-choi`.
-- Mỗi game có nút **← Kho game**.
-- Game chưa làm chỉ hiện `Sắp có`.
+- Giữ route cũ để không phá link/bookmark.
+- Khi mở game từ một danh mục trong cùng SPA, nút quay lại đưa về danh mục đó; nếu mở trực tiếp/reload route game thì fallback về Sảnh game.
+
+### QC kỹ thuật Home v2
+- Deploy workflow **#39**: success.
+- Deployed source commit: `a574c289cc4b614025e5d8e1152a84b8a6afd680`.
+- Test suite hiện tại: **45/45 pass**.
+- Production build pass.
+- GitHub Pages deploy pass.
+- Handoff snapshot #29 success.
+- Quyết định kiến trúc: `D-029`.
 
 ## 4. Ô ăn quan — trạng thái
 
@@ -316,18 +342,25 @@ Nguồn đối chiếu:
 
 ## 10. NEXT ACTION — ưu tiên cao nhất
 
-### Trạng thái
-**Không có game nào đang được triển khai tiếp. Bài Chòi đã được đóng băng có chủ đích ở v0.4 để chuyển sang việc khác.**
+### Task
+**QC Home v2 / Sảnh game đa danh mục trên bản live.**
 
-### Khi người dùng quay lại Bài Chòi
-- Bắt đầu từ mốc v0.4 hiện tại, không dựng lại engine/gameplay.
-- Đọc `docs/BAI_CHOI_RULES.md` và `docs/BAI_CHOI_VOICE_PACK.md`.
-- Kiểm tra deploy/Actions thật trước khi chỉnh.
-- Mục tiêu kế tiếp là **chất lượng voice-pack**, không phải thay ruleset.
+### Checklist QC
+1. Root `#/` phải hiện **Kho Minigame / Sảnh game**, không hiện thẳng 6 game Việt.
+2. Phải thấy 6 danh mục: Dân gian Việt Nam, Dân gian thế giới, Game hiện đại, Giải đố & Logic, Chiến thuật, May rủi & Party.
+3. Dân gian Việt Nam mở đúng 6 game hiện tại.
+4. Chiến thuật mở đúng Cờ Gánh, Cờ Hùm, Cờ Lúa Ngô.
+5. May rủi & Party mở đúng Tam Cúc, Bài Chòi.
+6. Danh mục chưa có game hiển thị empty state rõ, không giả là có game.
+7. Game nổi bật trên home mở được game trực tiếp.
+8. Tất cả route game cũ vẫn hoạt động.
+9. Luồng **Sảnh → Danh mục → Game → quay lại** hợp lý trên mobile.
+10. Card danh mục và Game nổi bật không bị chật/chữ nhỏ trên mobile.
 
-### Khi người dùng chọn việc/game khác
-- Thực hiện task mới theo chỉ dẫn mới của người dùng.
-- Không tự động coi Game 07 là Bài Chòi tiếp theo hay tự chọn game mới nếu người dùng chưa yêu cầu.
+### Sau khi Home v2 được duyệt
+- Có thể chọn game mới theo bất kỳ nhánh nào: Dân gian thế giới, Game hiện đại, Puzzle, v.v.
+- Bài Chòi tiếp tục giữ trạng thái tạm dừng v0.4 cho tới khi người dùng chủ động quay lại.
+- Không tự chọn Game 07 nếu người dùng chưa yêu cầu.
 
 ## 11. Rủi ro / giả định
 
