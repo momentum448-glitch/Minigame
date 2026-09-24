@@ -223,11 +223,20 @@ export function legalGanhMoves(state: GanhState): GanhMove[] {
   return moves;
 }
 
-export function applyGanhMove(input: GanhState, move: GanhMove): GanhState {
+export interface GanhMoveResolution {
+  finalState: GanhState;
+  movedBoard: GanhCell[];
+  ganhTargets: number[];
+  vayTargets: number[];
+  player: GanhPlayer;
+  move: GanhMove;
+}
+
+export function resolveGanhMove(input: GanhState, move: GanhMove): GanhMoveResolution | null {
   const legal = legalGanhMoves(input).some(
     (candidate) => candidate.from === move.from && candidate.to === move.to
   );
-  if (!legal) return input;
+  if (!legal) return null;
 
   const state = cloneGanhState(input);
   const player = state.currentPlayer;
@@ -235,6 +244,8 @@ export function applyGanhMove(input: GanhState, move: GanhMove): GanhState {
 
   state.board[move.from] = null;
   state.board[move.to] = player;
+
+  const movedBoard = [...state.board];
 
   const ganh = ganhTargets(state.board, move.to, player);
   for (const index of ganh) state.board[index] = player;
@@ -255,22 +266,32 @@ export function applyGanhMove(input: GanhState, move: GanhMove): GanhState {
     state.winner = player;
     state.forcedGanhAt = null;
     state.lastMessage = `Người chơi ${player + 1} đã đổi màu toàn bộ 16 quân và thắng ván.`;
-    return state;
+  } else {
+    state.forcedGanhAt = detectForcedOpen(state.board, move.from, player);
+    state.currentPlayer = opponent;
+    state.turn += 1;
+
+    const captureText = converted.length > 0
+      ? `${captureType === 'ganh' ? 'Gánh' : captureType === 'vay' ? 'Vây' : 'Gánh + Vây'} ${converted.length} quân.`
+      : 'Không đổi màu quân nào.';
+
+    state.lastMessage = state.forcedGanhAt !== null
+      ? `${captureText} Thế Mở: đối phương bắt buộc phải gánh vào điểm sáng.`
+      : captureText;
   }
 
-  state.forcedGanhAt = detectForcedOpen(state.board, move.from, player);
-  state.currentPlayer = opponent;
-  state.turn += 1;
+  return {
+    finalState: state,
+    movedBoard,
+    ganhTargets: ganh,
+    vayTargets: vay,
+    player,
+    move: { ...move }
+  };
+}
 
-  const captureText = converted.length > 0
-    ? `${captureType === 'ganh' ? 'Gánh' : captureType === 'vay' ? 'Vây' : 'Gánh + Vây'} ${converted.length} quân.`
-    : 'Không đổi màu quân nào.';
-
-  state.lastMessage = state.forcedGanhAt !== null
-    ? `${captureText} Thế Mở: đối phương bắt buộc phải gánh vào điểm sáng.`
-    : captureText;
-
-  return state;
+export function applyGanhMove(input: GanhState, move: GanhMove): GanhState {
+  return resolveGanhMove(input, move)?.finalState ?? input;
 }
 
 export function evaluateGanhState(state: GanhState, perspective: GanhPlayer): number {

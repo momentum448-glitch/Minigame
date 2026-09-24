@@ -100,3 +100,11 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Quân bị Gánh: **flip/lật + đổi màu + glow/pulse** để nhấn mạnh việc đổi phe.
 - Nếu nhiều quân bị Gánh trong một nước: hiệu ứng **lần lượt từng quân** thay vì đổi đồng thời.
 - Quyết định: CHỐT ngày 2026-09-24.
+
+
+## D-014 — Cờ Gánh capture timing
+- **Vây dùng hiệu ứng riêng** dạng làn sóng qua nhóm bị khóa, không dùng cùng hiệu ứng flip của Gánh.
+- Quân bị **Gánh đổi phe lần lượt**, lấy nhịp khoảng **400 ms/quân** để đọc rõ từng quân.
+- Sau khi quân di chuyển đáp xuống, nghỉ khoảng **200 ms** trước khi bắt đầu chuỗi Gánh/Vây.
+- Engine/state logic không đổi; UI phát sequence từ kết quả đã resolve.
+- Quyết định: CHỐT ngày 2026-09-24.

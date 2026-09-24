@@ -3,7 +3,8 @@ import {
   applyGanhMove,
   createInitialGanhState,
   legalGanhMoves,
-  neighbors
+  neighbors,
+  resolveGanhMove
 } from './engine';
 import type { GanhCell, GanhState } from './types';
 
@@ -48,11 +49,16 @@ describe('Cờ Gánh engine', () => {
       [17, 1]
     ]);
 
-    const next = applyGanhMove(state, { from: 11, to: 12 });
-    expect(next.board[7]).toBe(0);
-    expect(next.board[17]).toBe(0);
-    expect(next.lastCaptureType).toBe('ganh');
-    expect(next.lastConverted).toEqual(expect.arrayContaining([7, 17]));
+    const resolution = resolveGanhMove(state, { from: 11, to: 12 });
+    expect(resolution).not.toBeNull();
+    expect(resolution?.movedBoard[11]).toBeNull();
+    expect(resolution?.movedBoard[12]).toBe(0);
+    expect(resolution?.movedBoard[7]).toBe(1);
+    expect(resolution?.ganhTargets).toEqual(expect.arrayContaining([7, 17]));
+    expect(resolution?.vayTargets).toEqual([]);
+    expect(resolution?.finalState.lastCaptureType).toBe('ganh');
+    expect(resolution?.finalState.lastConverted).toEqual(expect.arrayContaining([7, 17]));
+    expect(applyGanhMove(state, { from: 11, to: 12 })).toEqual(resolution?.finalState);
   });
 
   it('vây converts an opponent group with no empty adjacent intersection', () => {
@@ -64,9 +70,11 @@ describe('Cờ Gánh engine', () => {
       [7, 0]
     ]);
 
-    const next = applyGanhMove(state, { from: 7, to: 2 });
-    expect(next.board[0]).toBe(0);
-    expect(next.lastConverted).toContain(0);
+    const resolution = resolveGanhMove(state, { from: 7, to: 2 });
+    expect(resolution).not.toBeNull();
+    expect(resolution?.ganhTargets).toEqual([]);
+    expect(resolution?.vayTargets).toContain(0);
+    expect(resolution?.finalState.board[0]).toBe(0);
   });
 
   it('forces the reply into a valid thế Mở destination', () => {
