@@ -26,12 +26,12 @@ jobs:
 
       - name: Commit rendered audio
         run: |
-          if git diff --quiet -- public/audio/bai-choi; then
+          git add public/audio/bai-choi
+          if git diff --cached --quiet; then
             echo "Voice pack unchanged."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/audio/bai-choi
           git commit -m "chore: render Bai Choi voice pack"
           git push
