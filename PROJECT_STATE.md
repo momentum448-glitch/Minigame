@@ -12,9 +12,9 @@ Xây một website chứa nhiều minigame Việt Nam. Mỗi game là module ri�
 3. **Cờ Hùm** — Game 03, playable v0.2.
 4. **Cờ Lúa Ngô** — Game 04, playable v0.1.
 5. **Tam Cúc** — Game 05, playable v0.2 UX.
-6. **Bài Chòi** — Game 06, playable v0.3 voice/chant prototype.
+6. **Bài Chòi** — Game 06, playable v0.4 pre-rendered voice-pack baseline.
 
-Mốc đang active: **QC Bài Chòi v0.3 percussion + voice selector + chant prototype**.
+Mốc đang active: **QC Bài Chòi v0.4 pre-rendered voice-pack + Android voice fallback**.
 
 ## 2. Repo / Deploy
 
@@ -268,12 +268,17 @@ Nguồn đối chiếu:
   - 3 thẻ người chơi tăng chiều cao, font và viền;
   - chòi máy vẫn giữ layout gọn.
 - v0.3 audio/voice:
-  - trống/mõ nâng từ oscillator đơn giản lên tổng hợp **noise + filter + body oscillator** để tiếng rõ và dày hơn;
-  - có **selector giọng** lấy các Speech Synthesis voice trên thiết bị, ưu tiên `vi-VN`;
-  - mọi câu hô thai đều được phát bằng giọng đang chọn;
-  - 3 con **Ông Ầm, Ba Gà, Cửu Chùa** có prototype “diễn xướng thử” chia nhiều segment với pitch/rate/pause khác nhau;
-  - có nút bật/tắt prototype diễn xướng;
-  - prototype được ghi rõ chưa phải bản thu nghệ nhân hay hát Bài Chòi thật.
+  - trống/mõ nâng từ oscillator đơn giản lên tổng hợp **noise + filter + body oscillator** để tiếng rõ và dày hơn.
+- v0.4 voice-pack:
+  - dừng hướng cố uốn browser Speech Synthesis thành hát;
+  - 3 câu **Ông Ầm, Ba Gà, Cửu Chùa** dùng MP3 render sẵn bằng neural TTS tiếng Việt Piper `vi_VN-vais1000-medium`, hậu kỳ pitch/tempo/reverb;
+  - audio nằm tại `public/audio/bai-choi/`, mọi thiết bị nghe cùng một bản;
+  - GitHub Actions có pipeline `Generate Bai Choi Voice Pack` để render lại asset;
+  - câu chưa có voice-pack và phần xướng tên vẫn fallback Speech Synthesis;
+  - selector giọng đổi nhãn thành **Giọng xướng tên**;
+  - Android voice list có retry nhiều mốc + `voiceschanged` + refresh trong user gesture + nút **Nạp lại giọng**;
+  - nếu thiết bị không trả danh sách voice, UI hiện **Giọng mặc định của máy**, không để dropdown rỗng;
+  - baseline neural TTS được ghi rõ chưa phải bản thu nghệ nhân.
 - Khi đủ 3 con có banner **TỚI! TỚI!**.
 - Lịch sử các con đã xướng.
 - Luật 4 bước mở sẵn trong game.
@@ -299,7 +304,7 @@ Nguồn đối chiếu:
 ## 10. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC Bài Chòi v0.3 trên bản live, ưu tiên chất tiếng trống/mõ và 3 câu diễn xướng thử.**
+**QC Bài Chòi v0.4 trên bản live, ưu tiên 3 MP3 voice-pack và Android voice fallback.**
 
 ### Checklist QC
 1. Kho game hiển thị 6 game playable.
@@ -310,21 +315,21 @@ Nguồn đối chiếu:
 6. Xướng tên phải đánh dấu đúng chòi sở hữu con đó.
 7. Trên mobile, chòi người chơi phải chiếm toàn hàng và 3 thẻ phải đọc rõ, không còn cảm giác bé.
 8. Nút Âm thanh phải bật/tắt rõ ràng.
-9. Selector giọng phải liệt kê được voice Việt nếu thiết bị có; đổi voice phải ảnh hưởng lần hô/xướng sau.
-10. Chạm Hô thai phải nghe nhịp trống mới rõ transient và thân tiếng hơn v0.2.
-11. Mọi câu hô thai phải có audio bằng voice đã chọn.
-12. Ba câu Ông Ầm / Ba Gà / Cửu Chùa phải có nhịp diễn xướng thử khác giọng đọc thường.
-13. Khi Xướng tên, tên con bài vẫn được đọc rõ.
+9. Selector **Giọng xướng tên** phải liệt kê voice nếu Android trả được; nếu không phải hiện “Giọng mặc định của máy” và có nút **Nạp lại giọng**.
+10. Chạm Hô thai phải nghe nhịp trống rõ transient và thân tiếng.
+11. Ba câu Ông Ầm / Ba Gà / Cửu Chùa phải phát MP3 voice-pack render sẵn, không dùng browser TTS.
+12. Ba MP3 phải có chất giọng nhất quán giữa các thiết bị.
+13. Các câu chưa có voice-pack vẫn fallback TTS; khi Xướng tên, tên con bài phải đọc rõ.
 14. Chòi trúng phải vừa hiện “CỐC! CỐC!” vừa phát tiếng mõ mới.
 15. Đủ 3 con phải dừng hội, hiện “TỚI! TỚI!” đúng chòi và phát nhịp thắng.
 16. Lịch sử con đã xướng phải khớp thứ tự rút.
 17. Không có chòi máy nào được ưu tiên/xử lý xác suất khác người chơi.
 18. Phần luật phải nói rõ prototype diễn xướng chưa phải bản thu nghệ nhân.
 
-### Nếu v0.3 được duyệt
+### Nếu v0.4 được duyệt
 Ưu tiên tiếp:
-- thay prototype bằng **voice-pack audio render/thu thật**;
-- mở rộng diễn xướng từ 3 lên đủ 27 quân;
+- thay baseline neural TTS bằng **audio nghệ nhân/render hát chất lượng cao**;
+- mở rộng voice-pack từ 3 lên đủ 27 quân;
 - hình thẻ bài truyền thống thay cho thẻ chữ;
 - animation Anh Hiệu xóc/rút thẻ;
 - art direction hội xuân/chòi tre sâu hơn.
