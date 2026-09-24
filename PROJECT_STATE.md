@@ -11,9 +11,9 @@ Xây một website chứa nhiều minigame Việt Nam. Mỗi game là module ri�
 2. **Cờ Gánh** — Game 02, hoàn tất theo QC người dùng ở v0.2.
 3. **Cờ Hùm** — Game 03, playable v0.2.
 4. **Cờ Lúa Ngô** — Game 04, playable v0.1.
-5. **Tam Cúc** — Game 05, playable v0.1.
+5. **Tam Cúc** — Game 05, playable v0.2 UX.
 
-Mốc đang active: **QC Tam Cúc v0.1**.
+Mốc đang active: **QC Tam Cúc v0.2 UX: luật rõ + selected-card feedback**.
 
 ## 2. Repo / Deploy
 
@@ -190,12 +190,18 @@ Nguồn đối chiếu chính:
 - Gọi bài -> bài cái úp xuống chiếu.
 - Người đáp chọn đủ số lá rồi Ngửa hoặc Chui.
 - Sau lượt, chiếu hiển thị bài cái vs bài đáp; nếu Chui thì bài đáp vẫn úp.
+- UX v0.2:
+  - phần luật mở sẵn, chia thành mục tiêu, thứ tự quân, flow 4 bước, đôi/bộ ba, Ngửa/Chui, lượt đầu và kết thúc;
+  - có thang sức mạnh trực quan;
+  - lá được chọn nhấc cao, đổi nền, viền/glow mạnh và badge **✓ ĐÃ CHỌN**;
+  - khu hành động liệt kê chính xác các lá đang chọn;
+  - khi đáp, UI nhắc đúng số lá cần chọn.
 - Route `#/tam-cuc`.
 - Kho game hiện **5 game playable**.
 
 ### QC kỹ thuật
-- Deploy workflow **#30**: success.
-- Deployed commit: `f78e668f926b4c2ee00e191dae4b3a4fca9824b3`.
+- Deploy workflow **#31**: success.
+- Deployed commit: `d6f20d8714331b98c3f95699ea8b268b4e3d97d8`.
 - `npm test`: **38/38 pass**.
   - Ô ăn quan: 7.
   - Cờ Gánh: 6.
@@ -214,25 +220,28 @@ Nguồn đối chiếu chính:
 - Production build pass.
 - GitHub Pages deploy pass.
 - Trong tự QC UI trước deploy đã bắt và sửa lỗi tap lá không thêm vào selection.
+- v0.2 UX: test/build/deploy #31 success; handoff snapshot #21 success.
 
 ## 9. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC Tam Cúc v0.1 trên bản live.**
+**QC Tam Cúc v0.2 UX trên bản live.**
 
 ### Checklist QC
 1. Kho game hiển thị 5 game playable.
 2. Vào Tam Cúc, mỗi bên phải có 16 lá.
-3. Chọn một lá và Gọi 1 cây phải hoạt động.
-4. Chọn đúng đôi / bộ ba phải Gọi được; bộ sai phải không Gọi được.
-5. Lượt đầu Tướng/Sĩ phải bị khóa, Tượng vẫn dùng được.
-6. Người đáp phải chọn đúng số lá.
-7. Ngửa bài phải so đúng thứ tự Tướng > Sĩ > Tượng > Xe > Pháo > Mã > Tốt và đỏ > đen cùng tên.
-8. Chui phải bỏ đúng số lá và cái ăn lượt.
-9. Người thắng lượt phải giữ cái lượt sau.
-10. Sau lượt phải nhìn rõ bài cái vs bài đáp trên chiếu.
-11. AI Dễ/Vừa/Khó đi hợp lệ.
-12. QC thực tế các giả định: Tượng hồng là trần lượt đầu; cái thắng hòa; Chui vẫn mất số lá đã bỏ.
+3. Chọn một lá phải nổi bật rõ ngay: nhấc cao + viền/glow + badge `✓ ĐÃ CHỌN`, và khu `ĐANG CHỌN` phải hiện đúng tên lá.
+4. Chọn nhiều lá phải liệt kê đầy đủ, không khó phân biệt với lá chưa chọn.
+5. Chọn đúng đôi / bộ ba phải Gọi được; bộ sai phải không Gọi được.
+6. Lượt đầu Tướng/Sĩ phải bị khóa, Tượng vẫn dùng được.
+7. Người đáp phải chọn đúng số lá.
+8. Ngửa bài phải so đúng thứ tự Tướng > Sĩ > Tượng > Xe > Pháo > Mã > Tốt và đỏ > đen cùng tên.
+9. Chui phải bỏ đúng số lá và cái ăn lượt.
+10. Người thắng lượt phải giữ cái lượt sau.
+11. Sau lượt phải nhìn rõ bài cái vs bài đáp trên chiếu.
+12. Phần luật phải đọc được rõ trên mobile, không thành khối chữ dài khó theo dõi.
+13. AI Dễ/Vừa/Khó đi hợp lệ.
+14. QC thực tế các giả định: Tượng hồng là trần lượt đầu; cái thắng hòa; Chui vẫn mất số lá đã bỏ.
 
 ### Nếu gameplay core được duyệt
 Ưu tiên v0.2:
