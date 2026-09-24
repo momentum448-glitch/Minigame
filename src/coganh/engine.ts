@@ -79,7 +79,7 @@ export function otherPlayer(player: GanhPlayer): GanhPlayer {
 }
 
 export function countPieces(state: GanhState, player: GanhPlayer): number {
-  return state.board.reduce((sum, cell) => sum + (cell === player ? 1 : 0), 0);
+  return state.board.reduce<number>((sum, cell) => sum + (cell === player ? 1 : 0), 0);
 }
 
 export function createInitialGanhState(): GanhState {
