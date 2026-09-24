@@ -4,11 +4,13 @@
 
 ## 1. Mục tiêu dự án
 
-Xây một website chứa nhiều minigame. Mỗi lần chỉ phát triển một game riêng biệt, nhưng dùng chung shell/kiến trúc website để có thể thêm game mới về sau.
+Xây một website chứa nhiều minigame Việt Nam. Mỗi game là module riêng nhưng dùng chung shell/kho game.
 
-Game đầu tiên: **Ô ăn quan**.
+### Game playable
+1. **Ô ăn quan** — Game 01.
+2. **Cờ Gánh** — Game 02, playable v0.1.
 
-Outcome hiện tại: hoàn thiện Ô ăn quan thành một minigame web chơi vui, responsive PC + mobile, có trải nghiệm đủ gần trò chơi ngoài đời.
+Mốc đang active: **QC Cờ Gánh v0.1**.
 
 ## 2. Repo / Deploy
 
@@ -17,125 +19,128 @@ Outcome hiện tại: hoàn thiện Ô ăn quan thành một minigame web chơi 
 - Live URL: https://momentum448-glitch.github.io/Minigame/
 - Stack: React + TypeScript + Vite
 - Deploy: GitHub Pages qua GitHub Actions
-- Backend: chưa dùng
-- Database / login / leaderboard online: ngoài scope hiện tại
+- Backend / database / login / online multiplayer: chưa dùng
 
-## 3. Quyết định sản phẩm đã chốt
+## 3. Kiến trúc website
 
-### Website
-- Một repo duy nhất cho toàn bộ website minigame.
-- Mỗi game là module độc lập.
-- Responsive PC + mobile.
-- Mobile-first.
-- Mục tiêu chính: chơi vui.
+- URL gốc mở **Kho game**.
+- Ô ăn quan: `#/o-an-quan`.
+- Cờ Gánh: `#/co-ganh`.
+- Mỗi game có nút **← Kho game**.
+- Game chưa làm chỉ hiện `Sắp có`.
+- Tên placeholder trên home không phải roadmap đã chốt.
 
-### Ô ăn quan
-- Chế độ:
-  - 2 người chơi trên cùng thiết bị.
-  - Người chơi đấu máy.
-- AI có 3 mức: Dễ / Vừa / Khó.
-- Art direction: dân gian Việt Nam, đất/gỗ/sỏi, nhưng UI hiện đại và sạch.
-- Tương tác: chạm ô dân -> chọn hướng trái/phải.
-- Quan = 10 điểm.
-- Có luật Quan non.
-- Quan chỉ được ăn khi ô Quan có ít nhất **5 dân đi kèm**.
-- Nếu đầu lượt 5 ô dân phía mình đều trống:
-  - dùng 5 dân đã ăn để rải lại;
-  - thiếu thì vay và ghi nợ.
-- Ván kết thúc khi cả hai Quan đã bị ăn.
-- Animation gameplay mô phỏng thao tác ngoài đời: bốc cả nắm -> rải từng quân -> bốc tiếp -> capture/refill theo nhịp.
-
-## 4. Trạng thái triển khai hiện tại
+## 4. Ô ăn quan — trạng thái
 
 ### Đã có
-- React/Vite app chạy được.
-- Bàn Ô ăn quan responsive.
-- Game engine tách khỏi UI.
-- Luật rải quân / ăn quân / ăn liên hoàn.
-- Luật Quan non.
-- Cơ chế refill và nợ.
-- Tính điểm / kết thúc ván.
-- Chế độ local 2 người.
-- AI Dễ / Vừa / Khó.
-- GitHub Actions build/test/deploy.
-- GitHub Pages live.
-- Hệ thống handoff tự động trong repo.
-- Trang khởi đầu **Kho game** ở URL gốc.
-- Ô ăn quan là game số 1 trong kho, mở bằng hash route `#/o-an-quan` để tương thích GitHub Pages.
-- Trong Ô ăn quan có nút **← Kho game** để quay lại trang chọn game.
-- Home hiện có các thẻ placeholder `Sắp có` cho game tương lai; tên placeholder chỉ mang tính minh họa, chưa phải roadmap chốt.
-- Move trace/event sequence tách khỏi UI.
-- Animation `pickup`: nhấc toàn bộ quân khỏi ô vào "tay".
-- Animation `drop`: rải từng quân một, số quân trên tay giảm dần; tempo hiện tại khoảng **500 ms/quân**.
-- Mỗi quân `drop/refill` có **viên sỏi bay từ vùng tay tới đúng ô đích** theo quỹ đạo cong nhẹ (~390 ms), sau đó mới cập nhật cụm sỏi trong ô (~110 ms landing).
-- Animation `continue-pickup`: bốc tiếp ô dân có quân rồi tiếp tục rải.
-- Animation `capture`: nhịp ăn quân/Quan và hiển thị điểm ăn.
-- Animation `refill`: rải lại từng quân khi bên mình hết dân.
-- Khóa input trong toàn bộ chuỗi animation.
-- AI cũng phát cùng chuỗi animation khi đi.
-- Hỗ trợ `prefers-reduced-motion`.
-- Sửa mapping nút trái/phải theo vị trí hiển thị của từng người chơi, tránh nhãn hướng bị ngược với đường rải trên bàn.
+- Local 2 người + đấu AI Dễ/Vừa/Khó.
+- Engine tách UI.
+- Luật rải / ăn / ăn liên hoàn / Quan non / refill / nợ / tính điểm.
+- Animation bốc quân, rải từng viên, bốc tiếp, capture, refill.
+- Tempo rải ~500 ms/quân.
+- Viên sỏi bay từ vùng tay tới đúng ô đích trước khi nhập cụm sỏi.
+- Input khóa trong animation.
+- AI dùng cùng animation.
+- `prefers-reduced-motion`.
+- Route riêng trong kho game.
 
-### QC đã xác nhận
-- Deploy workflow #19 cho commit `f8c94c10b3d7df4ef175df94d137260a71a8d200`: success.
-- Home → Ô ăn quan route build/deploy pass trên GitHub Pages.
-- Run #17 từng fail do TypeScript narrowing ở lớp visual bay sỏi; đã sửa ở run #18, test/build/deploy đều pass.
-- `npm install`: pass trên GitHub Actions.
-- `npm test`: **7/7 pass**.
-  - 3 test engine cũ.
-  - 4 test move trace mới.
-- Test xác nhận `trace.finalState === applyMove(...)` cho các nước mở đầu và case capture.
+### Còn cần QC/polish
+- Visual bàn tay/cup tự nhiên hơn.
+- Animation thu quân về vùng điểm.
+- Mobile board vẫn cần QC thật.
+- Bộ test luật chưa toàn diện.
+
+## 5. Cờ Gánh — trạng thái Game 02
+
+### Ruleset dự án
+Xem chi tiết và nguồn tại `docs/CO_GANH_RULES.md`.
+
+- 2 người, 16 quân, mỗi bên 8.
+- Bàn 25 giao điểm 5x5, đi một bước theo đường kẻ ngang/dọc/chéo.
+- **Gánh**: chủ động đi vào giữa cặp quân đối phương -> cặp đổi màu.
+- Có thể Gánh nhiều cặp trong một nước.
+- **Vây**: nhóm quân đối phương không còn giao điểm trống kề -> cả nhóm đổi màu.
+- **Mở**: nếu điểm vừa bỏ trống tạo thế bắt buộc Gánh hợp lệ, lượt kế tiếp phải đi vào điểm Mở đó.
+- Thắng khi không còn quân màu đối phương trong tổng 16 quân.
+- Không dùng các biến thể `chém` / `ăn xong đi tiếp` trong v0.1.
+
+### Đã triển khai
+- Module riêng `src/coganh/`.
+- Engine deterministic.
+- AI 3 mức:
+  - Dễ: random.
+  - Vừa: immediate gain + heuristic.
+  - Khó: minimax alpha-beta depth 4.
+- Local 2 người.
+- Tap quân -> highlight điểm đến -> tap đích.
+- Điểm **Mở** bắt buộc được highlight riêng.
+- Quân bị Gánh/Vây có animation đổi màu.
+- Hiển thị số quân mỗi bên.
+- Route `#/co-ganh`.
+- Thẻ Cờ Gánh trên Kho game đổi từ `Sắp có` thành `Chơi ngay`.
+
+### QC kỹ thuật
+- Deploy workflow **#23**: success.
+- Deployed commit: `35b90033524186026c7205b40981e31183dbc607`.
+- `npm test`: **13/13 pass**.
+  - Ô ăn quan: 7 tests.
+  - Cờ Gánh: 6 tests.
+- Cờ Gánh tests bao phủ:
+  - bố trí 8/8 quân;
+  - pattern đường chéo;
+  - Gánh;
+  - Vây;
+  - Mở bắt buộc;
+  - điều kiện thắng.
 - `npm run build`: pass.
 - GitHub Pages deploy: pass.
-- Xem `docs/AUTO_TECH_STATUS.md` để biết snapshot kỹ thuật mới nhất.
+- `docs/AUTO_TECH_STATUS.md` là snapshot deploy tự động mới nhất.
 
-## 5. Pain / thiếu sót hiện tại
-
-Website đã có kho game làm trang vào mặc định. Cần QC thực tế cả **hub + Ô ăn quan** trên mobile/PC.
-
-Hệ animation đã có về mặt logic và UX cơ bản, nhưng **cảm giác thực tế** vẫn cần QC:
-- tempo đã tăng từ ~175 ms lên **~500 ms/quân** theo QC người dùng; cần xác nhận cảm giác thực tế đã đủ rõ chưa;
-- viên sỏi đã bay từ vùng tay tới ô thật; **visual bàn tay** vẫn đang là UI tượng trưng, chưa phải bàn tay/cup tự nhiên;
-- capture hiện dùng highlight + điểm nổi, có thể cần cảm giác thu quân rõ hơn;
-- cần kiểm tra chuỗi nước rất dài xem có cảm giác lê thê không;
-- cần QC touch/scroll trên mobile vì bàn hiện có thể cuộn ngang ở màn hẹp.
+### Lịch sử lỗi đã bắt
+- Run #20: test bắt 2 vấn đề; một fixture Thế Mở sai tọa độ và một bug thật ở điều kiện thắng.
+- Bug thắng đã sửa từ kiểm 25 điểm thành kiểm không còn quân đối phương.
+- Run #22: 13/13 test pass nhưng TypeScript bắt lỗi reduce typing.
+- Run #23: test + build + deploy đều pass.
 
 ## 6. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC thực tế trang Kho game + điều hướng vào Ô ăn quan, đồng thời tiếp tục QC animation v0.2.2.**
+**QC Cờ Gánh v0.1 trên bản live rồi chỉnh gameplay/UX nếu cần.**
 
-### Cần kiểm tra
-1. Mở URL gốc: phải thấy trang Kho game, không mở thẳng Ô ăn quan.
-2. Bấm thẻ Ô ăn quan: vào đúng game; nút `← Kho game` quay về home.
-3. Mobile: grid game và hero không tràn ngang, nút vào game dễ bấm.
-4. Chọn ô 5 dân: có thấy rõ từng viên sỏi rời vùng tay, bay theo quỹ đạo và đáp đúng từng ô không.
-5. Chuỗi bốc tiếp/rải tiếp: người chơi có theo kịp diễn biến không.
-6. Capture: có hiểu rõ ô nào vừa bị ăn và bao nhiêu điểm không.
-7. Tốc độ rải hiện tại (~500 ms mỗi quân) đã đủ chậm và rõ chưa.
-8. AI: khi máy đi, animation có đủ rõ để người chơi hiểu nước máy vừa thực hiện không.
+### Checklist QC
+1. Kho game hiển thị cả Ô ăn quan và Cờ Gánh là playable.
+2. Vào `#/co-ganh`, bố trí ban đầu phải đúng bàn truyền thống.
+3. Đường chéo trên bàn phải đúng pattern cờ Gánh thực tế.
+4. Tap quân chỉ hiện đúng các điểm đến theo đường kẻ.
+5. Gánh 2 quân đổi màu đúng.
+6. Thử thế chầu 4/chầu 6.
+7. Vây một nhóm nhiều quân phải đổi toàn nhóm.
+8. Thế Mở phải ép đích, nhưng cho chọn quân nào đi vào nếu có nhiều quân hợp lệ.
+9. AI Dễ/Vừa/Khó đi hợp lệ và không gây lag đáng kể trên mobile.
+10. Mobile: bàn không bị cắt, điểm bấm đủ lớn, text không tràn.
 
-### Hướng cải tiến nếu QC yêu cầu
-- thay "tay tượng trưng" bằng hand/cup visual tự nhiên hơn;
-- easing/squash và glow khi viên quân rơi đã được tăng độ rõ ở v0.2.1; tiếp tục tinh chỉnh nếu QC thực tế yêu cầu.
-- thêm animation thu quân về vùng điểm;
-- cho phép tốc độ animation Nhanh / Thường / Chậm nếu thật sự cần.
+### Nếu QC gameplay ổn
+Ưu tiên tiếp theo:
+- animation di chuyển quân rõ hơn;
+- animation lật quân Gánh/Vây có nhịp;
+- tutorial ngắn minh họa Gánh / Vây / Mở;
+- polish art direction xứ Quảng / gỗ / đất / vỏ sò.
 
-## 7. Rủi ro cần kiểm chứng
+## 7. Rủi ro / giả định cần nhớ
 
-- Chuỗi rải dài có thể tạo nhiều event và kéo dài cảm giác chờ.
-- Hard AI depth 5 hiện chạy đồng bộ; trên máy yếu có thể cần tối ưu sau.
-- Bộ test luật vẫn chưa bao phủ đủ Quan non/capture chain/refill/debt.
-- Cần test mobile thật để xác nhận scroll + touch trong animation.
+- Cờ Gánh có dị bản. v0.1 cố ý dùng lõi Gánh + Vây + Mở, không trộn luật app khác.
+- Pattern đường chéo được mã hóa theo bàn truyền thống: nút có `row + col` chẵn có các nối chéo kề.
+- Cần QC với người quen Cờ Gánh nếu có để xác nhận cảm giác luật địa phương.
+- Hard AI depth 4 cần theo dõi hiệu năng trên điện thoại yếu.
 
-## 8. Việc chưa làm, không được tự coi là đã xong
+## 8. Việc chưa làm
 
-- Visual bàn tay/cup ở mức tự nhiên hơn; quỹ đạo viên sỏi đã có.
 - Sound design.
-- Tutorial/onboarding.
-- QC đầy đủ trên nhiều kích thước mobile.
-- Bộ test luật toàn diện.
-- Minigame thứ 2.
+- Tutorial/onboarding hoàn chỉnh.
+- Multiplayer online.
+- Account / leaderboard.
+- Game 03.
+- QC đầy đủ trên nhiều thiết bị.
 
 ## 9. Quy tắc cập nhật state
 
@@ -143,7 +148,7 @@ Sau mỗi mốc:
 - cập nhật **Đã có**;
 - cập nhật **QC**;
 - chuyển task hoàn thành khỏi **NEXT ACTION**;
-- ghi task kế tiếp;
-- thêm quyết định mới vào `docs/DECISIONS.md` nếu đó là quyết định bền vững.
+- ghi task tiếp theo;
+- thêm quyết định bền vững vào `docs/DECISIONS.md`.
 
-Không xóa lịch sử quyết định quan trọng chỉ vì code đã thay đổi.
+Không ghi việc chưa làm vào mục đã hoàn thành.
