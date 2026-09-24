@@ -8,9 +8,10 @@ Xây một website chứa nhiều minigame Việt Nam. Mỗi game là module ri�
 
 ### Game playable
 1. **Ô ăn quan** — Game 01.
-2. **Cờ Gánh** — Game 02, playable v0.2.
+2. **Cờ Gánh** — Game 02, hoàn tất theo QC người dùng ở v0.2.
+3. **Cờ Hùm** — Game 03, playable v0.1.
 
-Mốc đang active: **QC Cờ Gánh v0.2 animation**.
+Mốc đang active: **QC Cờ Hùm v0.1**.
 
 ## 2. Repo / Deploy
 
@@ -26,142 +27,148 @@ Mốc đang active: **QC Cờ Gánh v0.2 animation**.
 - URL gốc mở **Kho game**.
 - Ô ăn quan: `#/o-an-quan`.
 - Cờ Gánh: `#/co-ganh`.
+- Cờ Hùm: `#/co-hum`.
 - Mỗi game có nút **← Kho game**.
 - Game chưa làm chỉ hiện `Sắp có`.
-- Tên placeholder trên home không phải roadmap đã chốt.
 
 ## 4. Ô ăn quan — trạng thái
 
-### Đã có
-- Local 2 người + đấu AI Dễ/Vừa/Khó.
+- Local 2 người + AI Dễ/Vừa/Khó.
 - Engine tách UI.
-- Luật rải / ăn / ăn liên hoàn / Quan non / refill / nợ / tính điểm.
-- Animation bốc quân, rải từng viên, bốc tiếp, capture, refill.
-- Tempo rải ~500 ms/quân.
-- Viên sỏi bay từ vùng tay tới đúng ô đích trước khi nhập cụm sỏi.
+- Luật chính, Quan non, refill/nợ, tính điểm.
+- Animation bốc/rải/capture/refill.
+- Tempo ~500 ms/quân.
+- Sỏi bay từ vùng tay tới đúng ô.
 - Input khóa trong animation.
 - AI dùng cùng animation.
-- `prefers-reduced-motion`.
-- Route riêng trong kho game.
+- Route riêng trong Kho game.
 
-### Còn cần QC/polish
-- Visual bàn tay/cup tự nhiên hơn.
-- Animation thu quân về vùng điểm.
-- Mobile board vẫn cần QC thật.
-- Bộ test luật chưa toàn diện.
+Còn polish về hand visual, capture-to-score, mobile QC sâu hơn.
 
 ## 5. Cờ Gánh — trạng thái Game 02
 
-### Ruleset dự án
-Xem chi tiết và nguồn tại `docs/CO_GANH_RULES.md`.
+- Ruleset tại `docs/CO_GANH_RULES.md`.
+- Local 2 người + AI Dễ/Vừa/Khó.
+- Gánh + Vây + Mở.
+- Animation v0.2:
+  - quân đi ~500 ms;
+  - nghỉ ~200 ms;
+  - Gánh flip + đổi màu + glow ~400 ms/quân;
+  - Vây làn sóng riêng;
+  - khóa input trong animation;
+  - AI dùng cùng animation.
+- Deploy #24 success.
+- Người dùng xác nhận ngày 2026-09-24: **Cờ Gánh đã xong**.
 
-- 2 người, 16 quân, mỗi bên 8.
-- Bàn 25 giao điểm 5x5, đi một bước theo đường kẻ ngang/dọc/chéo.
-- **Gánh**: chủ động đi vào giữa cặp quân đối phương -> cặp đổi màu.
-- Có thể Gánh nhiều cặp trong một nước.
-- **Vây**: nhóm quân đối phương không còn giao điểm trống kề -> cả nhóm đổi màu.
-- **Mở**: nếu điểm vừa bỏ trống tạo thế bắt buộc Gánh hợp lệ, lượt kế tiếp phải đi vào điểm Mở đó.
-- Thắng khi không còn quân màu đối phương trong tổng 16 quân.
-- Không dùng các biến thể `chém` / `ăn xong đi tiếp` trong v0.1.
+Không tiếp tục chỉnh Cờ Gánh trừ khi người dùng chủ động mở lại.
+
+## 6. Cờ Hùm — trạng thái Game 03
+
+### Ruleset
+Chi tiết nguồn và giả định tại `docs/CO_HUM_RULES.md`.
+
+Nguồn chính là sách *100 trò chơi dân gian cho thiếu nhi* của NXB Kim Đồng, mục Cờ Hùm:
+- 2 người;
+- 1 Hùm + 15 Trâu;
+- bàn chính 5×5 giao điểm, có ngang/dọc/chéo;
+- Hang Hùm nối vào giữa cạnh phải;
+- Hùm đi trước;
+- mỗi lượt một quân đi một nước;
+- Hùm vồ bằng cách nhảy qua Trâu nếu điểm phía sau còn trống;
+- Hùm thắng khi ăn hết Trâu;
+- Trâu thắng khi vây kín Hùm;
+- không được lập tức đi lại nước vừa đi.
+
+### Ruleset dự án v0.1
+- 29 node tổng cộng: 25 node bàn chính + 4 node Hang bổ sung.
+- 15 Trâu bắt đầu trên toàn bộ vành ngoài bàn chính trừ cửa Hang.
+- Hùm bắt đầu ở đỉnh ngoài cùng của Hang.
+- Hùm và Trâu đi 1 bước theo đường kẻ tới điểm trống.
+- Hùm vồ 1 Trâu/lượt bằng một cú nhảy thẳng qua Trâu tới điểm trống phía sau.
+- Bản v0.1 **không dùng multi-jump trong cùng lượt** vì nguồn đồng thời ghi mỗi lượt chỉ đi một quân một nước.
+- Chặn exact immediate reversal của cùng bên ở lượt kế tiếp.
+- Trâu thắng khi tới lượt Hùm mà Hùm không còn bất kỳ step/capture hợp lệ.
+- Hùm thắng khi không còn Trâu.
 
 ### Đã triển khai
-- Module riêng `src/coganh/`.
+- Module riêng `src/cohum/`.
 - Engine deterministic.
-- AI 3 mức:
-  - Dễ: random.
-  - Vừa: immediate gain + heuristic.
+- AI:
+  - Dễ: random;
+  - Vừa: heuristic + ưu tiên capture;
   - Khó: minimax alpha-beta depth 4.
 - Local 2 người.
-- Tap quân -> highlight điểm đến -> tap đích.
-- Điểm **Mở** bắt buộc được highlight riêng.
-- Animation v0.2:
-  - quân được nhấc nhẹ và lướt sang điểm đích trong khoảng **500 ms**;
-  - sau khi đáp xuống nghỉ khoảng **200 ms**;
-  - quân bị **Gánh** flip + đổi màu + glow **lần lượt ~400 ms/quân**;
-  - quân bị **Vây** dùng hiệu ứng riêng dạng **làn sóng** chạy qua nhóm bị khóa;
-  - visual state được phát theo sequence rồi mới commit final state;
-  - khóa input trong toàn bộ chuỗi animation;
-  - AI dùng cùng animation như người chơi.
-- Hiển thị số quân mỗi bên.
-- Route `#/co-ganh`.
-- Thẻ Cờ Gánh trên Kho game đổi từ `Sắp có` thành `Chơi ngay`.
+- Đấu AI cho phép người chơi chọn **Hùm** hoặc **Trâu**.
+- Hùm AI tự đi trước nếu người chơi chọn Trâu.
+- Tap quân -> highlight nước đi.
+- Nước vồ có marker riêng **Vồ**.
+- Visual Hùm và Trâu khác nhau rõ.
+- Board/Hang dựng bằng graph + SVG lines.
+- Route `#/co-hum`.
+- Cờ Hùm xuất hiện ở Kho game với trạng thái **Chơi ngay**.
 
 ### QC kỹ thuật
-- Deploy workflow **#24**: success.
-- Deployed commit: `e0dd2cabb37f6540d0fd8292a7de3f39703aec94`.
-- `npm test`: **13/13 pass**.
-  - Ô ăn quan: 7 tests.
-  - Cờ Gánh: 6 tests.
-- Cờ Gánh tests bao phủ:
-  - bố trí 8/8 quân;
-  - pattern đường chéo;
-  - Gánh;
-  - Vây;
-  - Mở bắt buộc;
-  - điều kiện thắng.
+- Deploy workflow **#25**: success.
+- Deployed commit: `be982a6789ae16666aa2a7e320317ab249b34989`.
+- `npm test`: **21/21 pass**.
+  - Ô ăn quan: 7.
+  - Cờ Gánh: 6.
+  - Cờ Hùm: 8.
+- Cờ Hùm tests bao phủ:
+  - bố trí 1 Hùm / 15 Trâu;
+  - kết nối Hang;
+  - Hùm vồ hợp lệ;
+  - landing bị chặn thì không vồ;
+  - Trâu chỉ đi không capture;
+  - anti-reversal;
+  - Trâu thắng khi vây kín;
+  - Hùm thắng khi ăn Trâu cuối.
 - `npm run build`: pass.
 - GitHub Pages deploy: pass.
-- `docs/AUTO_TECH_STATUS.md` là snapshot deploy tự động mới nhất.
 
-### Lịch sử lỗi đã bắt
-- Run #20: test bắt 2 vấn đề; một fixture Thế Mở sai tọa độ và một bug thật ở điều kiện thắng.
-- Bug thắng đã sửa từ kiểm 25 điểm thành kiểm không còn quân đối phương.
-- Run #22: 13/13 test pass nhưng TypeScript bắt lỗi reduce typing.
-- Run #23: test + build + deploy đều pass.
-- Run #24: Cờ Gánh v0.2 animation, test + build + deploy đều pass.
-
-## 6. NEXT ACTION — ưu tiên cao nhất
+## 7. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC Cờ Gánh v0.2 animation trên bản live và tinh chỉnh cảm giác nếu cần.**
+**QC Cờ Hùm v0.1 trên bản live.**
 
 ### Checklist QC
-1. Kho game hiển thị cả Ô ăn quan và Cờ Gánh là playable.
-2. Vào `#/co-ganh`, bố trí ban đầu phải đúng bàn truyền thống.
-3. Đường chéo trên bàn phải đúng pattern cờ Gánh thực tế.
-4. Tap quân chỉ hiện đúng các điểm đến theo đường kẻ.
-5. Gánh 2 quân đổi màu đúng.
-6. Thử thế chầu 4/chầu 6.
-7. Vây một nhóm nhiều quân phải đổi toàn nhóm.
-8. Thế Mở phải ép đích, nhưng cho chọn quân nào đi vào nếu có nhiều quân hợp lệ.
-9. AI Dễ/Vừa/Khó đi hợp lệ và không gây lag đáng kể trên mobile.
-10. Mobile: bàn không bị cắt, điểm bấm đủ lớn, text không tràn.
+1. Kho game phải hiện 3 game playable.
+2. Bàn Cờ Hùm phải khớp sơ đồ 5×5 + Hang bên phải.
+3. 15 Trâu phải nằm trên vành ngoài, cửa Hang để trống, Hùm ở đầu Hang.
+4. Hùm đi trước.
+5. Hùm chỉ vồ khi có Trâu liền kề và landing phía sau trống.
+6. Marker `Vồ` phải làm nước capture dễ hiểu.
+7. Trâu chỉ đi 1 bước, không ăn.
+8. Vây kín Hùm phải kết thúc đúng.
+9. Đổi vai người chơi Hùm/Trâu khi đấu AI hoạt động đúng.
+10. Hard AI không lag đáng kể trên mobile.
+11. Xác minh thực địa nếu người dùng biết dị bản multi-jump 2–3 Trâu/lượt.
 
-### Animation direction đã chốt và triển khai
-- Ưu tiên rõ ràng nhưng vẫn đẹp.
-- Quân di chuyển ~500 ms.
-- Nhấc nhẹ -> lướt -> đáp xuống.
-- Nghỉ ~200 ms trước khi capture animation.
-- Gánh: flip + đổi màu + glow, lần lượt ~400 ms/quân.
-- Vây: hiệu ứng riêng dạng làn sóng.
-- Quyết định: xem D-013 và D-014 trong `docs/DECISIONS.md`.
+### Nếu gameplay ổn
+Ưu tiên polish:
+- animation Hùm vồ Trâu;
+- animation di chuyển Trâu/Hùm;
+- hiệu ứng vòng vây khi Trâu thắng;
+- tutorial ngắn về “hở lưng”;
+- art direction đất/rừng/hang rõ hơn.
 
-### Checklist animation v0.2
-- Di chuyển phải nhìn rõ quân đi từ điểm cũ sang điểm mới, không teleport.
-- Sau khi đáp xuống phải có nhịp nghỉ đủ để mắt nhận nước đi.
-- Gánh 2/4/6 quân phải đổi lần lượt đúng thứ tự thị giác, không đồng loạt.
-- Vây phải nhìn khác Gánh và đọc được là một nhóm đang bị khóa.
-- Score số quân hai bên thay đổi theo visual sequence, không nhảy thẳng tới kết quả cuối.
-- Trong lúc animation chạy không thao tác nước khác được.
-- AI dùng cùng sequence và không bỏ qua animation.
+## 8. Rủi ro / giả định
 
-## 7. Rủi ro / giả định cần nhớ
+- Cờ Hùm có dị bản và dễ bị nhầm với **Cờ Hùm Tôm**; dự án dùng biến thể 1 Hùm + 15 Trâu.
+- Câu nguồn “ăn 2–3 Trâu cùng một lúc” mơ hồ so với quy định “mỗi lượt một nước”; v0.1 ưu tiên cách hiểu một capture/lượt cho tới khi có bằng chứng/feedback thực địa khác.
+- Hard AI depth 4 cần theo dõi mobile.
+- Anti-reversal cần QC để chắc không khóa nước ngoài ý muốn.
 
-- Cờ Gánh có dị bản. v0.1 cố ý dùng lõi Gánh + Vây + Mở, không trộn luật app khác.
-- Pattern đường chéo được mã hóa theo bàn truyền thống: nút có `row + col` chẵn có các nối chéo kề.
-- Cần QC với người quen Cờ Gánh nếu có để xác nhận cảm giác luật địa phương.
-- Hard AI depth 4 cần theo dõi hiệu năng trên điện thoại yếu.
-
-## 8. Việc chưa làm
+## 9. Việc chưa làm
 
 - Sound design.
 - Tutorial/onboarding hoàn chỉnh.
 - Multiplayer online.
 - Account / leaderboard.
-- Game 03.
-- QC đầy đủ trên nhiều thiết bị.
+- Game 04.
+- QC nhiều thiết bị.
 
-## 9. Quy tắc cập nhật state
+## 10. Quy tắc cập nhật state
 
 Sau mỗi mốc:
 - cập nhật **Đã có**;
