@@ -108,3 +108,25 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Sau khi quân di chuyển đáp xuống, nghỉ khoảng **200 ms** trước khi bắt đầu chuỗi Gánh/Vây.
 - Engine/state logic không đổi; UI phát sequence từ kết quả đã resolve.
 - Quyết định: CHỐT ngày 2026-09-24.
+
+
+## D-015 — Game 03
+- Game thứ ba của Kho game là **Cờ Hùm**.
+- Dùng biến thể dân gian **1 Hùm + 15 Trâu**, không dùng Cờ Hùm Tôm.
+- Route: `#/co-hum`.
+- Quyết định: CHỐT ngày 2026-09-24.
+
+## D-016 — Cờ Hùm ruleset v0.1
+- Bàn chính 5×5 giao điểm + Hang Hùm nối giữa cạnh phải.
+- Tổng graph 29 node: 25 bàn chính + 4 node Hang bổ sung.
+- 15 Trâu ở vành ngoài bàn chính, trừ cửa Hang; Hùm ở đỉnh ngoài của Hang.
+- Hùm đi trước.
+- Mỗi lượt một quân đi một bước theo đường kẻ tới điểm trống.
+- Hùm vồ bằng một cú nhảy qua Trâu sang landing trống trên cùng đường; Trâu bị loại.
+- v0.1 dùng **1 capture/lượt**, không multi-jump.
+- Cấm lập tức đảo ngược exact nước của cùng bên ở lượt trước.
+- Hùm thắng khi ăn hết 15 Trâu.
+- Trâu thắng khi Hùm không còn step/capture hợp lệ.
+- Đấu AI cho phép người chơi chọn bên Hùm hoặc Trâu.
+- Nguồn và các giả định: `docs/CO_HUM_RULES.md`.
+- Quyết định: CHỐT ngày 2026-09-24.
