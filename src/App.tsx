@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react';
 import OAnQuanGame from './OAnQuanGame';
 import CoGanhGame from './CoGanhGame';
 import CoHumGame from './CoHumGame';
+import CoLuaNgoGame from './CoLuaNgoGame';
 
-type AppRoute = 'home' | 'o-an-quan' | 'co-ganh' | 'co-hum';
+type AppRoute = 'home' | 'o-an-quan' | 'co-ganh' | 'co-hum' | 'co-lua-ngo';
 
 function routeFromHash(): AppRoute {
   if (window.location.hash === '#/o-an-quan') return 'o-an-quan';
   if (window.location.hash === '#/co-ganh') return 'co-ganh';
   if (window.location.hash === '#/co-hum') return 'co-hum';
+  if (window.location.hash === '#/co-lua-ngo') return 'co-lua-ngo';
   return 'home';
 }
 
@@ -54,6 +56,12 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const openCoLuaNgo = () => {
+    window.location.hash = '/co-lua-ngo';
+    setRoute('co-lua-ngo');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const goHome = () => {
     window.location.hash = '';
     setRoute('home');
@@ -72,6 +80,10 @@ export default function App() {
     return <CoHumGame onBack={goHome} />;
   }
 
+  if (route === 'co-lua-ngo') {
+    return <CoLuaNgoGame onBack={goHome} />;
+  }
+
   return (
     <main className="hub-shell">
       <header className="hub-hero">
@@ -87,7 +99,7 @@ export default function App() {
           <p className="hub-overline">KHO TRÒ CHƠI</p>
           <h1>Chọn một trò,<br />bắt đầu một ván.</h1>
           <p className="hub-lead">
-            Ba bàn chơi đã sáng đèn: rải sỏi, Gánh quân, hoặc chọn một Hùm chống lại cả đàn Trâu.
+            Bốn bàn chơi đã sáng đèn: rải sỏi, Gánh quân, săn Hùm, và tính đủ năm nhịp Lúa Ngô.
           </p>
         </div>
       </header>
@@ -98,7 +110,7 @@ export default function App() {
             <p className="eyebrow">ĐANG CÓ</p>
             <h2 id="game-library-title">Kho game</h2>
           </div>
-          <span className="library-count">3 game chơi được</span>
+          <span className="library-count">4 game chơi được</span>
         </div>
 
         <div className="game-grid">
@@ -165,6 +177,26 @@ export default function App() {
               </div>
               <h3>Cờ Hùm</h3>
               <p>Một Hùm săn 15 Trâu, còn đàn Trâu thắng bằng cách khép kín mọi đường thoát.</p>
+              <span className="play-cta">Vào bàn chơi <b>→</b></span>
+            </div>
+          </button>
+
+          <button className="game-tile game-tile-live" type="button" onClick={openCoLuaNgo}>
+            <div className="game-art luango-art" aria-hidden="true">
+              <div className="luango-mini-board">
+                <span className="lnm p1 a" /><span className="lnm p1 b" />
+                <span className="lnm p1 c" /><span className="lnm p1 d" />
+                <span className="lnm p0 e" /><span className="lnm p0 f" />
+                <span className="lnm p0 g" /><span className="lnm p0 h" />
+              </div>
+            </div>
+            <div className="game-tile-copy">
+              <div className="game-tile-meta">
+                <span className="live-dot" />
+                <span>Chơi ngay</span>
+              </div>
+              <h3>Cờ Lúa Ngô</h3>
+              <p>Đi đủ năm nhịp Lúa · Ngô · Khoai · Sắn · Đỗ và tính điểm rơi để ăn quân.</p>
               <span className="play-cta">Vào bàn chơi <b>→</b></span>
             </div>
           </button>

@@ -142,3 +142,23 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Nếu người chơi thử chạm đúng điểm bị cấm, điểm đó nháy đỏ + hiện `↩ CẤM` + giải thích “Không được đi ngược lại đúng nước mà bên này vừa di chuyển.”
 - Input khóa trong toàn bộ move/capture animation; AI dùng cùng animation.
 - Quyết định: CHỐT ngày 2026-09-24.
+
+
+## D-018 — Game 04
+- Game thứ tư của Kho game là **Cờ Lúa Ngô**.
+- Route: `#/co-lua-ngo`.
+- Bản đầu dùng nhịp **Lúa · Ngô · Khoai · Sắn · Đỗ**, không trộn dị bản Kim · Mộc · Thủy · Hỏa · Thổ.
+- Quyết định: CHỐT ngày 2026-09-24.
+
+## D-019 — Cờ Lúa Ngô ruleset v0.1
+- 2 người, 8 quân chia 4–4.
+- Bàn số hóa 12 giao điểm từ hai hình chữ nhật chồng vuông góc.
+- Mỗi lượt chọn 1 quân và đi tối đa 5 bước theo đường kẻ.
+- Bước 1–4 chỉ vào điểm trống.
+- Bước 5 (Đỗ) có thể vào điểm trống hoặc vào quân đối phương để ăn.
+- Không được vượt qua quân.
+- Nếu trước bước 5 hết đường trống hợp lệ thì dừng và hết lượt.
+- v0.1 không cho lặp lại giao điểm trong cùng lượt; đây là giả định số hóa cần QC vì nguồn không nói rõ.
+- Ăn hết quân đối phương thì thắng.
+- Chi tiết nguồn và giả định: `docs/CO_LUA_NGO_RULES.md`.
+- Quyết định: CHỐT ngày 2026-09-24.
