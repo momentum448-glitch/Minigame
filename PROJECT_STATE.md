@@ -12,9 +12,9 @@ Xây một website chứa nhiều minigame Việt Nam. Mỗi game là module ri�
 3. **Cờ Hùm** — Game 03, playable v0.2.
 4. **Cờ Lúa Ngô** — Game 04, playable v0.1.
 5. **Tam Cúc** — Game 05, playable v0.2 UX.
-6. **Bài Chòi** — Game 06, playable v0.1.
+6. **Bài Chòi** — Game 06, playable v0.2 UX/audio.
 
-Mốc đang active: **QC Bài Chòi v0.1**.
+Mốc đang active: **QC Bài Chòi v0.2 UX/audio trên mobile**.
 
 ## 2. Repo / Deploy
 
@@ -221,6 +221,7 @@ Nguồn đối chiếu chính:
   - người đáp chỉ lấy lượt khi bộ ngửa mạnh hơn.
 - Production build pass.
 - GitHub Pages deploy pass.
+- Handoff snapshot #23 success.
 - Trong tự QC UI trước deploy đã bắt và sửa lỗi tap lá không thêm vào selection.
 - v0.2 UX: test/build/deploy #31 success; handoff snapshot #21 success.
 
@@ -256,6 +257,16 @@ Nguồn đối chiếu:
 - Chòi người chơi hiển thị đủ 3 con và trạng thái trúng.
 - Chòi máy hiển thị tiến độ 0/3, 1/3, 2/3.
 - Khi chòi trúng có hiệu ứng **CỐC! CỐC!**.
+- v0.2 audio:
+  - nút **Âm thanh Bật/Tắt**, mặc định bật;
+  - trống ngắn khi bắt đầu Hô thai;
+  - tiếng mõ khi chòi trúng;
+  - nhịp trống thắng hội khi TỚI;
+  - khi Xướng tên, thử đọc tên con bằng Speech Synthesis `vi-VN`; nếu thiết bị không có voice Việt thì mõ/trống vẫn hoạt động.
+- v0.2 mobile:
+  - chòi người chơi chiếm trọn một hàng ở <=760px;
+  - 3 thẻ người chơi tăng chiều cao, font và viền;
+  - chòi máy vẫn giữ layout gọn.
 - Khi đủ 3 con có banner **TỚI! TỚI!**.
 - Lịch sử các con đã xướng.
 - Luật 4 bước mở sẵn trong game.
@@ -263,8 +274,8 @@ Nguồn đối chiếu:
 - Kho game hiện **6 game playable**.
 
 ### QC kỹ thuật
-- Deploy workflow **#32**: success.
-- Deployed commit: `99e6ed4a52e93313f93deb774d29bb6691fa16b1`.
+- Deploy workflow **#33**: success.
+- Deployed commit: `b60e2902f84dc2714358ac5c96aed7fdd95af951`.
 - `npm test`: **45/45 pass**.
   - Bài Chòi: 7 tests.
 - Bài Chòi tests bao phủ:
@@ -281,7 +292,7 @@ Nguồn đối chiếu:
 ## 10. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC Bài Chòi v0.1 trên bản live.**
+**QC Bài Chòi v0.2 UX/audio trên bản live, ưu tiên mobile.**
 
 ### Checklist QC
 1. Kho game hiển thị 6 game playable.
@@ -290,16 +301,18 @@ Nguồn đối chiếu:
 4. Mỗi chòi đúng 3 con; tổng 27 con không trùng.
 5. Nút Hô thai phải hiện câu thai trước khi lộ tên con bài.
 6. Xướng tên phải đánh dấu đúng chòi sở hữu con đó.
-7. Chòi người chơi phải đọc rõ 3 thẻ trên mobile.
-8. Chòi trúng phải có feedback “CỐC! CỐC!” đủ rõ.
-9. Đủ 3 con phải dừng hội và hiện “TỚI! TỚI!” đúng chòi.
-10. Lịch sử con đã xướng phải khớp thứ tự rút.
-11. Không có chòi máy nào được ưu tiên/xử lý xác suất khác người chơi.
-12. Phần luật và ghi chú câu thai minh họa phải dễ hiểu.
+7. Trên mobile, chòi người chơi phải chiếm toàn hàng và 3 thẻ phải đọc rõ, không còn cảm giác bé.
+8. Nút Âm thanh phải bật/tắt rõ ràng.
+9. Chạm Hô thai phải nghe nhịp trống ngắn sau user gesture.
+10. Khi Xướng tên: nếu thiết bị có voice Việt, tên con bài được đọc; dù không có voice Việt vẫn phải có tiếng mõ/trống.
+11. Chòi trúng phải vừa hiện “CỐC! CỐC!” vừa phát tiếng mõ.
+12. Đủ 3 con phải dừng hội, hiện “TỚI! TỚI!” đúng chòi và phát nhịp thắng.
+13. Lịch sử con đã xướng phải khớp thứ tự rút.
+14. Không có chòi máy nào được ưu tiên/xử lý xác suất khác người chơi.
+15. Phần luật và ghi chú câu thai minh họa phải dễ hiểu.
 
-### Nếu v0.1 được duyệt
-Ưu tiên v0.2:
-- âm thanh mõ/trống;
+### Nếu v0.2 được duyệt
+Ưu tiên tiếp:
 - hình thẻ bài truyền thống thay cho thẻ chữ;
 - animation Anh Hiệu xóc/rút thẻ;
 - art direction hội xuân/chòi tre sâu hơn;
