@@ -72,8 +72,8 @@ describe('Cờ Gánh engine', () => {
   it('forces the reply into a valid thế Mở destination', () => {
     const state = customState([
       [12, 0],
-      [10, 0],
-      [14, 0],
+      [11, 0],
+      [13, 0],
       [6, 1]
     ]);
 
@@ -86,15 +86,11 @@ describe('Cờ Gánh engine', () => {
   });
 
   it('wins when all 16 quân belong to one player', () => {
-    const pieces: Array<[number, 0 | 1]> = [];
-    for (let index = 0; index < 15; index += 1) pieces.push([index, 0]);
-    pieces.push([17, 1]);
-
-    const state = customState(pieces);
-    state.board[12] = null;
-    state.board[11] = 0;
-    state.board[7] = 1;
-    state.board[17] = 1;
+    const state = customState([
+      [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0],
+      [8, 0], [9, 0], [10, 0], [11, 0], [13, 0], [14, 0], [15, 0],
+      [7, 1], [17, 1]
+    ]);
 
     const next = applyGanhMove(state, { from: 11, to: 12 });
     expect(next.winner).toBe(0);
