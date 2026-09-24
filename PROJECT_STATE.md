@@ -105,7 +105,7 @@ Xem chi tiết và nguồn tại `docs/CO_GANH_RULES.md`.
 ## 6. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC Cờ Gánh v0.1 trên bản live rồi chỉnh gameplay/UX nếu cần.**
+**Thiết kế và triển khai animation Cờ Gánh v0.2 theo quyết định D-013.**
 
 ### Checklist QC
 1. Kho game hiển thị cả Ô ăn quan và Cờ Gánh là playable.
@@ -119,12 +119,17 @@ Xem chi tiết và nguồn tại `docs/CO_GANH_RULES.md`.
 9. AI Dễ/Vừa/Khó đi hợp lệ và không gây lag đáng kể trên mobile.
 10. Mobile: bàn không bị cắt, điểm bấm đủ lớn, text không tràn.
 
-### Nếu QC gameplay ổn
-Ưu tiên tiếp theo:
-- animation di chuyển quân rõ hơn;
-- animation lật quân Gánh/Vây có nhịp;
-- tutorial ngắn minh họa Gánh / Vây / Mở;
-- polish art direction xứ Quảng / gỗ / đất / vỏ sò.
+### Animation direction đã chốt
+- Ưu tiên rõ ràng, nhưng vẫn có cảm giác đẹp.
+- Quân di chuyển ~500 ms.
+- Quân nhấc nhẹ -> lướt theo đường -> đáp xuống.
+- Quân bị Gánh: flip + đổi màu + glow.
+- Nếu Gánh nhiều quân: đổi lần lượt, không đồng thời.
+
+### Còn cần chốt trước khi code
+- Vây có dùng cùng ngôn ngữ hiệu ứng với Gánh hay có hiệu ứng riêng.
+- Nhịp stagger chính xác giữa các quân bị đổi màu.
+- Có thêm khoảng nghỉ ngắn giữa quân đi đáp xuống và bắt đầu chuỗi đổi màu hay không.
 
 ## 7. Rủi ro / giả định cần nhớ
 
