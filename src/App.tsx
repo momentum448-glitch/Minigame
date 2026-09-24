@@ -1,19 +1,16 @@
 import { useEffect, useState } from 'react';
 import OAnQuanGame from './OAnQuanGame';
+import CoGanhGame from './CoGanhGame';
 
-type AppRoute = 'home' | 'o-an-quan';
+type AppRoute = 'home' | 'o-an-quan' | 'co-ganh';
 
 function routeFromHash(): AppRoute {
-  return window.location.hash === '#/o-an-quan' ? 'o-an-quan' : 'home';
+  if (window.location.hash === '#/o-an-quan') return 'o-an-quan';
+  if (window.location.hash === '#/co-ganh') return 'co-ganh';
+  return 'home';
 }
 
 const plannedGames = [
-  {
-    id: 'co-ganh',
-    title: 'Cờ gánh',
-    description: 'Một ô chiến thuật gọn, sắc và rất Việt.',
-    glyph: '◇'
-  },
   {
     id: 'bau-cua',
     title: 'Bầu cua',
@@ -43,6 +40,12 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const openCoGanh = () => {
+    window.location.hash = '/co-ganh';
+    setRoute('co-ganh');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const goHome = () => {
     window.location.hash = '';
     setRoute('home');
@@ -51,6 +54,10 @@ export default function App() {
 
   if (route === 'o-an-quan') {
     return <OAnQuanGame onBack={goHome} />;
+  }
+
+  if (route === 'co-ganh') {
+    return <CoGanhGame onBack={goHome} />;
   }
 
   return (
@@ -79,7 +86,7 @@ export default function App() {
             <p className="eyebrow">ĐANG CÓ</p>
             <h2 id="game-library-title">Kho game</h2>
           </div>
-          <span className="library-count">1 game chơi được</span>
+          <span className="library-count">2 game chơi được</span>
         </div>
 
         <div className="game-grid">
@@ -100,6 +107,34 @@ export default function App() {
               </div>
               <h3>Ô ăn quan</h3>
               <p>Rải từng viên sỏi, tính từng nhịp ăn quân, đấu bạn hoặc thử sức với AI.</p>
+              <span className="play-cta">Vào bàn chơi <b>→</b></span>
+            </div>
+          </button>
+
+          <button className="game-tile game-tile-live" type="button" onClick={openCoGanh}>
+            <div className="game-art ganh-art" aria-hidden="true">
+              <div className="ganh-mini-board">
+                {Array.from({ length: 25 }, (_, index) => (
+                  <span
+                    key={index}
+                    className={
+                      [0, 1, 2, 3, 4, 5, 9, 14].includes(index)
+                        ? 'ganh-mini-piece red'
+                        : [10, 15, 19, 20, 21, 22, 23, 24].includes(index)
+                          ? 'ganh-mini-piece brown'
+                          : 'ganh-mini-point'
+                    }
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="game-tile-copy">
+              <div className="game-tile-meta">
+                <span className="live-dot" />
+                <span>Chơi ngay</span>
+              </div>
+              <h3>Cờ Gánh</h3>
+              <p>Gánh, Vây và gài thế Mở trên bàn cờ 25 giao điểm của xứ Quảng.</p>
               <span className="play-cta">Vào bàn chơi <b>→</b></span>
             </div>
           </button>
