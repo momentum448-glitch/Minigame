@@ -11,8 +11,9 @@ Xây một website chứa nhiều minigame Việt Nam. Mỗi game là module ri�
 2. **Cờ Gánh** — Game 02, hoàn tất theo QC người dùng ở v0.2.
 3. **Cờ Hùm** — Game 03, playable v0.2.
 4. **Cờ Lúa Ngô** — Game 04, playable v0.1.
+5. **Tam Cúc** — Game 05, playable v0.1.
 
-Mốc đang active: **QC Cờ Lúa Ngô v0.1**.
+Mốc đang active: **QC Tam Cúc v0.1**.
 
 ## 2. Repo / Deploy
 
@@ -30,6 +31,7 @@ Mốc đang active: **QC Cờ Lúa Ngô v0.1**.
 - Cờ Gánh: `#/co-ganh`.
 - Cờ Hùm: `#/co-hum`.
 - Cờ Lúa Ngô: `#/co-lua-ngo`.
+- Tam Cúc: `#/tam-cuc`.
 - Mỗi game có nút **← Kho game**.
 - Game chưa làm chỉ hiện `Sắp có`.
 
@@ -132,7 +134,7 @@ Các điểm nguồn thống nhất:
 - Quân di chuyển từng bước ~390 ms.
 - AI cũng phát lại toàn bộ đường đi để người chơi theo dõi.
 - Route `#/co-lua-ngo`.
-- Kho game hiện **4 game chơi được**.
+- Kho game hiện **5 game chơi được**.
 
 ### QC kỹ thuật
 - Deploy workflow **#27**: success.
@@ -154,48 +156,113 @@ Các điểm nguồn thống nhất:
 - `npm run build`: pass.
 - GitHub Pages deploy: pass.
 
-## 8. NEXT ACTION — ưu tiên cao nhất
+## 8. Tam Cúc — trạng thái Game 05
+
+### Nguồn / ruleset
+Chi tiết tại `docs/TAM_CUC_RULES.md`.
+
+Nguồn đối chiếu chính:
+- Từ điển Văn hóa / cơ quan nhà nước về bộ bài Tam Cúc.
+- VietnamChess về cấu trúc bộ 32 lá.
+- GameVH và Thủ Thuật Chơi về luật tay đôi, gọi bài, đôi/bộ ba, Chui và luật lượt đầu.
+
+### Ruleset dự án v0.1
+- Bộ 32 lá: 16 đỏ + 16 đen.
+- Tay đôi: 16 lá/người, hai bên biết bài nhau.
+- Thứ tự: **Tướng > Sĩ > Tượng > Xe > Pháo > Mã > Tốt**.
+- Cùng tên: đỏ mạnh hơn đen.
+- Gọi 1 / 2 / 3 cây.
+- Đôi: cùng tên + cùng màu.
+- Bộ ba: chỉ **Tướng–Sĩ–Tượng** hoặc **Xe–Pháo–Mã** cùng màu.
+- Người đáp bỏ đúng số cây, có thể **Ngửa bài** hoặc **Chui**.
+- Lượt đầu dùng “cấm Tướng, cấm Sĩ, lấy Tượng cầm đầu”.
+- Nếu hai bộ ngang sức hoàn toàn, cái thắng hòa trong v0.1.
+- Khi hết bài, v0.1 so tổng số lá ăn được.
+- Chưa triển khai Trình làng / Kết / Đè / điểm thưởng truyền thống.
+
+### Đã triển khai
+- Module riêng `src/tamcuc/`.
+- Engine deterministic.
+- AI Dễ / Vừa / Khó.
+- Local 2 người.
+- Hai tay bài hiển thị công khai.
+- Chọn trực tiếp 1/2/3 lá.
+- Gọi bài -> bài cái úp xuống chiếu.
+- Người đáp chọn đủ số lá rồi Ngửa hoặc Chui.
+- Sau lượt, chiếu hiển thị bài cái vs bài đáp; nếu Chui thì bài đáp vẫn úp.
+- Route `#/tam-cuc`.
+- Kho game hiện **5 game playable**.
+
+### QC kỹ thuật
+- Deploy workflow **#30**: success.
+- Deployed commit: `f78e668f926b4c2ee00e191dae4b3a4fca9824b3`.
+- `npm test`: **38/38 pass**.
+  - Ô ăn quan: 7.
+  - Cờ Gánh: 6.
+  - Cờ Hùm: 9.
+  - Cờ Lúa Ngô: 8.
+  - Tam Cúc: 8.
+- Tam Cúc tests bao phủ:
+  - cấu trúc bộ 32 lá;
+  - đôi và hai loại bộ ba;
+  - thứ tự quân và đỏ/đen;
+  - bộ ba trên/bộ ba dưới;
+  - cấm Tướng/Sĩ lượt đầu;
+  - chia 16–16;
+  - Chui;
+  - người đáp chỉ lấy lượt khi bộ ngửa mạnh hơn.
+- Production build pass.
+- GitHub Pages deploy pass.
+- Trong tự QC UI trước deploy đã bắt và sửa lỗi tap lá không thêm vào selection.
+
+## 9. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC Cờ Lúa Ngô v0.1 trên bản live.**
+**QC Tam Cúc v0.1 trên bản live.**
 
 ### Checklist QC
-1. Kho game hiển thị 4 game playable.
-2. Bàn phải nhìn đúng dạng hai hình chữ nhật chồng vuông góc.
-3. Bố trí 4 quân trên / 4 quân dưới hợp lý.
-4. Chọn quân -> đi từng nhịp Lúa, Ngô, Khoai, Sắn, Đỗ.
-5. Nhịp 1–4 tuyệt đối không ăn được quân.
-6. Nhịp Đỗ phải hiện rõ mục tiêu ăn.
-7. Ăn quân xong phải đổi lượt và cập nhật số quân.
-8. Khi hết đường trước bước 5, quân phải dừng và đổi lượt.
-9. Xác nhận giả định **không lặp lại giao điểm trong cùng lượt** có đúng cảm giác trò chơi thực tế không.
-10. AI Dễ/Vừa/Khó đi hợp lệ và Hard không lag đáng kể trên mobile.
-11. Nhịp 390 ms/bước đủ rõ hay cần chậm hơn.
+1. Kho game hiển thị 5 game playable.
+2. Vào Tam Cúc, mỗi bên phải có 16 lá.
+3. Chọn một lá và Gọi 1 cây phải hoạt động.
+4. Chọn đúng đôi / bộ ba phải Gọi được; bộ sai phải không Gọi được.
+5. Lượt đầu Tướng/Sĩ phải bị khóa, Tượng vẫn dùng được.
+6. Người đáp phải chọn đúng số lá.
+7. Ngửa bài phải so đúng thứ tự Tướng > Sĩ > Tượng > Xe > Pháo > Mã > Tốt và đỏ > đen cùng tên.
+8. Chui phải bỏ đúng số lá và cái ăn lượt.
+9. Người thắng lượt phải giữ cái lượt sau.
+10. Sau lượt phải nhìn rõ bài cái vs bài đáp trên chiếu.
+11. AI Dễ/Vừa/Khó đi hợp lệ.
+12. QC thực tế các giả định: Tượng hồng là trần lượt đầu; cái thắng hòa; Chui vẫn mất số lá đã bỏ.
 
-### Nếu gameplay được duyệt
-Ưu tiên polish:
-- animation bắt quân ở nhịp Đỗ rõ hơn;
-- hiệu ứng đọc nhịp / nhấn từng từ;
-- tutorial 1 lượt mẫu;
-- art direction hạt giống / ruộng đồng / bàn vẽ phấn.
+### Nếu gameplay core được duyệt
+Ưu tiên v0.2:
+- Trình làng Tứ tử / Ngũ tử;
+- Ngũ tử cướp cái;
+- Kết đôi / Kết ba;
+- Kết Tốt đen / Đè Tốt đen;
+- điểm thưởng truyền thống;
+- animation úp/ngửa bài rõ hơn.
 
-## 9. Rủi ro / giả định
+## 10. Rủi ro / giả định
 
 - Cờ Lúa Ngô có dị bản và một số nguồn thay “Đỗ” bằng từ khác; dự án dùng chuỗi **Lúa · Ngô · Khoai · Sắn · Đỗ** theo Báo Nam Định và các nguồn giáo dục đối chiếu.
 - Nguồn không nói rõ việc quay lại node đã đi trong cùng lượt; v0.1 cấm lặp node để tránh backtracking vô hạn.
 - Cách “bị chặn thì dừng” cũng cần QC thực tế.
 - Hard AI branching cao hơn các game trước, nên depth 3 và cắt ordering.
+- Tam Cúc có mâu thuẫn nguồn ở trần lượt đầu (Tượng hồng vs Xe hồng); v0.1 chọn Tượng hồng.
+- Tam Cúc v0.1 dùng scoring số hóa theo tổng lá ăn, chưa phải toàn bộ hệ điểm truyền thống.
+- Trường hợp hai lá/bộ ngang sức hoàn toàn cho cái thắng hòa là fallback số hóa cần QC.
 
-## 10. Việc chưa làm
+## 11. Việc chưa làm
 
 - Sound design.
 - Tutorial/onboarding hoàn chỉnh.
 - Multiplayer online.
 - Account / leaderboard.
-- Game 05.
+- Game 06.
 - QC nhiều thiết bị.
 
-## 11. Quy tắc cập nhật state
+## 12. Quy tắc cập nhật state
 
 Sau mỗi mốc:
 - cập nhật **Đã có**;
