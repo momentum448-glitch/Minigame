@@ -245,3 +245,12 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Nếu thiết bị vẫn không cung cấp danh sách voice, UI phải hiển thị “Giọng mặc định của máy”, không để dropdown rỗng.
 - Baseline neural TTS không được gọi là bản thu nghệ nhân; mục tiêu là QC kiến trúc voice-pack trước khi thay bằng audio chất lượng cao hơn.
 - Quyết định: CHỐT ngày 2026-09-24.
+
+
+## D-028 — Tạm dừng Bài Chòi sau v0.4
+- Tạm dừng hoàn thiện **Bài Chòi** tại mốc **v0.4 pre-rendered voice-pack baseline** để chuyển sang việc khác.
+- Gameplay/ruleset hiện tại được giữ nguyên; không quay lại thiết kế lại từ đầu khi tiếp tục.
+- Phần chưa hoàn thiện trọng tâm là **chất lượng audio/diễn xướng**.
+- Khi quay lại, ưu tiên QC 3 MP3 mẫu, chốt chất giọng rồi mới mở rộng đủ 27 quân.
+- Các quyết định D-023 đến D-027 vẫn giữ hiệu lực.
+- Quyết định: CHỐT ngày 2026-09-24.
