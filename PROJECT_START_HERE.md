@@ -23,5 +23,5 @@
 
 - Repo: https://github.com/momentum448-glitch/Minigame
 - Live: https://momentum448-glitch.github.io/Minigame/
-- Game playable: Ô ăn quan, Cờ Gánh, Cờ Hùm
-- Mốc hiện tại: QC Cờ Hùm v0.2 animation + forbidden-move feedback
+- Game playable: Ô ăn quan, Cờ Gánh, Cờ Hùm, Cờ Lúa Ngô
+- Mốc hiện tại: QC Cờ Lúa Ngô v0.1
