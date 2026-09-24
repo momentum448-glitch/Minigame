@@ -10,8 +10,9 @@ Xây một website chứa nhiều minigame Việt Nam. Mỗi game là module ri�
 1. **Ô ăn quan** — Game 01.
 2. **Cờ Gánh** — Game 02, hoàn tất theo QC người dùng ở v0.2.
 3. **Cờ Hùm** — Game 03, playable v0.2.
+4. **Cờ Lúa Ngô** — Game 04, playable v0.1.
 
-Mốc đang active: **QC Cờ Hùm v0.2 animation + forbidden-move feedback**.
+Mốc đang active: **QC Cờ Lúa Ngô v0.1**.
 
 ## 2. Repo / Deploy
 
@@ -28,6 +29,7 @@ Mốc đang active: **QC Cờ Hùm v0.2 animation + forbidden-move feedback**.
 - Ô ăn quan: `#/o-an-quan`.
 - Cờ Gánh: `#/co-ganh`.
 - Cờ Hùm: `#/co-hum`.
+- Cờ Lúa Ngô: `#/co-lua-ngo`.
 - Mỗi game có nút **← Kho game**.
 - Game chưa làm chỉ hiện `Sắp có`.
 
@@ -57,130 +59,143 @@ Còn polish về hand visual, capture-to-score, mobile QC sâu hơn.
   - Vây làn sóng riêng;
   - khóa input trong animation;
   - AI dùng cùng animation.
-- Deploy #24 success.
-- Người dùng xác nhận ngày 2026-09-24: **Cờ Gánh đã xong**.
+- Người dùng xác nhận: **Cờ Gánh đã xong**.
 
 Không tiếp tục chỉnh Cờ Gánh trừ khi người dùng chủ động mở lại.
 
 ## 6. Cờ Hùm — trạng thái Game 03
 
-### Ruleset
-Chi tiết nguồn và giả định tại `docs/CO_HUM_RULES.md`.
+- Ruleset tại `docs/CO_HUM_RULES.md`.
+- Biến thể 1 Hùm + 15 Trâu.
+- Local 2 người + AI Dễ/Vừa/Khó.
+- Người chơi có thể chọn Hùm hoặc Trâu khi đấu AI.
+- Hùm vồ bằng cú nhảy qua Trâu; Trâu thắng bằng vây kín.
+- Animation v0.2:
+  - Hùm/Trâu đi ~600 ms;
+  - Vồ = nhảy -> nghỉ -> impact -> Trâu biến mất;
+  - nhãn **VỒ!** + impact ring;
+  - khóa input trong animation;
+  - AI dùng cùng animation.
+- Anti-reversal có feedback đỏ `↩ CẤM` + giải thích.
+- Deploy #26 success.
 
-Nguồn chính là sách *100 trò chơi dân gian cho thiếu nhi* của NXB Kim Đồng, mục Cờ Hùm:
-- 2 người;
-- 1 Hùm + 15 Trâu;
-- bàn chính 5×5 giao điểm, có ngang/dọc/chéo;
-- Hang Hùm nối vào giữa cạnh phải;
-- Hùm đi trước;
-- mỗi lượt một quân đi một nước;
-- Hùm vồ bằng cách nhảy qua Trâu nếu điểm phía sau còn trống;
-- Hùm thắng khi ăn hết Trâu;
-- Trâu thắng khi vây kín Hùm;
-- không được lập tức đi lại nước vừa đi.
+Hiện không phải NEXT ACTION; chỉ mở lại nếu người dùng yêu cầu.
+
+## 7. Cờ Lúa Ngô — trạng thái Game 04
+
+### Nguồn / ruleset
+Chi tiết tại `docs/CO_LUA_NGO_RULES.md`.
+
+Nguồn đối chiếu chính:
+- Báo Nam Định, “Cờ lúa ngô”, 09/12/2011.
+- *100 trò chơi dân gian cho thiếu nhi*, NXB Kim Đồng.
+- Tạp chí Khoa học số 57, 03/2023.
+- Special Kid Việt Nam.
+
+Các điểm nguồn thống nhất:
+- 2 người.
+- 8 quân, chia 4–4.
+- Bàn gồm hai hình chữ nhật chồng vuông góc.
+- Mỗi lượt đi một quân theo đường kẻ.
+- Nhịp: **Lúa → Ngô → Khoai → Sắn → Đỗ**.
+- Không được vượt qua quân.
+- Bước 5 mới được ăn quân đối phương.
+- Ăn hết quân đối phương thì thắng.
 
 ### Ruleset dự án v0.1
-- 29 node tổng cộng: 25 node bàn chính + 4 node Hang bổ sung.
-- 15 Trâu bắt đầu trên toàn bộ vành ngoài bàn chính trừ cửa Hang.
-- Hùm bắt đầu ở đỉnh ngoài cùng của Hang.
-- Hùm và Trâu đi 1 bước theo đường kẻ tới điểm trống.
-- Hùm vồ 1 Trâu/lượt bằng một cú nhảy thẳng qua Trâu tới điểm trống phía sau.
-- Bản v0.1 **không dùng multi-jump trong cùng lượt** vì nguồn đồng thời ghi mỗi lượt chỉ đi một quân một nước.
-- Chặn exact immediate reversal của cùng bên ở lượt kế tiếp.
-- Trâu thắng khi tới lượt Hùm mà Hùm không còn bất kỳ step/capture hợp lệ.
-- Hùm thắng khi không còn Trâu.
+- Board graph: **12 giao điểm**.
+- 4 quân mỗi bên; 4 điểm ngoài hai cánh để trống.
+- Người chơi 1 đi trước trong bản số hóa.
+- Một lượt chọn 1 quân và đi từng bước.
+- Bước 1–4 chỉ vào giao điểm trống.
+- Bước 5 (Đỗ):
+  - vào điểm trống và hết lượt; hoặc
+  - vào quân đối phương để ăn và thế chỗ.
+- Không vượt qua quân.
+- Nếu trước bước 5 không còn điểm trống hợp lệ, quân dừng và hết lượt.
+- **Giả định số hóa cần QC:** không lặp lại giao điểm trong cùng lượt.
+- Không dùng dị bản `Kim · Mộc · Thủy · Hỏa · Thổ` trong v0.1.
+- Fallback: bên không còn nước đi thua để tránh treo game.
 
 ### Đã triển khai
-- Module riêng `src/cohum/`.
+- Module riêng `src/luango/`.
 - Engine deterministic.
 - AI:
   - Dễ: random;
-  - Vừa: heuristic + ưu tiên capture;
-  - Khó: minimax alpha-beta depth 4.
+  - Vừa: capture + heuristic;
+  - Khó: minimax alpha-beta depth 3, giới hạn ordering để bảo vệ mobile.
 - Local 2 người.
-- Đấu AI cho phép người chơi chọn **Hùm** hoặc **Trâu**.
-- Hùm AI tự đi trước nếu người chơi chọn Trâu.
-- Tap quân -> highlight nước đi.
-- Nước vồ có marker riêng **Vồ**.
-- Animation v0.2:
-  - Hùm/Trâu di chuyển khoảng **600 ms** từ điểm cũ tới điểm mới;
-  - nước **Vồ** dùng sequence: Hùm nhảy -> nghỉ ~200 ms -> Trâu rung/trúng đòn -> biến mất -> cập nhật số Trâu;
-  - impact có nhãn **VỒ!** + vòng xung lực;
-  - visual state tách khỏi logical state để capture không biến mất quá sớm;
-  - input khóa trong toàn bộ animation;
-  - AI dùng cùng animation.
-- Feedback anti-reversal:
-  - điểm cấm không sáng như nước hợp lệ;
-  - sau khi chọn đúng quân vừa đi, người chơi vẫn có thể chạm điểm cũ;
-  - điểm đó nháy đỏ, hiện `↩ CẤM` và giải thích lý do.
-- Visual Hùm và Trâu khác nhau rõ.
-- Board/Hang dựng bằng graph + SVG lines.
-- Route `#/co-hum`.
-- Cờ Hùm xuất hiện ở Kho game với trạng thái **Chơi ngay**.
+- Đấu AI Dễ / Vừa / Khó.
+- UI đi **từng bước**, không chọn luôn điểm cuối.
+- Thanh nhịp hiển thị 5 từ Lúa / Ngô / Khoai / Sắn / Đỗ.
+- Mục tiêu ăn ở bước Đỗ có marker riêng **ĂN**.
+- Quân di chuyển từng bước ~390 ms.
+- AI cũng phát lại toàn bộ đường đi để người chơi theo dõi.
+- Route `#/co-lua-ngo`.
+- Kho game hiện **4 game chơi được**.
 
 ### QC kỹ thuật
-- Deploy workflow **#26**: success.
-- Deployed commit: `cf349eea1a9e9fd50cf11aa6560cde445dc65018`.
-- `npm test`: **22/22 pass**.
+- Deploy workflow **#27**: success.
+- Deployed commit: `a0fa2c0dda7052d0c0abb07ad1a4029235c6674a`.
+- `npm test`: **30/30 pass**.
   - Ô ăn quan: 7.
   - Cờ Gánh: 6.
   - Cờ Hùm: 9.
-- Cờ Hùm tests bao phủ:
-  - bố trí 1 Hùm / 15 Trâu;
-  - kết nối Hang;
-  - Hùm vồ hợp lệ;
-  - landing bị chặn thì không vồ;
-  - Trâu chỉ đi không capture;
-  - anti-reversal + xác định đúng điểm bị cấm để UI giải thích;
-  - intermediate state của cú Vồ giữ Trâu trên bàn tới pha impact;
-  - Trâu thắng khi vây kín;
-  - Hùm thắng khi ăn Trâu cuối.
+  - Cờ Lúa Ngô: 8.
+- Cờ Lúa Ngô tests bao phủ:
+  - bố trí 4/4;
+  - graph hai hình chữ nhật chồng nhau;
+  - không lặp node trong cùng lượt;
+  - không ăn trước bước 5;
+  - ăn đúng ở bước Đỗ;
+  - dừng sớm khi bị chặn;
+  - điều kiện thắng;
+  - có nước mở màn hợp lệ.
 - `npm run build`: pass.
 - GitHub Pages deploy: pass.
 
-## 7. NEXT ACTION — ưu tiên cao nhất
+## 8. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC Cờ Hùm v0.2 trên bản live.**
+**QC Cờ Lúa Ngô v0.1 trên bản live.**
 
 ### Checklist QC
-1. Kho game phải hiện 3 game playable.
-2. Bàn Cờ Hùm phải khớp sơ đồ 5×5 + Hang bên phải.
-3. 15 Trâu phải nằm trên vành ngoài, cửa Hang để trống, Hùm ở đầu Hang.
-4. Hùm đi trước.
-5. Hùm chỉ vồ khi có Trâu liền kề và landing phía sau trống.
-6. Quân di chuyển phải đủ chậm và nhìn rõ đường đi (~600 ms).
-7. Cú Vồ phải đọc được thành chuỗi nhảy -> impact -> Trâu biến mất, không teleport.
-8. Khi thử đi ngược lại nước vừa đi, phải thấy điểm đỏ `↩ CẤM` + giải thích rõ.
-9. Trâu chỉ đi 1 bước, không ăn.
-10. Vây kín Hùm phải kết thúc đúng.
-11. Đổi vai người chơi Hùm/Trâu khi đấu AI hoạt động đúng.
-12. Hard AI không lag đáng kể trên mobile.
-13. Xác minh thực địa nếu người dùng biết dị bản multi-jump 2–3 Trâu/lượt.
+1. Kho game hiển thị 4 game playable.
+2. Bàn phải nhìn đúng dạng hai hình chữ nhật chồng vuông góc.
+3. Bố trí 4 quân trên / 4 quân dưới hợp lý.
+4. Chọn quân -> đi từng nhịp Lúa, Ngô, Khoai, Sắn, Đỗ.
+5. Nhịp 1–4 tuyệt đối không ăn được quân.
+6. Nhịp Đỗ phải hiện rõ mục tiêu ăn.
+7. Ăn quân xong phải đổi lượt và cập nhật số quân.
+8. Khi hết đường trước bước 5, quân phải dừng và đổi lượt.
+9. Xác nhận giả định **không lặp lại giao điểm trong cùng lượt** có đúng cảm giác trò chơi thực tế không.
+10. AI Dễ/Vừa/Khó đi hợp lệ và Hard không lag đáng kể trên mobile.
+11. Nhịp 390 ms/bước đủ rõ hay cần chậm hơn.
 
-### Nếu v0.2 được duyệt
+### Nếu gameplay được duyệt
 Ưu tiên polish:
-- hiệu ứng vòng vây khi Trâu thắng;
-- tutorial ngắn về “hở lưng”;
-- art direction đất/rừng/hang rõ hơn.
+- animation bắt quân ở nhịp Đỗ rõ hơn;
+- hiệu ứng đọc nhịp / nhấn từng từ;
+- tutorial 1 lượt mẫu;
+- art direction hạt giống / ruộng đồng / bàn vẽ phấn.
 
-## 8. Rủi ro / giả định
+## 9. Rủi ro / giả định
 
-- Cờ Hùm có dị bản và dễ bị nhầm với **Cờ Hùm Tôm**; dự án dùng biến thể 1 Hùm + 15 Trâu.
-- Câu nguồn “ăn 2–3 Trâu cùng một lúc” mơ hồ so với quy định “mỗi lượt một nước”; v0.1 ưu tiên cách hiểu một capture/lượt cho tới khi có bằng chứng/feedback thực địa khác.
-- Hard AI depth 4 cần theo dõi mobile.
-- Anti-reversal cần QC để chắc không khóa nước ngoài ý muốn.
+- Cờ Lúa Ngô có dị bản và một số nguồn thay “Đỗ” bằng từ khác; dự án dùng chuỗi **Lúa · Ngô · Khoai · Sắn · Đỗ** theo Báo Nam Định và các nguồn giáo dục đối chiếu.
+- Nguồn không nói rõ việc quay lại node đã đi trong cùng lượt; v0.1 cấm lặp node để tránh backtracking vô hạn.
+- Cách “bị chặn thì dừng” cũng cần QC thực tế.
+- Hard AI branching cao hơn các game trước, nên depth 3 và cắt ordering.
 
-## 9. Việc chưa làm
+## 10. Việc chưa làm
 
 - Sound design.
 - Tutorial/onboarding hoàn chỉnh.
 - Multiplayer online.
 - Account / leaderboard.
-- Game 04.
+- Game 05.
 - QC nhiều thiết bị.
 
-## 10. Quy tắc cập nhật state
+## 11. Quy tắc cập nhật state
 
 Sau mỗi mốc:
 - cập nhật **Đã có**;
