@@ -9,9 +9,9 @@ Xây một website chứa nhiều minigame Việt Nam. Mỗi game là module ri�
 ### Game playable
 1. **Ô ăn quan** — Game 01.
 2. **Cờ Gánh** — Game 02, hoàn tất theo QC người dùng ở v0.2.
-3. **Cờ Hùm** — Game 03, playable v0.1.
+3. **Cờ Hùm** — Game 03, playable v0.2.
 
-Mốc đang active: **QC Cờ Hùm v0.1**.
+Mốc đang active: **QC Cờ Hùm v0.2 animation + forbidden-move feedback**.
 
 ## 2. Repo / Deploy
 
@@ -102,25 +102,37 @@ Nguồn chính là sách *100 trò chơi dân gian cho thiếu nhi* của NXB Ki
 - Hùm AI tự đi trước nếu người chơi chọn Trâu.
 - Tap quân -> highlight nước đi.
 - Nước vồ có marker riêng **Vồ**.
+- Animation v0.2:
+  - Hùm/Trâu di chuyển khoảng **600 ms** từ điểm cũ tới điểm mới;
+  - nước **Vồ** dùng sequence: Hùm nhảy -> nghỉ ~200 ms -> Trâu rung/trúng đòn -> biến mất -> cập nhật số Trâu;
+  - impact có nhãn **VỒ!** + vòng xung lực;
+  - visual state tách khỏi logical state để capture không biến mất quá sớm;
+  - input khóa trong toàn bộ animation;
+  - AI dùng cùng animation.
+- Feedback anti-reversal:
+  - điểm cấm không sáng như nước hợp lệ;
+  - sau khi chọn đúng quân vừa đi, người chơi vẫn có thể chạm điểm cũ;
+  - điểm đó nháy đỏ, hiện `↩ CẤM` và giải thích lý do.
 - Visual Hùm và Trâu khác nhau rõ.
 - Board/Hang dựng bằng graph + SVG lines.
 - Route `#/co-hum`.
 - Cờ Hùm xuất hiện ở Kho game với trạng thái **Chơi ngay**.
 
 ### QC kỹ thuật
-- Deploy workflow **#25**: success.
-- Deployed commit: `be982a6789ae16666aa2a7e320317ab249b34989`.
-- `npm test`: **21/21 pass**.
+- Deploy workflow **#26**: success.
+- Deployed commit: `cf349eea1a9e9fd50cf11aa6560cde445dc65018`.
+- `npm test`: **22/22 pass**.
   - Ô ăn quan: 7.
   - Cờ Gánh: 6.
-  - Cờ Hùm: 8.
+  - Cờ Hùm: 9.
 - Cờ Hùm tests bao phủ:
   - bố trí 1 Hùm / 15 Trâu;
   - kết nối Hang;
   - Hùm vồ hợp lệ;
   - landing bị chặn thì không vồ;
   - Trâu chỉ đi không capture;
-  - anti-reversal;
+  - anti-reversal + xác định đúng điểm bị cấm để UI giải thích;
+  - intermediate state của cú Vồ giữ Trâu trên bàn tới pha impact;
   - Trâu thắng khi vây kín;
   - Hùm thắng khi ăn Trâu cuối.
 - `npm run build`: pass.
@@ -129,7 +141,7 @@ Nguồn chính là sách *100 trò chơi dân gian cho thiếu nhi* của NXB Ki
 ## 7. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC Cờ Hùm v0.1 trên bản live.**
+**QC Cờ Hùm v0.2 trên bản live.**
 
 ### Checklist QC
 1. Kho game phải hiện 3 game playable.
@@ -137,17 +149,17 @@ Nguồn chính là sách *100 trò chơi dân gian cho thiếu nhi* của NXB Ki
 3. 15 Trâu phải nằm trên vành ngoài, cửa Hang để trống, Hùm ở đầu Hang.
 4. Hùm đi trước.
 5. Hùm chỉ vồ khi có Trâu liền kề và landing phía sau trống.
-6. Marker `Vồ` phải làm nước capture dễ hiểu.
-7. Trâu chỉ đi 1 bước, không ăn.
-8. Vây kín Hùm phải kết thúc đúng.
-9. Đổi vai người chơi Hùm/Trâu khi đấu AI hoạt động đúng.
-10. Hard AI không lag đáng kể trên mobile.
-11. Xác minh thực địa nếu người dùng biết dị bản multi-jump 2–3 Trâu/lượt.
+6. Quân di chuyển phải đủ chậm và nhìn rõ đường đi (~600 ms).
+7. Cú Vồ phải đọc được thành chuỗi nhảy -> impact -> Trâu biến mất, không teleport.
+8. Khi thử đi ngược lại nước vừa đi, phải thấy điểm đỏ `↩ CẤM` + giải thích rõ.
+9. Trâu chỉ đi 1 bước, không ăn.
+10. Vây kín Hùm phải kết thúc đúng.
+11. Đổi vai người chơi Hùm/Trâu khi đấu AI hoạt động đúng.
+12. Hard AI không lag đáng kể trên mobile.
+13. Xác minh thực địa nếu người dùng biết dị bản multi-jump 2–3 Trâu/lượt.
 
-### Nếu gameplay ổn
+### Nếu v0.2 được duyệt
 Ưu tiên polish:
-- animation Hùm vồ Trâu;
-- animation di chuyển Trâu/Hùm;
 - hiệu ứng vòng vây khi Trâu thắng;
 - tutorial ngắn về “hở lưng”;
 - art direction đất/rừng/hang rõ hơn.
