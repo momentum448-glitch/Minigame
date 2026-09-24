@@ -130,3 +130,15 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Đấu AI cho phép người chơi chọn bên Hùm hoặc Trâu.
 - Nguồn và các giả định: `docs/CO_HUM_RULES.md`.
 - Quyết định: CHỐT ngày 2026-09-24.
+
+
+## D-017 — Cờ Hùm animation + forbidden move feedback
+- Mục tiêu UX: cân bằng nhưng **nghiêng về rõ luật**.
+- Tempo di chuyển quân: khoảng **550–650 ms**, lấy mốc triển khai **600 ms**.
+- Di chuyển phải thấy quân đi từ từ từ điểm cũ tới điểm mới.
+- Nước **Vồ** dùng sequence riêng: Hùm nhảy -> nghỉ khoảng 200 ms -> Trâu rung/trúng đòn -> biến mất -> cập nhật số Trâu.
+- Hiệu ứng Vồ phải có marker thị giác rõ, gồm nhãn **VỒ!** và impact ring.
+- Nước cấm đi ngược không hiển thị như nước hợp lệ.
+- Nếu người chơi thử chạm đúng điểm bị cấm, điểm đó nháy đỏ + hiện `↩ CẤM` + giải thích “Không được đi ngược lại đúng nước mà bên này vừa di chuyển.”
+- Input khóa trong toàn bộ move/capture animation; AI dùng cùng animation.
+- Quyết định: CHỐT ngày 2026-09-24.

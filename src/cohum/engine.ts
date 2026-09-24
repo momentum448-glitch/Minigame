@@ -70,6 +70,13 @@ const initialBuffalo = [
   20,21,22,23,24
 ];
 
+export interface HumMoveResolution {
+  finalState: HumState;
+  movedBoard: HumCell[];
+  side: HumSide;
+  move: HumMove;
+}
+
 export function humNeighbors(index: number): number[] {
   return [...adjacency[index]];
 }
@@ -114,6 +121,21 @@ export function cloneHumState(state: HumState): HumState {
 function isReverseOfLast(state: HumState, side: HumSide, move: HumMove): boolean {
   const last = state.lastMoveByPlayer[side];
   return Boolean(last && last.from === move.to && last.to === move.from);
+}
+
+export function reverseForbiddenTarget(
+  state: HumState,
+  side: HumSide,
+  from: number
+): number | null {
+  const last = state.lastMoveByPlayer[side];
+  if (!last || last.to !== from) return null;
+
+  const target = last.from;
+  if (state.board[target] !== null) return null;
+  if (!adjacency[from].includes(target)) return null;
+
+  return target;
 }
 
 function jumpLanding(from: number, over: number): number | null {
@@ -180,9 +202,9 @@ function sameMove(a: HumMove, b: HumMove): boolean {
   return a.from === b.from && a.to === b.to && a.capture === b.capture;
 }
 
-export function applyHumMove(input: HumState, move: HumMove): HumState {
+export function resolveHumMove(input: HumState, move: HumMove): HumMoveResolution | null {
   const legal = legalHumMoves(input).some((candidate) => sameMove(candidate, move));
-  if (!legal) return input;
+  if (!legal) return null;
 
   const state = cloneHumState(input);
   const side = state.currentPlayer;
@@ -190,6 +212,8 @@ export function applyHumMove(input: HumState, move: HumMove): HumState {
 
   state.board[move.from] = null;
   state.board[move.to] = side;
+  const movedBoard = [...state.board];
+
   if (move.capture !== null) state.board[move.capture] = null;
 
   state.lastMove = { ...move };
@@ -199,27 +223,32 @@ export function applyHumMove(input: HumState, move: HumMove): HumState {
   if (side === 'hum' && countHumPieces(state, 'trau') === 0) {
     state.winner = 'hum';
     state.lastMessage = 'Hùm đã vồ hết Trâu và thắng ván.';
-    return state;
-  }
-
-  state.currentPlayer = nextSide;
-  state.turn += 1;
-
-  if (nextSide === 'hum' && legalHumMoves(state, 'hum').length === 0) {
-    state.winner = 'trau';
-    state.lastMessage = 'Đàn Trâu đã vây kín Hùm và thắng ván.';
-    return state;
-  }
-
-  if (side === 'hum') {
-    state.lastMessage = move.capture !== null
-      ? `Hùm vồ 1 Trâu. Còn ${countHumPieces(state, 'trau')} Trâu.`
-      : 'Hùm đổi vị trí. Đến lượt Trâu.';
   } else {
-    state.lastMessage = 'Trâu khép vòng vây. Đến lượt Hùm.';
+    state.currentPlayer = nextSide;
+    state.turn += 1;
+
+    if (nextSide === 'hum' && legalHumMoves(state, 'hum').length === 0) {
+      state.winner = 'trau';
+      state.lastMessage = 'Đàn Trâu đã vây kín Hùm và thắng ván.';
+    } else if (side === 'hum') {
+      state.lastMessage = move.capture !== null
+        ? `Hùm vồ 1 Trâu. Còn ${countHumPieces(state, 'trau')} Trâu.`
+        : 'Hùm đổi vị trí. Đến lượt Trâu.';
+    } else {
+      state.lastMessage = 'Trâu khép vòng vây. Đến lượt Hùm.';
+    }
   }
 
-  return state;
+  return {
+    finalState: state,
+    movedBoard,
+    side,
+    move: { ...move }
+  };
+}
+
+export function applyHumMove(input: HumState, move: HumMove): HumState {
+  return resolveHumMove(input, move)?.finalState ?? input;
 }
 
 export function evaluateHumState(state: HumState, perspective: HumSide): number {

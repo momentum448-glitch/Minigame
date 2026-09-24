@@ -6,7 +6,9 @@ import {
   countHumPieces,
   createInitialHumState,
   humNeighbors,
-  legalHumMoves
+  legalHumMoves,
+  resolveHumMove,
+  reverseForbiddenTarget
 } from './engine';
 import type { HumCell, HumMove, HumSide, HumState } from './types';
 
@@ -102,6 +104,7 @@ describe('Cờ Hùm engine', () => {
     expect(legalHumMoves(state).some((move) =>
       move.from === reverse.from && move.to === reverse.to
     )).toBe(false);
+    expect(reverseForbiddenTarget(state, 'trau', 7)).toBe(6);
   });
 
   it('Trâu wins when its move leaves Hùm with no legal step or jump', () => {
@@ -131,5 +134,25 @@ describe('Cờ Hùm engine', () => {
     const next = applyHumMove(state, move!);
     expect(next.winner).toBe('hum');
     expect(countHumPieces(next, 'trau')).toBe(0);
+  });
+});
+
+
+describe('Cờ Hùm animation resolution', () => {
+  it('keeps captured Trâu visible in movedBoard until the Vồ impact phase', () => {
+    const state = customState([
+      [6, 'hum'],
+      [7, 'trau']
+    ], 'hum');
+
+    const move = legalHumMoves(state).find((candidate) => candidate.capture === 7)!;
+    const resolution = resolveHumMove(state, move);
+
+    expect(resolution).not.toBeNull();
+    expect(resolution?.movedBoard[6]).toBeNull();
+    expect(resolution?.movedBoard[8]).toBe('hum');
+    expect(resolution?.movedBoard[7]).toBe('trau');
+    expect(resolution?.finalState.board[7]).toBeNull();
+    expect(applyHumMove(state, move)).toEqual(resolution?.finalState);
   });
 });
