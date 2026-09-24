@@ -72,3 +72,22 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Từ game phải có đường quay lại Kho game.
 - Các tên game placeholder trên home không mặc định trở thành roadmap đã chốt.
 - Quyết định: CHỐT ngày 2026-09-23.
+
+
+## D-011 — Game 02
+- Game thứ hai của kho Minigame là **Cờ Gánh**.
+- Cờ Gánh là game playable riêng, không phải placeholder.
+- Route: `#/co-ganh`.
+- Quyết định: CHỐT ngày 2026-09-24.
+
+## D-012 — Cờ Gánh ruleset v0.1
+- 16 quân đổi màu, không loại quân khỏi bàn.
+- Đi một bước sang giao điểm kề theo đúng đường kẻ.
+- Dùng ba cơ chế lõi: **Gánh + Vây + Mở**.
+- Gánh chỉ phát sinh khi người chơi chủ động đi vào giữa cặp quân đối phương.
+- Vây áp dụng cho cả nhóm liên thông không còn giao điểm trống kề.
+- Thế Mở ép đối phương đi vào điểm vừa được tạo nếu đó là nước Gánh hợp lệ bắt buộc.
+- Thắng khi không còn quân màu đối phương.
+- Không dùng biến thể `chém` hoặc `ăn xong đi tiếp` trong v0.1.
+- Chi tiết nguồn và mapping bàn: `docs/CO_GANH_RULES.md`.
+- Quyết định: CHỐT ngày 2026-09-24.
