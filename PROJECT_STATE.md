@@ -12,8 +12,9 @@ Xây một website chứa nhiều minigame Việt Nam. Mỗi game là module ri�
 3. **Cờ Hùm** — Game 03, playable v0.2.
 4. **Cờ Lúa Ngô** — Game 04, playable v0.1.
 5. **Tam Cúc** — Game 05, playable v0.2 UX.
+6. **Bài Chòi** — Game 06, playable v0.1.
 
-Mốc đang active: **QC Tam Cúc v0.2 UX: luật rõ + selected-card feedback**.
+Mốc đang active: **QC Bài Chòi v0.1**.
 
 ## 2. Repo / Deploy
 
@@ -32,6 +33,7 @@ Mốc đang active: **QC Tam Cúc v0.2 UX: luật rõ + selected-card feedback**
 - Cờ Hùm: `#/co-hum`.
 - Cờ Lúa Ngô: `#/co-lua-ngo`.
 - Tam Cúc: `#/tam-cuc`.
+- Bài Chòi: `#/bai-choi`.
 - Mỗi game có nút **← Kho game**.
 - Game chưa làm chỉ hiện `Sắp có`.
 
@@ -222,37 +224,88 @@ Nguồn đối chiếu chính:
 - Trong tự QC UI trước deploy đã bắt và sửa lỗi tap lá không thêm vào selection.
 - v0.2 UX: test/build/deploy #31 success; handoff snapshot #21 success.
 
-## 9. NEXT ACTION — ưu tiên cao nhất
+## 9. Bài Chòi — trạng thái Game 06
+
+### Nguồn / ruleset
+Chi tiết tại `docs/BAI_CHOI_RULES.md`.
+
+Nguồn đối chiếu:
+- UNESCO: Nghệ thuật Bài Chòi Trung Bộ Việt Nam, ghi danh năm 2017.
+- Cổng thông tin Đà Nẵng / Hòa Vang: bộ bài, hội 9 chòi, 27 cặp.
+- Báo Đà Nẵng: Anh Hiệu hô thai, chòi trúng gõ mõ, đủ 3 con thì “Tới”.
+- Nguồn Bình Định: hệ 27 tên con bài dùng trong hội.
+
+### Ruleset dự án v0.1
+- Hội **9 chòi**.
+- Bộ chia gồm **27 con**, chia hết 3 con/chòi, không trùng.
+- Bộ bài tỳ là một bộ trùng 27 con, xáo độc lập.
+- Một lượt: Anh Hiệu hô thai minh họa -> xướng tên -> chòi sở hữu con đó được đánh dấu.
+- Chòi đầu tiên đủ 3 con thì **TỚI** và thắng hội.
+- Solo: 1 người + 8 chòi máy.
+- Local: 2 người + 7 chòi máy.
+- Không có AI Dễ/Vừa/Khó vì không có quyết định chiến thuật ở phía chòi; máy không được sửa xác suất.
+- Câu hô thai là câu mới do dự án biên soạn, không giả là lời cổ truyền chuẩn.
+
+### Đã triển khai
+- Module riêng `src/baichoi/`.
+- Engine deterministic.
+- Danh sách 27 con Bài Chòi.
+- Hai chế độ Solo / Local.
+- UI Anh Hiệu + ống bài tỳ.
+- Flow 2 nhịp: **Hô thai -> Xướng tên con bài**.
+- Chòi người chơi hiển thị đủ 3 con và trạng thái trúng.
+- Chòi máy hiển thị tiến độ 0/3, 1/3, 2/3.
+- Khi chòi trúng có hiệu ứng **CỐC! CỐC!**.
+- Khi đủ 3 con có banner **TỚI! TỚI!**.
+- Lịch sử các con đã xướng.
+- Luật 4 bước mở sẵn trong game.
+- Route `#/bai-choi`.
+- Kho game hiện **6 game playable**.
+
+### QC kỹ thuật
+- Deploy workflow **#32**: success.
+- Deployed commit: `99e6ed4a52e93313f93deb774d29bb6691fa16b1`.
+- `npm test`: **45/45 pass**.
+  - Bài Chòi: 7 tests.
+- Bài Chòi tests bao phủ:
+  - bộ 27 con unique;
+  - 9 chòi x 3 con, không trùng;
+  - Solo 1 human / Local 2 human;
+  - draw order không lặp;
+  - đúng chòi nhận hit;
+  - đủ 3 hit thì TỚI;
+  - dừng rút sau khi có winner.
+- Production build pass.
+- GitHub Pages deploy pass.
+
+## 10. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC Tam Cúc v0.2 UX trên bản live.**
+**QC Bài Chòi v0.1 trên bản live.**
 
 ### Checklist QC
-1. Kho game hiển thị 5 game playable.
-2. Vào Tam Cúc, mỗi bên phải có 16 lá.
-3. Chọn một lá phải nổi bật rõ ngay: nhấc cao + viền/glow + badge `✓ ĐÃ CHỌN`, và khu `ĐANG CHỌN` phải hiện đúng tên lá.
-4. Chọn nhiều lá phải liệt kê đầy đủ, không khó phân biệt với lá chưa chọn.
-5. Chọn đúng đôi / bộ ba phải Gọi được; bộ sai phải không Gọi được.
-6. Lượt đầu Tướng/Sĩ phải bị khóa, Tượng vẫn dùng được.
-7. Người đáp phải chọn đúng số lá.
-8. Ngửa bài phải so đúng thứ tự Tướng > Sĩ > Tượng > Xe > Pháo > Mã > Tốt và đỏ > đen cùng tên.
-9. Chui phải bỏ đúng số lá và cái ăn lượt.
-10. Người thắng lượt phải giữ cái lượt sau.
-11. Sau lượt phải nhìn rõ bài cái vs bài đáp trên chiếu.
-12. Phần luật phải đọc được rõ trên mobile, không thành khối chữ dài khó theo dõi.
-13. AI Dễ/Vừa/Khó đi hợp lệ.
-14. QC thực tế các giả định: Tượng hồng là trần lượt đầu; cái thắng hòa; Chui vẫn mất số lá đã bỏ.
+1. Kho game hiển thị 6 game playable.
+2. Chế độ Solo phải có 1 chòi người chơi + 8 chòi máy.
+3. Local phải có 2 chòi người chơi + 7 chòi máy.
+4. Mỗi chòi đúng 3 con; tổng 27 con không trùng.
+5. Nút Hô thai phải hiện câu thai trước khi lộ tên con bài.
+6. Xướng tên phải đánh dấu đúng chòi sở hữu con đó.
+7. Chòi người chơi phải đọc rõ 3 thẻ trên mobile.
+8. Chòi trúng phải có feedback “CỐC! CỐC!” đủ rõ.
+9. Đủ 3 con phải dừng hội và hiện “TỚI! TỚI!” đúng chòi.
+10. Lịch sử con đã xướng phải khớp thứ tự rút.
+11. Không có chòi máy nào được ưu tiên/xử lý xác suất khác người chơi.
+12. Phần luật và ghi chú câu thai minh họa phải dễ hiểu.
 
-### Nếu gameplay core được duyệt
+### Nếu v0.1 được duyệt
 Ưu tiên v0.2:
-- Trình làng Tứ tử / Ngũ tử;
-- Ngũ tử cướp cái;
-- Kết đôi / Kết ba;
-- Kết Tốt đen / Đè Tốt đen;
-- điểm thưởng truyền thống;
-- animation úp/ngửa bài rõ hơn.
+- âm thanh mõ/trống;
+- hình thẻ bài truyền thống thay cho thẻ chữ;
+- animation Anh Hiệu xóc/rút thẻ;
+- art direction hội xuân/chòi tre sâu hơn;
+- nghiên cứu thêm câu thai/làn điệu với nguồn và quyền sử dụng phù hợp.
 
-## 10. Rủi ro / giả định
+## 11. Rủi ro / giả định
 
 - Cờ Lúa Ngô có dị bản và một số nguồn thay “Đỗ” bằng từ khác; dự án dùng chuỗi **Lúa · Ngô · Khoai · Sắn · Đỗ** theo Báo Nam Định và các nguồn giáo dục đối chiếu.
 - Nguồn không nói rõ việc quay lại node đã đi trong cùng lượt; v0.1 cấm lặp node để tránh backtracking vô hạn.
@@ -261,17 +314,19 @@ Nguồn đối chiếu chính:
 - Tam Cúc có mâu thuẫn nguồn ở trần lượt đầu (Tượng hồng vs Xe hồng); v0.1 chọn Tượng hồng.
 - Tam Cúc v0.1 dùng scoring số hóa theo tổng lá ăn, chưa phải toàn bộ hệ điểm truyền thống.
 - Trường hợp hai lá/bộ ngang sức hoàn toàn cho cái thắng hòa là fallback số hóa cần QC.
+- Tên con Bài Chòi có dị bản địa phương; v0.1 khóa một bộ 27 tên theo nguồn Bình Định.
+- Hô thai thật là nghệ thuật ứng khẩu và có nhiều dị bản; v0.1 dùng câu minh họa mới, không coi là corpus truyền thống chuẩn.
 
-## 11. Việc chưa làm
+## 12. Việc chưa làm
 
 - Sound design.
 - Tutorial/onboarding hoàn chỉnh.
 - Multiplayer online.
 - Account / leaderboard.
-- Game 06.
+- Game 07.
 - QC nhiều thiết bị.
 
-## 12. Quy tắc cập nhật state
+## 13. Quy tắc cập nhật state
 
 Sau mỗi mốc:
 - cập nhật **Đã có**;
