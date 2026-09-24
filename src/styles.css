@@ -2014,3 +2014,36 @@ button.game-tile {
   .tc-played-cards { min-height: 100px; }
   .tc-table-card { width: 58px; height: 92px; }
 }
+
+
+.tc-result-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.tc-result-group > span {
+  width: 100%;
+  text-align: center;
+  color: #e6c79a;
+  font-size: .58rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.tc-result-divider {
+  color: #e3bd83;
+  font-size: .66rem;
+  font-weight: 950;
+  letter-spacing: .08em;
+}
+@media (max-width: 600px) {
+  .tc-played-cards {
+    flex-wrap: wrap;
+  }
+  .tc-result-divider {
+    width: 100%;
+    text-align: center;
+  }
+}
