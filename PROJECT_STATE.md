@@ -221,8 +221,6 @@ Nguồn đối chiếu chính:
   - người đáp chỉ lấy lượt khi bộ ngửa mạnh hơn.
 - Production build pass.
 - GitHub Pages deploy pass.
-- Voice-pack generator workflow #2 success; 3 MP3 + license file present on main.
-- Handoff snapshot #28 success.
 - Handoff snapshot #23 success.
 - Trong tự QC UI trước deploy đã bắt và sửa lỗi tap lá không thêm vào selection.
 - v0.2 UX: test/build/deploy #31 success; handoff snapshot #21 success.
@@ -302,39 +300,34 @@ Nguồn đối chiếu:
   - dừng rút sau khi có winner.
 - Production build pass.
 - GitHub Pages deploy pass.
+- Voice-pack generator workflow #2 success; 3 MP3 + license file present on main.
+- Handoff snapshot #28 success.
+
+### Trạng thái tạm dừng
+- Người dùng chốt ngày 2026-09-24: **tạm dừng hoàn thiện Bài Chòi tại đây để chuyển sang việc khác**.
+- Mốc lưu: **v0.4 pre-rendered voice-pack baseline**.
+- Gameplay core đã playable; phần audio/diễn xướng chưa được coi là hoàn thiện cuối.
+- Khi quay lại, KHÔNG làm lại từ đầu và KHÔNG hỏi lại các quyết định D-023 → D-027.
+- Việc tiếp tục ưu tiên:
+  1. QC trực tiếp 3 MP3 Ông Ầm / Ba Gà / Cửu Chùa trên mobile thực tế.
+  2. Nếu baseline vẫn “máy”, thay bằng voice-pack hát/render hoặc bản thu chất lượng cao.
+  3. Mở rộng voice-pack từ 3 lên đủ 27 quân sau khi chốt chất giọng.
+  4. Sau audio mới tới hình thẻ truyền thống, animation Anh Hiệu và art direction hội xuân.
 
 ## 10. NEXT ACTION — ưu tiên cao nhất
 
-### Task
-**QC Bài Chòi v0.4 trên bản live, ưu tiên 3 MP3 voice-pack và Android voice fallback.**
+### Trạng thái
+**Không có game nào đang được triển khai tiếp. Bài Chòi đã được đóng băng có chủ đích ở v0.4 để chuyển sang việc khác.**
 
-### Checklist QC
-1. Kho game hiển thị 6 game playable.
-2. Chế độ Solo phải có 1 chòi người chơi + 8 chòi máy.
-3. Local phải có 2 chòi người chơi + 7 chòi máy.
-4. Mỗi chòi đúng 3 con; tổng 27 con không trùng.
-5. Nút Hô thai phải hiện câu thai trước khi lộ tên con bài.
-6. Xướng tên phải đánh dấu đúng chòi sở hữu con đó.
-7. Trên mobile, chòi người chơi phải chiếm toàn hàng và 3 thẻ phải đọc rõ, không còn cảm giác bé.
-8. Nút Âm thanh phải bật/tắt rõ ràng.
-9. Selector **Giọng xướng tên** phải liệt kê voice nếu Android trả được; nếu không phải hiện “Giọng mặc định của máy” và có nút **Nạp lại giọng**.
-10. Chạm Hô thai phải nghe nhịp trống rõ transient và thân tiếng.
-11. Ba câu Ông Ầm / Ba Gà / Cửu Chùa phải phát MP3 voice-pack render sẵn, không dùng browser TTS.
-12. Ba MP3 phải có chất giọng nhất quán giữa các thiết bị.
-13. Các câu chưa có voice-pack vẫn fallback TTS; khi Xướng tên, tên con bài phải đọc rõ.
-14. Chòi trúng phải vừa hiện “CỐC! CỐC!” vừa phát tiếng mõ mới.
-15. Đủ 3 con phải dừng hội, hiện “TỚI! TỚI!” đúng chòi và phát nhịp thắng.
-16. Lịch sử con đã xướng phải khớp thứ tự rút.
-17. Không có chòi máy nào được ưu tiên/xử lý xác suất khác người chơi.
-18. Phần luật phải nói rõ prototype diễn xướng chưa phải bản thu nghệ nhân.
+### Khi người dùng quay lại Bài Chòi
+- Bắt đầu từ mốc v0.4 hiện tại, không dựng lại engine/gameplay.
+- Đọc `docs/BAI_CHOI_RULES.md` và `docs/BAI_CHOI_VOICE_PACK.md`.
+- Kiểm tra deploy/Actions thật trước khi chỉnh.
+- Mục tiêu kế tiếp là **chất lượng voice-pack**, không phải thay ruleset.
 
-### Nếu v0.4 được duyệt
-Ưu tiên tiếp:
-- thay baseline neural TTS bằng **audio nghệ nhân/render hát chất lượng cao**;
-- mở rộng voice-pack từ 3 lên đủ 27 quân;
-- hình thẻ bài truyền thống thay cho thẻ chữ;
-- animation Anh Hiệu xóc/rút thẻ;
-- art direction hội xuân/chòi tre sâu hơn.
+### Khi người dùng chọn việc/game khác
+- Thực hiện task mới theo chỉ dẫn mới của người dùng.
+- Không tự động coi Game 07 là Bài Chòi tiếp theo hay tự chọn game mới nếu người dùng chưa yêu cầu.
 
 ## 11. Rủi ro / giả định
 
