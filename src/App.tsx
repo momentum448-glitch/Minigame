@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import OAnQuanGame from './OAnQuanGame';
 import CoGanhGame from './CoGanhGame';
+import CoHumGame from './CoHumGame';
 
-type AppRoute = 'home' | 'o-an-quan' | 'co-ganh';
+type AppRoute = 'home' | 'o-an-quan' | 'co-ganh' | 'co-hum';
 
 function routeFromHash(): AppRoute {
   if (window.location.hash === '#/o-an-quan') return 'o-an-quan';
   if (window.location.hash === '#/co-ganh') return 'co-ganh';
+  if (window.location.hash === '#/co-hum') return 'co-hum';
   return 'home';
 }
 
@@ -46,6 +48,12 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const openCoHum = () => {
+    window.location.hash = '/co-hum';
+    setRoute('co-hum');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const goHome = () => {
     window.location.hash = '';
     setRoute('home');
@@ -58,6 +66,10 @@ export default function App() {
 
   if (route === 'co-ganh') {
     return <CoGanhGame onBack={goHome} />;
+  }
+
+  if (route === 'co-hum') {
+    return <CoHumGame onBack={goHome} />;
   }
 
   return (
@@ -75,7 +87,7 @@ export default function App() {
           <p className="hub-overline">KHO TRÒ CHƠI</p>
           <h1>Chọn một trò,<br />bắt đầu một ván.</h1>
           <p className="hub-lead">
-            Mỗi game là một bàn chơi riêng. Hôm nay mở Ô ăn quan, những ô còn lại sẽ dần sáng đèn.
+            Ba bàn chơi đã sáng đèn: rải sỏi, Gánh quân, hoặc chọn một Hùm chống lại cả đàn Trâu.
           </p>
         </div>
       </header>
@@ -86,7 +98,7 @@ export default function App() {
             <p className="eyebrow">ĐANG CÓ</p>
             <h2 id="game-library-title">Kho game</h2>
           </div>
-          <span className="library-count">2 game chơi được</span>
+          <span className="library-count">3 game chơi được</span>
         </div>
 
         <div className="game-grid">
@@ -135,6 +147,24 @@ export default function App() {
               </div>
               <h3>Cờ Gánh</h3>
               <p>Gánh, Vây và gài thế Mở trên bàn cờ 25 giao điểm của xứ Quảng.</p>
+              <span className="play-cta">Vào bàn chơi <b>→</b></span>
+            </div>
+          </button>
+
+          <button className="game-tile game-tile-live" type="button" onClick={openCoHum}>
+            <div className="game-art hum-art" aria-hidden="true">
+              <div className="hum-mini-board">
+                <span className="hum-mini-tiger" />
+                {Array.from({ length: 10 }, (_, index) => <span className="hum-mini-buffalo" key={index} />)}
+              </div>
+            </div>
+            <div className="game-tile-copy">
+              <div className="game-tile-meta">
+                <span className="live-dot" />
+                <span>Chơi ngay</span>
+              </div>
+              <h3>Cờ Hùm</h3>
+              <p>Một Hùm săn 15 Trâu, còn đàn Trâu thắng bằng cách khép kín mọi đường thoát.</p>
               <span className="play-cta">Vào bàn chơi <b>→</b></span>
             </div>
           </button>
