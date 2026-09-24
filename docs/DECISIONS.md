@@ -162,3 +162,23 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Ăn hết quân đối phương thì thắng.
 - Chi tiết nguồn và giả định: `docs/CO_LUA_NGO_RULES.md`.
 - Quyết định: CHỐT ngày 2026-09-24.
+
+
+## D-020 — Game 05
+- Game thứ năm của Kho game là **Tam Cúc**.
+- Bản đầu tập trung biến thể **tay đôi 2 người**, phù hợp local + AI.
+- Route: `#/tam-cuc`.
+- Quyết định: CHỐT ngày 2026-09-24.
+
+## D-021 — Tam Cúc ruleset v0.1
+- Bộ 32 lá, 16 đỏ + 16 đen; mỗi người tay đôi nhận 16 lá và hai bên biết bài nhau.
+- Thứ tự: Tướng > Sĩ > Tượng > Xe > Pháo > Mã > Tốt; cùng tên đỏ > đen.
+- Gọi 1/2/3 cây.
+- Đôi = cùng tên + cùng màu.
+- Bộ ba hợp lệ chỉ Tướng–Sĩ–Tượng hoặc Xe–Pháo–Mã cùng màu.
+- Người đáp bỏ đúng số cây; có thể Ngửa bài hoặc Chui.
+- Lượt đầu v0.1 dùng “cấm Tướng, cấm Sĩ, lấy Tượng cầm đầu”.
+- Nếu sức mạnh bằng hệt nhau, cái thắng hòa.
+- v0.1 tính thắng bằng tổng số lá ăn được; chưa triển khai Trình làng/Kết/Đè và điểm thưởng truyền thống.
+- Chi tiết nguồn/mâu thuẫn/giả định: `docs/TAM_CUC_RULES.md`.
+- Quyết định: CHỐT ngày 2026-09-24.

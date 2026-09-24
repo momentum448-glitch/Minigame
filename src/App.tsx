@@ -3,14 +3,16 @@ import OAnQuanGame from './OAnQuanGame';
 import CoGanhGame from './CoGanhGame';
 import CoHumGame from './CoHumGame';
 import CoLuaNgoGame from './CoLuaNgoGame';
+import TamCucGame from './TamCucGame';
 
-type AppRoute = 'home' | 'o-an-quan' | 'co-ganh' | 'co-hum' | 'co-lua-ngo';
+type AppRoute = 'home' | 'o-an-quan' | 'co-ganh' | 'co-hum' | 'co-lua-ngo' | 'tam-cuc';
 
 function routeFromHash(): AppRoute {
   if (window.location.hash === '#/o-an-quan') return 'o-an-quan';
   if (window.location.hash === '#/co-ganh') return 'co-ganh';
   if (window.location.hash === '#/co-hum') return 'co-hum';
   if (window.location.hash === '#/co-lua-ngo') return 'co-lua-ngo';
+  if (window.location.hash === '#/tam-cuc') return 'tam-cuc';
   return 'home';
 }
 
@@ -62,6 +64,12 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const openTamCuc = () => {
+    window.location.hash = '/tam-cuc';
+    setRoute('tam-cuc');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const goHome = () => {
     window.location.hash = '';
     setRoute('home');
@@ -84,6 +92,10 @@ export default function App() {
     return <CoLuaNgoGame onBack={goHome} />;
   }
 
+  if (route === 'tam-cuc') {
+    return <TamCucGame onBack={goHome} />;
+  }
+
   return (
     <main className="hub-shell">
       <header className="hub-hero">
@@ -99,7 +111,7 @@ export default function App() {
           <p className="hub-overline">KHO TRÒ CHƠI</p>
           <h1>Chọn một trò,<br />bắt đầu một ván.</h1>
           <p className="hub-lead">
-            Bốn bàn chơi đã sáng đèn: rải sỏi, Gánh quân, săn Hùm, và tính đủ năm nhịp Lúa Ngô.
+            Năm trò đã sáng đèn: từ những bàn cờ dân gian tới ván Tam Cúc đầu tiên của kho game.
           </p>
         </div>
       </header>
@@ -110,7 +122,7 @@ export default function App() {
             <p className="eyebrow">ĐANG CÓ</p>
             <h2 id="game-library-title">Kho game</h2>
           </div>
-          <span className="library-count">4 game chơi được</span>
+          <span className="library-count">5 game chơi được</span>
         </div>
 
         <div className="game-grid">
@@ -198,6 +210,26 @@ export default function App() {
               <h3>Cờ Lúa Ngô</h3>
               <p>Đi đủ năm nhịp Lúa · Ngô · Khoai · Sắn · Đỗ và tính điểm rơi để ăn quân.</p>
               <span className="play-cta">Vào bàn chơi <b>→</b></span>
+            </div>
+          </button>
+
+          <button className="game-tile game-tile-live" type="button" onClick={openTamCuc}>
+            <div className="game-art tamcuc-art" aria-hidden="true">
+              <div className="tamcuc-mini-fan">
+                <span className="red">將</span>
+                <span>車</span>
+                <span className="red">馬</span>
+                <span>卒</span>
+              </div>
+            </div>
+            <div className="game-tile-copy">
+              <div className="game-tile-meta">
+                <span className="live-dot" />
+                <span>Chơi ngay</span>
+              </div>
+              <h3>Tam Cúc</h3>
+              <p>Gọi một, đôi hoặc ba cây, úp xuống chiếu rồi ngửa bài tranh cái.</p>
+              <span className="play-cta">Vào chiếu bài <b>→</b></span>
             </div>
           </button>
 
