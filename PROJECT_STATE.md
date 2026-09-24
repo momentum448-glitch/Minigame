@@ -14,7 +14,7 @@ Xây một website chứa nhiều minigame theo mô hình **sảnh game đa danh
 5. **Tam Cúc** — Game 05, playable v0.2 UX.
 6. **Bài Chòi** — Game 06, playable v0.4 pre-rendered voice-pack baseline.
 
-Mốc đang active: **QC Home v2 / Sảnh game đa danh mục**. Bài Chòi vẫn tạm dừng ở v0.4.
+Mốc đang active: **Game 07 — discovery/ruleset cho game cờ quái vật hiện đại tự sáng tạo**. Home v2 đã deploy #39; Bài Chòi vẫn tạm dừng ở v0.4.
 
 ## 2. Repo / Deploy
 
@@ -340,29 +340,75 @@ Nguồn đối chiếu:
   3. Mở rộng voice-pack từ 3 lên đủ 27 quân sau khi chốt chất giọng.
   4. Sau audio mới tới hình thẻ truyền thống, animation Anh Hiệu và art direction hội xuân.
 
-## 10. NEXT ACTION — ưu tiên cao nhất
+## 10. Game 07 — cờ quái vật hiện đại
+
+### Trạng thái
+- Game hiện đại tự sáng tạo, chưa có tên chính thức; codename làm việc: **Monster Chess**.
+- Đây không phải chess reskin; mỗi quái vật là một unit riêng có bộ di chuyển/tấn công/skill/tiến hóa riêng.
+- Mục tiêu trận: **tiêu diệt toàn bộ quái vật đối phương**.
+- Thời lượng mục tiêu: khoảng **3–5 phút/ván**.
+- Điều khiển: theo lượt, chạm chọn unit rồi chạm mục tiêu/ô/kỹ năng.
+
+### Draft trước trận
+- Mỗi người có cùng **ngân sách sao**, ví dụ 10★.
+- Mỗi quái vật có giá sao riêng.
+- Hai người **draft luân phiên**.
+- Quái đã được một bên chọn thì **khóa**, bên kia không được chọn cùng loài.
+- Tổng sao đội hình phải <= ngân sách.
+- Số lượng quái không cố định; đội nhiều quái rẻ và đội ít quái đắt đều hợp lệ.
+
+### Action economy
+- Trận chia theo round.
+- Hai bên **luân phiên kích hoạt từng quái**.
+- Mỗi quái còn sống có tối đa **1 hành động mỗi round**.
+- Hành động có thể gồm di chuyển, tấn công, dùng skill, nhặt vật phẩm/EXP hoặc tương tác đặc biệt.
+- Thứ tự kích hoạt quái là một phần chiến thuật.
+
+### Board / map
+- Dùng **hex grid**, không dùng ô vuông.
+- Quy mô làm việc tương đương khoảng **8×8 / ~64 hex**; hình học cụ thể sẽ chốt ở vòng tiếp theo.
+- Mỗi ván có **bản đồ ngẫu nhiên** thay vì một bàn cố định.
+- Map có thể random terrain, vật cản, điểm spawn và vật phẩm, nhưng phải giữ fairness giữa hai phía.
+- Vật phẩm/EXP spawn theo hướng **ngẫu nhiên trên map**, không khóa điểm spawn cố định.
+
+### Combat
+- Combat chủ yếu tính toán được nhưng có **một lượng RNG nhỏ**.
+- Không dùng RNG nặng làm mất tính cờ/puzzle.
+- Chi tiết RNG như accuracy/crit/damage spread/status proc chưa chốt.
+
+### EXP / tiến hóa
+- Mỗi quái vật có hệ tiến hóa riêng.
+- Có tối đa **2 lần tiến hóa trong một trận**.
+- Mỗi lần tiến hóa người chơi chọn **1 trong 3 option tăng tiến**.
+- Các option có thể đổi stat, skill, phạm vi, pattern tấn công hoặc vai trò.
+- Cùng một quái có thể đi theo build khác nhau giữa các ván.
+- Nguồn EXP có thể gồm combat, nhặt orb/EXP và objective; trọng số chưa chốt.
+
+### Mode nền
+- Định hướng có cả **PvP local** và cấu trúc **roguelite**.
+- Ruleset combat phải dùng chung để sau này solo roguelite và local PvP không thành hai game tách biệt.
+
+## 11. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC Home v2 / Sảnh game đa danh mục trên bản live.**
+**Chốt ruleset nền Game 07 trước khi prototype.**
 
-### Checklist QC
-1. Root `#/` phải hiện **Kho Minigame / Sảnh game**, không hiện thẳng 6 game Việt.
-2. Phải thấy 6 danh mục: Dân gian Việt Nam, Dân gian thế giới, Game hiện đại, Giải đố & Logic, Chiến thuật, May rủi & Party.
-3. Dân gian Việt Nam mở đúng 6 game hiện tại.
-4. Chiến thuật mở đúng Cờ Gánh, Cờ Hùm, Cờ Lúa Ngô.
-5. May rủi & Party mở đúng Tam Cúc, Bài Chòi.
-6. Danh mục chưa có game hiển thị empty state rõ, không giả là có game.
-7. Game nổi bật trên home mở được game trực tiếp.
-8. Tất cả route game cũ vẫn hoạt động.
-9. Luồng **Sảnh → Danh mục → Game → quay lại** hợp lý trên mobile.
-10. Card danh mục và Game nổi bật không bị chật/chữ nhỏ trên mobile.
+### Cần chốt tiếp
+1. Hình học hex map: 8×8 axial rhombus, hexagon bán kính cố định hay map shape biến thiên nhưng xấp xỉ 64 ô.
+2. Cách random map vẫn công bằng: mirror/symmetric generation, seed cân bằng hay bất đối xứng có compensation.
+3. Combat RNG nhỏ sẽ nằm ở đâu: damage spread, crit, accuracy, status proc hay kết hợp giới hạn.
+4. Cơ chế range/line-of-sight/cover trên hex.
+5. Cách nhận EXP và threshold tiến hóa I / II.
+6. Item economy: nhặt item có tốn action không, item giữ trong inventory hay dùng ngay.
+7. Xử lý chênh lệch action economy giữa đội nhiều quái 1★ và đội ít quái cao sao.
 
-### Sau khi Home v2 được duyệt
-- Có thể chọn game mới theo bất kỳ nhánh nào: Dân gian thế giới, Game hiện đại, Puzzle, v.v.
-- Bài Chòi tiếp tục giữ trạng thái tạm dừng v0.4 cho tới khi người dùng chủ động quay lại.
-- Không tự chọn Game 07 nếu người dùng chưa yêu cầu.
+### Sau khi chốt
+- Viết ruleset v0.1.
+- Thiết kế hệ sao.
+- Thiết kế 8 quái đầu tiên với role, stat, skill và 3 option ở mỗi tầng tiến hóa.
+- Sau đó mới prototype engine/map.
 
-## 11. Rủi ro / giả định
+## 12. Rủi ro / giả định
 
 - Cờ Lúa Ngô có dị bản và một số nguồn thay “Đỗ” bằng từ khác; dự án dùng chuỗi **Lúa · Ngô · Khoai · Sắn · Đỗ** theo Báo Nam Định và các nguồn giáo dục đối chiếu.
 - Nguồn không nói rõ việc quay lại node đã đi trong cùng lượt; v0.1 cấm lặp node để tránh backtracking vô hạn.
@@ -374,7 +420,7 @@ Nguồn đối chiếu:
 - Tên con Bài Chòi có dị bản địa phương; v0.1 khóa một bộ 27 tên theo nguồn Bình Định.
 - Hô thai thật là nghệ thuật ứng khẩu và có nhiều dị bản; v0.1 dùng câu minh họa mới, không coi là corpus truyền thống chuẩn.
 
-## 12. Việc chưa làm
+## 13. Việc chưa làm
 
 - Sound design.
 - Tutorial/onboarding hoàn chỉnh.
@@ -383,7 +429,7 @@ Nguồn đối chiếu:
 - Game 07.
 - QC nhiều thiết bị.
 
-## 13. Quy tắc cập nhật state
+## 14. Quy tắc cập nhật state
 
 Sau mỗi mốc:
 - cập nhật **Đã có**;
