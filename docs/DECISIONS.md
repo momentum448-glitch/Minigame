@@ -287,3 +287,16 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Định hướng chung hỗ trợ cả local PvP và roguelite trên cùng ruleset combat.
 - Chi tiết map fairness, RNG combat, EXP/item economy và action-economy balancing sẽ chốt ở vòng discovery tiếp theo.
 - Quyết định: CHỐT ngày 2026-09-24.
+
+
+## D-031 — Game 07 map/combat/economy foundation
+- Board v0.1 dùng **hexagon bán kính 4 = 61 ô**.
+- Map mỗi ván được random nhưng phải có khung fairness đối xứng/cân bằng; item/EXP được phép random có kiểm soát.
+- Terrain nền v0.1 gồm **Ground / Blocker / Cover**.
+- Combat mặc định có **10% miss + 10% crit**, phần còn lại là hit thường.
+- RNG phải nhỏ và đọc được; không để may rủi lấn át quyết định chiến thuật.
+- EXP là **riêng từng quái**.
+- Tối đa **5 quái/đội** dù ngân sách sao có thể cho phép nhiều unit rẻ hơn.
+- Item/EXP nhỏ trên bản đồ dùng **auto-pickup**, không tốn action riêng.
+- Các chi tiết còn mở: crit multiplier, cover/LOS formula, skill economy, EXP threshold, item chủ động.
+- Quyết định: CHỐT ngày 2026-09-24.
