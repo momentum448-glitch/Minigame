@@ -254,3 +254,19 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Khi quay lại, ưu tiên QC 3 MP3 mẫu, chốt chất giọng rồi mới mở rộng đủ 27 quân.
 - Các quyết định D-023 đến D-027 vẫn giữ hiệu lực.
 - Quyết định: CHỐT ngày 2026-09-24.
+
+
+## D-029 — Sảnh game đa danh mục
+- Trang khởi đầu đổi từ “Kho game dân gian Việt Nam” thành **Sảnh game / Kho Minigame** trung tính.
+- Kiến trúc điều hướng: **Sảnh game → Danh mục → Game**.
+- **Dân gian Việt Nam** là một danh mục lớn, không còn là toàn bộ phạm vi website.
+- Các danh mục nền tảng: Dân gian Việt Nam, Dân gian thế giới, Game hiện đại, Giải đố & Logic, Chiến thuật, May rủi & Party.
+- Một game có thể thuộc **nhiều danh mục**.
+- Trang chủ kết hợp:
+  - card danh mục;
+  - một khu **Game nổi bật / Chơi nhanh**.
+- 6 game hiện tại đều thuộc Dân gian Việt Nam; Cờ Gánh/Cờ Hùm/Cờ Lúa Ngô đồng thời thuộc Chiến thuật; Tam Cúc/Bài Chòi đồng thời thuộc May rủi & Party.
+- Route game cũ giữ nguyên để không phá link.
+- Route danh mục dùng dạng `#/category/<category-id>`.
+- Branding hiển thị trên trang chủ đổi sang **Kho Minigame**; repo/project vẫn giữ tên kỹ thuật `Minigame`.
+- Quyết định: CHỐT ngày 2026-09-24.
