@@ -251,7 +251,7 @@ export function applyGanhMove(input: GanhState, move: GanhMove): GanhState {
   state.lastConverted = converted;
   state.lastCaptureType = captureType;
 
-  if (state.board.every((cell) => cell === player)) {
+  if (!state.board.some((cell) => cell === opponent)) {
     state.winner = player;
     state.forcedGanhAt = null;
     state.lastMessage = `Người chơi ${player + 1} đã đổi màu toàn bộ 16 quân và thắng ván.`;
