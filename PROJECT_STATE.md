@@ -221,6 +221,8 @@ Nguồn đối chiếu chính:
   - người đáp chỉ lấy lượt khi bộ ngửa mạnh hơn.
 - Production build pass.
 - GitHub Pages deploy pass.
+- Voice-pack generator workflow #2 success; 3 MP3 + license file present on main.
+- Handoff snapshot #28 success.
 - Handoff snapshot #23 success.
 - Trong tự QC UI trước deploy đã bắt và sửa lỗi tap lá không thêm vào selection.
 - v0.2 UX: test/build/deploy #31 success; handoff snapshot #21 success.
@@ -286,8 +288,8 @@ Nguồn đối chiếu:
 - Kho game hiện **6 game playable**.
 
 ### QC kỹ thuật
-- Deploy workflow **#34**: success.
-- Deployed commit: `8dd6bfacd385863ca088942c493658efd2ec2eae`.
+- Deploy workflow **#38**: success.
+- Deployed commit: `b7945e7ba54edef6babc6025ef9c8db86acd6ba8`.
 - `npm test`: **45/45 pass**.
   - Bài Chòi: 7 tests.
 - Bài Chòi tests bao phủ:
