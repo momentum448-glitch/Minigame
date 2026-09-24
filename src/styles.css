@@ -2797,3 +2797,64 @@ button.game-tile {
     min-height: 112px;
   }
 }
+
+
+/* ===== Bài Chòi v0.3 voice / chant prototype ===== */
+.bc-controls {
+  align-items: end;
+}
+.bc-voice-control select {
+  max-width: min(330px, 78vw);
+}
+.bc-chant-toggle {
+  min-height: 44px;
+  border: 1px solid #9b6c47;
+  border-radius: 999px;
+  padding: 9px 13px;
+  background: #fff4d3;
+  color: #5b3926;
+  font-weight: 850;
+  cursor: pointer;
+}
+.bc-chant-toggle.off {
+  background: #f2ead9;
+  opacity: .78;
+}
+.bc-chant-toggle:disabled {
+  cursor: not-allowed;
+  opacity: .45;
+}
+.bc-audio-note {
+  margin: -5px 0 14px;
+  padding: 9px 12px;
+  border-left: 4px solid rgba(161, 91, 42, .5);
+  border-radius: 0 10px 10px 0;
+  background: rgba(255, 239, 198, .55);
+  color: #674934;
+  font-size: .78rem;
+  line-height: 1.5;
+}
+.bc-chant-badge {
+  display: inline-flex;
+  margin: -2px auto 10px;
+  padding: 4px 8px;
+  border: 1px solid rgba(242, 209, 137, .34);
+  border-radius: 999px;
+  background: rgba(255, 228, 157, .12);
+  color: #f5d996;
+  font-size: .58rem;
+  font-weight: 950;
+  letter-spacing: .07em;
+}
+
+@media (max-width: 760px) {
+  .bc-controls label,
+  .bc-controls .bc-sound-toggle,
+  .bc-controls .bc-chant-toggle {
+    flex: 1 1 210px;
+  }
+  .bc-voice-control select {
+    width: 100%;
+    max-width: none;
+  }
+}

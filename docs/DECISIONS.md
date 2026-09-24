@@ -222,3 +222,14 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Có nút **Âm thanh Bật/Tắt**, mặc định bật; tương tác Hô thai/Xướng tên là user gesture để mở khóa audio trên mobile.
 - Trên mobile, chòi người chơi được ưu tiên toàn chiều ngang và 3 thẻ được phóng lớn; chòi máy vẫn giữ layout gọn.
 - Quyết định: CHỐT ngày 2026-09-24.
+
+
+## D-026 — Bài Chòi voice selector + chant prototype
+- Bài Chòi v0.3 phải cho người chơi chọn giọng Speech Synthesis có trên thiết bị; ưu tiên voice `vi-VN`, fallback voice hệ thống.
+- Tiếng trống/mõ nâng từ oscillator đơn giản lên tổng hợp có **noise + filter + body oscillator** để transient và thân tiếng rõ hơn.
+- Hô thai được phát âm thanh sau nhịp trống.
+- Có prototype “diễn xướng thử” cho 3 con: **Ông Ầm, Ba Gà, Cửu Chùa**.
+- Prototype chia câu thành nhiều segment với pitch/rate/pause khác nhau để kiểm cảm giác hô có làn điệu; không tuyên bố là hát Bài Chòi thật hay giọng nghệ nhân.
+- Các câu còn lại dùng giọng xướng đã chọn ở tempo hô chậm.
+- Kiến trúc này là bước đệm cho voice-pack audio render/thu thật; gameplay engine không phụ thuộc nguồn audio.
+- Quyết định: CHỐT ngày 2026-09-24.
