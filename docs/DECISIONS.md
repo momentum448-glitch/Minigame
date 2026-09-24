@@ -270,3 +270,20 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Route danh mục dùng dạng `#/category/<category-id>`.
 - Branding hiển thị trên trang chủ đổi sang **Kho Minigame**; repo/project vẫn giữ tên kỹ thuật `Minigame`.
 - Quyết định: CHỐT ngày 2026-09-24.
+
+
+## D-030 — Game 07 cờ quái vật hiện đại
+- Game 07 là game hiện đại tự sáng tạo, codename làm việc **Monster Chess**; tên chính thức chưa chốt.
+- Không làm chess reskin; mỗi quái là unit riêng với movement/attack/skill/evolution riêng.
+- Mục tiêu: tiêu diệt toàn bộ quái đối phương.
+- Thời lượng mục tiêu: 3–5 phút/ván.
+- Draft trước trận bằng ngân sách sao, ví dụ 10★; tổng sao đội hình <= ngân sách.
+- Draft **luân phiên**; loài quái đã được chọn bị khóa cho đối thủ.
+- Một round: hai bên luân phiên kích hoạt unit; mỗi quái tối đa 1 action/round.
+- Board dùng **hex grid**, quy mô làm việc xấp xỉ 8×8 / ~64 ô; mỗi ván có map ngẫu nhiên.
+- Combat có RNG nhỏ nhưng vẫn phải giữ tính chiến thuật/puzzle, không để may rủi lấn át.
+- Mỗi quái có tối đa 2 lần tiến hóa trong trận; mỗi lần chọn 1 trong 3 option tăng tiến.
+- Vật phẩm/EXP có thể xuất hiện ngẫu nhiên trên map.
+- Định hướng chung hỗ trợ cả local PvP và roguelite trên cùng ruleset combat.
+- Chi tiết map fairness, RNG combat, EXP/item economy và action-economy balancing sẽ chốt ở vòng discovery tiếp theo.
+- Quyết định: CHỐT ngày 2026-09-24.
