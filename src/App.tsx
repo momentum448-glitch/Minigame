@@ -4,8 +4,9 @@ import CoGanhGame from './CoGanhGame';
 import CoHumGame from './CoHumGame';
 import CoLuaNgoGame from './CoLuaNgoGame';
 import TamCucGame from './TamCucGame';
+import BaiChoiGame from './BaiChoiGame';
 
-type AppRoute = 'home' | 'o-an-quan' | 'co-ganh' | 'co-hum' | 'co-lua-ngo' | 'tam-cuc';
+type AppRoute = 'home' | 'o-an-quan' | 'co-ganh' | 'co-hum' | 'co-lua-ngo' | 'tam-cuc' | 'bai-choi';
 
 function routeFromHash(): AppRoute {
   if (window.location.hash === '#/o-an-quan') return 'o-an-quan';
@@ -13,6 +14,7 @@ function routeFromHash(): AppRoute {
   if (window.location.hash === '#/co-hum') return 'co-hum';
   if (window.location.hash === '#/co-lua-ngo') return 'co-lua-ngo';
   if (window.location.hash === '#/tam-cuc') return 'tam-cuc';
+  if (window.location.hash === '#/bai-choi') return 'bai-choi';
   return 'home';
 }
 
@@ -70,6 +72,12 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const openBaiChoi = () => {
+    window.location.hash = '/bai-choi';
+    setRoute('bai-choi');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const goHome = () => {
     window.location.hash = '';
     setRoute('home');
@@ -96,6 +104,10 @@ export default function App() {
     return <TamCucGame onBack={goHome} />;
   }
 
+  if (route === 'bai-choi') {
+    return <BaiChoiGame onBack={goHome} />;
+  }
+
   return (
     <main className="hub-shell">
       <header className="hub-hero">
@@ -111,7 +123,7 @@ export default function App() {
           <p className="hub-overline">KHO TRÒ CHƠI</p>
           <h1>Chọn một trò,<br />bắt đầu một ván.</h1>
           <p className="hub-lead">
-            Năm trò đã sáng đèn: từ những bàn cờ dân gian tới ván Tam Cúc đầu tiên của kho game.
+            Sáu trò đã sáng đèn: bàn cờ, chiếu bài và cả một hội Bài Chòi miền Trung đã cùng vào kho.
           </p>
         </div>
       </header>
@@ -122,7 +134,7 @@ export default function App() {
             <p className="eyebrow">ĐANG CÓ</p>
             <h2 id="game-library-title">Kho game</h2>
           </div>
-          <span className="library-count">5 game chơi được</span>
+          <span className="library-count">6 game chơi được</span>
         </div>
 
         <div className="game-grid">
@@ -230,6 +242,32 @@ export default function App() {
               <h3>Tam Cúc</h3>
               <p>Gọi một, đôi hoặc ba cây, úp xuống chiếu rồi ngửa bài tranh cái.</p>
               <span className="play-cta">Vào chiếu bài <b>→</b></span>
+            </div>
+          </button>
+
+          <button className="game-tile game-tile-live" type="button" onClick={openBaiChoi}>
+            <div className="game-art baichoi-art" aria-hidden="true">
+              <div className="baichoi-mini-stage">
+                <span className="bc-mini-hut h1" />
+                <span className="bc-mini-hut h2" />
+                <span className="bc-mini-hut h3" />
+                <span className="bc-mini-hut h4" />
+                <span className="bc-mini-hut h5" />
+                <span className="bc-mini-hut h6" />
+                <span className="bc-mini-hut h7" />
+                <span className="bc-mini-hut h8" />
+                <span className="bc-mini-hut h9" />
+                <span className="bc-mini-hieu">♪</span>
+              </div>
+            </div>
+            <div className="game-tile-copy">
+              <div className="game-tile-meta">
+                <span className="live-dot" />
+                <span>Chơi ngay</span>
+              </div>
+              <h3>Bài Chòi</h3>
+              <p>Nghe Anh Hiệu hô thai, chờ trúng đủ ba con bài và reo “Tới!” giữa hội 9 chòi.</p>
+              <span className="play-cta">Vào hội chơi <b>→</b></span>
             </div>
           </button>
 

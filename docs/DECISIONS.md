@@ -191,3 +191,22 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Khu hành động phải liệt kê tên chính xác các lá đang được chọn và nhắc số lá cần chọn khi đáp.
 - Chỉ thay UX/clarity, không đổi engine/ruleset v0.1.
 - Quyết định: CHỐT ngày 2026-09-24.
+
+
+## D-023 — Game 06
+- Game thứ sáu của Kho game là **Bài Chòi**.
+- Dùng hình thức **Hội 9 chòi** làm gameplay số hóa đầu tiên.
+- Route: `#/bai-choi`.
+- Quyết định: CHỐT ngày 2026-09-24.
+
+## D-024 — Bài Chòi ruleset v0.1
+- Dùng bộ 27 con theo hệ hội 9 chòi; mỗi chòi nhận 3 con.
+- Có một bộ bài tỳ trùng 27 con, xáo độc lập để Anh Hiệu rút.
+- Mỗi lượt: hô thai minh họa -> xướng tên con -> chòi sở hữu con đó được đánh dấu/gõ mõ.
+- Chòi đầu tiên đủ 3 con thì **TỚI** và thắng hội.
+- Solo: 1 người + 8 chòi máy.
+- Local: 2 người + 7 chòi máy.
+- Không có AI Dễ/Vừa/Khó vì Bài Chòi v0.1 không có quyết định chiến thuật ở phía chòi; máy không được can thiệp xác suất.
+- Câu hô thai trong web là câu mới do dự án biên soạn, không giả là lời cổ truyền chuẩn.
+- Nguồn và danh sách 27 con: `docs/BAI_CHOI_RULES.md`.
+- Quyết định: CHỐT ngày 2026-09-24.
