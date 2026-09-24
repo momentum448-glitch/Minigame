@@ -24,4 +24,4 @@
 - Repo: https://github.com/momentum448-glitch/Minigame
 - Live: https://momentum448-glitch.github.io/Minigame/
 - Game playable: Ô ăn quan, Cờ Gánh, Cờ Hùm, Cờ Lúa Ngô, Tam Cúc, Bài Chòi
-- Mốc hiện tại: QC Bài Chòi v0.1
+- Mốc hiện tại: QC Bài Chòi v0.2 UX/audio
