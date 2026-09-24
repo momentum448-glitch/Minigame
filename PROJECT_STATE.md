@@ -12,9 +12,9 @@ Xây một website chứa nhiều minigame Việt Nam. Mỗi game là module ri�
 3. **Cờ Hùm** — Game 03, playable v0.2.
 4. **Cờ Lúa Ngô** — Game 04, playable v0.1.
 5. **Tam Cúc** — Game 05, playable v0.2 UX.
-6. **Bài Chòi** — Game 06, playable v0.2 UX/audio.
+6. **Bài Chòi** — Game 06, playable v0.3 voice/chant prototype.
 
-Mốc đang active: **QC Bài Chòi v0.2 UX/audio trên mobile**.
+Mốc đang active: **QC Bài Chòi v0.3 percussion + voice selector + chant prototype**.
 
 ## 2. Repo / Deploy
 
@@ -267,6 +267,13 @@ Nguồn đối chiếu:
   - chòi người chơi chiếm trọn một hàng ở <=760px;
   - 3 thẻ người chơi tăng chiều cao, font và viền;
   - chòi máy vẫn giữ layout gọn.
+- v0.3 audio/voice:
+  - trống/mõ nâng từ oscillator đơn giản lên tổng hợp **noise + filter + body oscillator** để tiếng rõ và dày hơn;
+  - có **selector giọng** lấy các Speech Synthesis voice trên thiết bị, ưu tiên `vi-VN`;
+  - mọi câu hô thai đều được phát bằng giọng đang chọn;
+  - 3 con **Ông Ầm, Ba Gà, Cửu Chùa** có prototype “diễn xướng thử” chia nhiều segment với pitch/rate/pause khác nhau;
+  - có nút bật/tắt prototype diễn xướng;
+  - prototype được ghi rõ chưa phải bản thu nghệ nhân hay hát Bài Chòi thật.
 - Khi đủ 3 con có banner **TỚI! TỚI!**.
 - Lịch sử các con đã xướng.
 - Luật 4 bước mở sẵn trong game.
@@ -274,8 +281,8 @@ Nguồn đối chiếu:
 - Kho game hiện **6 game playable**.
 
 ### QC kỹ thuật
-- Deploy workflow **#33**: success.
-- Deployed commit: `b60e2902f84dc2714358ac5c96aed7fdd95af951`.
+- Deploy workflow **#34**: success.
+- Deployed commit: `8dd6bfacd385863ca088942c493658efd2ec2eae`.
 - `npm test`: **45/45 pass**.
   - Bài Chòi: 7 tests.
 - Bài Chòi tests bao phủ:
@@ -292,7 +299,7 @@ Nguồn đối chiếu:
 ## 10. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC Bài Chòi v0.2 UX/audio trên bản live, ưu tiên mobile.**
+**QC Bài Chòi v0.3 trên bản live, ưu tiên chất tiếng trống/mõ và 3 câu diễn xướng thử.**
 
 ### Checklist QC
 1. Kho game hiển thị 6 game playable.
@@ -303,20 +310,24 @@ Nguồn đối chiếu:
 6. Xướng tên phải đánh dấu đúng chòi sở hữu con đó.
 7. Trên mobile, chòi người chơi phải chiếm toàn hàng và 3 thẻ phải đọc rõ, không còn cảm giác bé.
 8. Nút Âm thanh phải bật/tắt rõ ràng.
-9. Chạm Hô thai phải nghe nhịp trống ngắn sau user gesture.
-10. Khi Xướng tên: nếu thiết bị có voice Việt, tên con bài được đọc; dù không có voice Việt vẫn phải có tiếng mõ/trống.
-11. Chòi trúng phải vừa hiện “CỐC! CỐC!” vừa phát tiếng mõ.
-12. Đủ 3 con phải dừng hội, hiện “TỚI! TỚI!” đúng chòi và phát nhịp thắng.
-13. Lịch sử con đã xướng phải khớp thứ tự rút.
-14. Không có chòi máy nào được ưu tiên/xử lý xác suất khác người chơi.
-15. Phần luật và ghi chú câu thai minh họa phải dễ hiểu.
+9. Selector giọng phải liệt kê được voice Việt nếu thiết bị có; đổi voice phải ảnh hưởng lần hô/xướng sau.
+10. Chạm Hô thai phải nghe nhịp trống mới rõ transient và thân tiếng hơn v0.2.
+11. Mọi câu hô thai phải có audio bằng voice đã chọn.
+12. Ba câu Ông Ầm / Ba Gà / Cửu Chùa phải có nhịp diễn xướng thử khác giọng đọc thường.
+13. Khi Xướng tên, tên con bài vẫn được đọc rõ.
+14. Chòi trúng phải vừa hiện “CỐC! CỐC!” vừa phát tiếng mõ mới.
+15. Đủ 3 con phải dừng hội, hiện “TỚI! TỚI!” đúng chòi và phát nhịp thắng.
+16. Lịch sử con đã xướng phải khớp thứ tự rút.
+17. Không có chòi máy nào được ưu tiên/xử lý xác suất khác người chơi.
+18. Phần luật phải nói rõ prototype diễn xướng chưa phải bản thu nghệ nhân.
 
-### Nếu v0.2 được duyệt
+### Nếu v0.3 được duyệt
 Ưu tiên tiếp:
+- thay prototype bằng **voice-pack audio render/thu thật**;
+- mở rộng diễn xướng từ 3 lên đủ 27 quân;
 - hình thẻ bài truyền thống thay cho thẻ chữ;
 - animation Anh Hiệu xóc/rút thẻ;
-- art direction hội xuân/chòi tre sâu hơn;
-- nghiên cứu thêm câu thai/làn điệu với nguồn và quyền sử dụng phù hợp.
+- art direction hội xuân/chòi tre sâu hơn.
 
 ## 11. Rủi ro / giả định
 
