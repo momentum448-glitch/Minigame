@@ -30,10 +30,10 @@ function freshState(): TamCucState {
   return createTamCucState(shuffleTamCucDeck(createTamCucDeck()), caller);
 }
 
-function sameSelection(cards: TamCucCard[], id: string): TamCucCard[] {
-  return cards.some((card) => card.id === id)
-    ? cards.filter((card) => card.id !== id)
-    : cards;
+function toggleSelection(cards: TamCucCard[], card: TamCucCard): TamCucCard[] {
+  return cards.some((item) => item.id === card.id)
+    ? cards.filter((item) => item.id !== card.id)
+    : [...cards, card];
 }
 
 export default function TamCucGame({ onBack }: TamCucGameProps) {
@@ -127,7 +127,7 @@ export default function TamCucGame({ onBack }: TamCucGameProps) {
     const already = selected.some((item) => item.id === card.id);
 
     if (!already && selected.length >= max) return;
-    setSelected(sameSelection(selected, card.id));
+    setSelected(toggleSelection(selected, card));
   };
 
   const callLead = () => {
@@ -273,12 +273,37 @@ export default function TamCucGame({ onBack }: TamCucGameProps) {
                   </div>
                 ))
               : state.lastResult
-                ? state.lastResult.lead.map((card) => (
-                    <div className={`tc-table-card ${card.color}`} key={card.id}>
-                      <b>{TAM_CUC_RANK_HAN[card.rank]}</b>
-                      <small>{cardLabel(card)}</small>
-                    </div>
-                  ))
+                ? (
+                    <>
+                      <div className="tc-result-group">
+                        <span>Cái</span>
+                        {state.lastResult.lead.map((card) => (
+                          <div className={`tc-table-card ${card.color}`} key={`lead-${card.id}`}>
+                            <b>{TAM_CUC_RANK_HAN[card.rank]}</b>
+                            <small>{cardLabel(card)}</small>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="tc-result-divider">VS</div>
+                      <div className="tc-result-group">
+                        <span>{state.lastResult.responseRevealed ? 'Ngửa' : 'Chui'}</span>
+                        {state.lastResult.response.map((card) => (
+                          state.lastResult?.responseRevealed
+                            ? (
+                                <div className={`tc-table-card ${card.color}`} key={`response-${card.id}`}>
+                                  <b>{TAM_CUC_RANK_HAN[card.rank]}</b>
+                                  <small>{cardLabel(card)}</small>
+                                </div>
+                              )
+                            : (
+                                <div className="tc-table-card face-down" key={`response-${card.id}`}>
+                                  <span>?</span>
+                                </div>
+                              )
+                        ))}
+                      </div>
+                    </>
+                  )
                 : <em>Chưa có bài trên chiếu</em>}
           </div>
 
