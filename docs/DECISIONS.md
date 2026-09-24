@@ -91,3 +91,12 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Không dùng biến thể `chém` hoặc `ăn xong đi tiếp` trong v0.1.
 - Chi tiết nguồn và mapping bàn: `docs/CO_GANH_RULES.md`.
 - Quyết định: CHỐT ngày 2026-09-24.
+
+
+## D-013 — Cờ Gánh animation language
+- Mục tiêu animation: cân bằng nhưng **nghiêng về rõ ràng** hơn hiệu ứng phô diễn.
+- Nhịp di chuyển quân mục tiêu: khoảng **450–550 ms**, lấy mốc làm việc ~500 ms.
+- Kiểu di chuyển: **nhấc nhẹ rồi lướt sang điểm đích và đáp xuống**, không bay cong như Ô ăn quan.
+- Quân bị Gánh: **flip/lật + đổi màu + glow/pulse** để nhấn mạnh việc đổi phe.
+- Nếu nhiều quân bị Gánh trong một nước: hiệu ứng **lần lượt từng quân** thay vì đổi đồng thời.
+- Quyết định: CHỐT ngày 2026-09-24.
