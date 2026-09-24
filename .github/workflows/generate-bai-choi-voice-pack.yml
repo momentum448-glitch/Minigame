@@ -1,0 +1,37 @@
+name: Generate Bai Choi Voice Pack
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/generate-bai-choi-voice-pack.yml'
+      - 'scripts/generate_bai_choi_voice_pack.sh'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bai-choi-voice-pack
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Render Vietnamese voice pack
+        run: bash scripts/generate_bai_choi_voice_pack.sh
+
+      - name: Commit rendered audio
+        run: |
+          if git diff --quiet -- public/audio/bai-choi; then
+            echo "Voice pack unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/audio/bai-choi
+          git commit -m "chore: render Bai Choi voice pack"
+          git push

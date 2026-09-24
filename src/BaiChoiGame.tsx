@@ -15,13 +15,6 @@ interface BaiChoiGameProps {
   onBack: () => void;
 }
 
-interface ChantSegment {
-  text: string;
-  pitch: number;
-  rate: number;
-  pause: number;
-}
-
 const HINTS: Record<string, string> = {
   'Ông Ầm': 'Nghe đâu một tiếng vang rền, bước chân rộn rã cả miền hội xuân.',
   'Tứ Cẳng': 'Bốn chân đứng vững giữa sân, nghe câu thai tới thì gần gõ mõ.',
@@ -42,7 +35,7 @@ const HINTS: Record<string, string> = {
   'Ba Bụng': 'Ba vòng bụng vẫn cười vang, hội vui no tiếng chẳng màng hơn thua.',
   'Chín Cu': 'Chim cu gọi bạn trên đồng, chín hồi tiếng vọng bay vòng qua tre.',
   'Nhứt Nọc': 'Một cây đứng giữa đất trời, đầu xuân nghe gọi nhớ coi quân mình.',
-  'Thất Vung': 'Vung nồi nghiêng ngả bếp xuân, bảy phen khói tỏa thơm gần thơm xa.',
+  'Thất Vung': 'Vung nồi nghiêng ngả bếp xuân, bảy phen trượt bước vẫn còn cuộc vui.',
   'Bát Bồng': 'Tay bồng tay bế đầu sân, tám câu hát nối bước chân hội làng.',
   'Lục Chạng': 'Sáu phen qua ngõ qua làng, nghe câu xướng tới rộn vang tiếng mõ.',
   'Tám Miểng': 'Tám mảnh ghép lại nên hình, quân bài hiện diện giữa đình đầu xuân.',
@@ -52,22 +45,10 @@ const HINTS: Record<string, string> = {
   'Cửu Chùa': 'Chín hồi chuông vọng mái chùa, người nghe câu hát đón mùa an vui.'
 };
 
-const CHANT_PREVIEWS: Record<string, ChantSegment[]> = {
-  'Ông Ầm': [
-    { text: 'Nghe đâu… một tiếng vang rền…', pitch: 0.82, rate: 0.68, pause: 120 },
-    { text: 'bước chân rộn rã…', pitch: 1.08, rate: 0.72, pause: 90 },
-    { text: 'cả miền hội xuân…', pitch: 1.22, rate: 0.64, pause: 0 }
-  ],
-  'Ba Gà': [
-    { text: 'Sáng ra… gà gáy ba hồi…', pitch: 1.18, rate: 0.7, pause: 110 },
-    { text: 'giục người mở cửa…', pitch: 0.94, rate: 0.7, pause: 90 },
-    { text: 'ra coi hội làng…', pitch: 1.12, rate: 0.62, pause: 0 }
-  ],
-  'Cửu Chùa': [
-    { text: 'Chín hồi chuông vọng… mái chùa…', pitch: 0.78, rate: 0.64, pause: 130 },
-    { text: 'người nghe câu hát…', pitch: 0.96, rate: 0.68, pause: 90 },
-    { text: 'đón mùa an vui…', pitch: 1.14, rate: 0.6, pause: 0 }
-  ]
+const VOICE_PACK_FILES: Record<string, string> = {
+  'Ông Ầm': 'ong-am-chant.mp3',
+  'Ba Gà': 'ba-ga-chant.mp3',
+  'Cửu Chùa': 'cuu-chua-chant.mp3'
 };
 
 function ownerLabel(hut: BaiChoiHut): string {
@@ -83,10 +64,11 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
   const [phase, setPhase] = useState<'ready' | 'thai'>('ready');
   const [revealFlash, setRevealFlash] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const [chantEnabled, setChantEnabled] = useState(true);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [voiceURI, setVoiceURI] = useState('');
+  const [voiceStatus, setVoiceStatus] = useState<'loading' | 'ready' | 'fallback'>('loading');
   const audioContextRef = useRef<AudioContext | null>(null);
+  const chantAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const winner = useMemo(
     () => state.winnerHutId === null
@@ -96,33 +78,71 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
   );
 
   const voiceOptions = useMemo(() => {
-    const vietnamese = voices.filter((voice) =>
-      voice.lang.toLowerCase().startsWith('vi')
-    );
-    return vietnamese.length > 0 ? vietnamese : voices.slice(0, 12);
+    const ranked = [...voices].sort((a, b) => {
+      const aVi = a.lang.toLowerCase().startsWith('vi') ? 0 : 1;
+      const bVi = b.lang.toLowerCase().startsWith('vi') ? 0 : 1;
+      if (aVi !== bVi) return aVi - bVi;
+      if (a.default !== b.default) return a.default ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
+
+    return ranked.slice(0, 24);
   }, [voices]);
 
+  const refreshVoices = () => {
+    if (!('speechSynthesis' in window)) {
+      setVoiceStatus('fallback');
+      return;
+    }
+
+    const next = window.speechSynthesis.getVoices();
+    setVoices(next);
+
+    if (next.length === 0) {
+      setVoiceStatus('fallback');
+      return;
+    }
+
+    setVoiceStatus('ready');
+    setVoiceURI((current) => {
+      if (current && next.some((voice) => voice.voiceURI === current)) return current;
+      const vietnamese = next.find((voice) =>
+        voice.lang.toLowerCase().startsWith('vi')
+      );
+      return (vietnamese ?? next.find((voice) => voice.default) ?? next[0]).voiceURI;
+    });
+  };
+
   useEffect(() => {
-    if (!('speechSynthesis' in window)) return;
+    if (!('speechSynthesis' in window)) {
+      setVoiceStatus('fallback');
+      return;
+    }
 
-    const loadVoices = () => {
-      const next = window.speechSynthesis.getVoices();
-      setVoices(next);
+    setVoiceStatus('loading');
+    const synth = window.speechSynthesis;
+    const timers = [
+      window.setTimeout(refreshVoices, 0),
+      window.setTimeout(refreshVoices, 250),
+      window.setTimeout(refreshVoices, 800),
+      window.setTimeout(refreshVoices, 1800)
+    ];
 
-      if (!voiceURI && next.length > 0) {
-        const vietnamese = next.find((voice) =>
-          voice.lang.toLowerCase().startsWith('vi')
-        );
-        setVoiceURI((vietnamese ?? next[0]).voiceURI);
-      }
-    };
+    synth.addEventListener('voiceschanged', refreshVoices);
 
-    loadVoices();
-    window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
     return () => {
-      window.speechSynthesis.removeEventListener('voiceschanged', loadVoices);
+      timers.forEach((timer) => window.clearTimeout(timer));
+      synth.removeEventListener('voiceschanged', refreshVoices);
     };
-  }, [voiceURI]);
+  }, []);
+
+  useEffect(
+    () => () => {
+      chantAudioRef.current?.pause();
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    },
+    []
+  );
 
   const ensureAudio = () => {
     if (!soundEnabled) return null;
@@ -142,8 +162,16 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
   const selectedVoice = () =>
     voices.find((voice) => voice.voiceURI === voiceURI) ??
     voices.find((voice) => voice.lang.toLowerCase().startsWith('vi')) ??
+    voices.find((voice) => voice.default) ??
     voices[0] ??
     null;
+
+  const stopChantAudio = () => {
+    if (!chantAudioRef.current) return;
+    chantAudioRef.current.pause();
+    chantAudioRef.current.currentTime = 0;
+    chantAudioRef.current = null;
+  };
 
   const makeNoise = (context: AudioContext, duration: number) => {
     const length = Math.max(1, Math.floor(context.sampleRate * duration));
@@ -163,9 +191,9 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
     if (!context) return;
 
     const start = context.currentTime + offset;
-
     const body = context.createOscillator();
     const bodyGain = context.createGain();
+
     body.type = 'sine';
     body.frequency.setValueAtTime(165, start);
     body.frequency.exponentialRampToValueAtTime(54, start + .23);
@@ -180,6 +208,7 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
     const skin = context.createBufferSource();
     const skinFilter = context.createBiquadFilter();
     const skinGain = context.createGain();
+
     skin.buffer = makeNoise(context, .2);
     skinFilter.type = 'lowpass';
     skinFilter.frequency.setValueAtTime(950, start);
@@ -243,16 +272,8 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
     playWoodKnock(.62);
   };
 
-  const speakText = (
-    text: string,
-    pitch: number,
-    rate: number,
-    onEnd?: () => void
-  ) => {
-    if (!soundEnabled || !('speechSynthesis' in window)) {
-      onEnd?.();
-      return;
-    }
+  const speakText = (text: string, pitch: number, rate: number) => {
+    if (!soundEnabled || !('speechSynthesis' in window)) return;
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'vi-VN';
@@ -262,41 +283,43 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
 
     const voice = selectedVoice();
     if (voice) utterance.voice = voice;
-    if (onEnd) utterance.onend = onEnd;
 
     window.speechSynthesis.speak(utterance);
   };
 
   const performThai = (card: BaiChoiCard) => {
-    if (!soundEnabled || !('speechSynthesis' in window)) return;
+    if (!soundEnabled) return;
 
-    window.speechSynthesis.cancel();
-    const preview = chantEnabled ? CHANT_PREVIEWS[card.name] : undefined;
+    stopChantAudio();
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
 
-    if (!preview) {
-      speakText(HINTS[card.name], 1.02, .76);
+    const voicePackFile = VOICE_PACK_FILES[card.name];
+    if (voicePackFile) {
+      const audio = new Audio(
+        `${import.meta.env.BASE_URL}audio/bai-choi/${voicePackFile}`
+      );
+      audio.preload = 'auto';
+      audio.volume = .96;
+      chantAudioRef.current = audio;
+      void audio.play().catch(() => {
+        chantAudioRef.current = null;
+        refreshVoices();
+        speakText(HINTS[card.name], 1, .76);
+      });
       return;
     }
 
-    const singSegment = (index: number) => {
-      const segment = preview[index];
-      if (!segment) return;
-
-      speakText(segment.text, segment.pitch, segment.rate, () => {
-        if (index + 1 < preview.length) {
-          window.setTimeout(() => singSegment(index + 1), segment.pause);
-        }
-      });
-    };
-
-    singSegment(0);
+    refreshVoices();
+    speakText(HINTS[card.name], 1, .76);
   };
 
   const speakCardName = (name: string) => {
     if (!soundEnabled || !('speechSynthesis' in window)) return;
 
+    stopChantAudio();
     window.speechSynthesis.cancel();
-    speakText(name, .9, .8);
+    refreshVoices();
+    speakText(name, .9, .82);
   };
 
   const toggleSound = () => {
@@ -304,10 +327,12 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
     setSoundEnabled(next);
 
     if (!next) {
+      stopChantAudio();
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       return;
     }
 
+    refreshVoices();
     const context = audioContextRef.current ?? new AudioContext();
     audioContextRef.current = context;
     if (context.state === 'suspended') void context.resume();
@@ -332,6 +357,7 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
     setPending(null);
     setPhase('ready');
     setRevealFlash(false);
+    stopChantAudio();
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
   };
 
@@ -340,6 +366,7 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
     const next = peekNextBaiChoiCard(state);
     if (!next) return;
 
+    refreshVoices();
     playDrumCue();
     setPending(next);
     setPhase('thai');
@@ -350,6 +377,7 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
   const revealCard = () => {
     if (!pending || phase !== 'thai') return;
 
+    stopChantAudio();
     const nextState = drawNextBaiChoiCard(state);
     const owner = nextState.huts.find((hut) => hutHasCard(hut, pending.id)) ?? null;
 
@@ -371,7 +399,7 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
   const status = winner
     ? `${ownerLabel(winner)} TỚI! Đủ 3 con bài trước tiên.`
     : phase === 'thai' && pending
-      ? 'Anh Hiệu đang hô thai. Nghe câu hát rồi xướng tên con bài.'
+      ? 'Anh Hiệu đang hô thai. Nghe câu hô rồi xướng tên con bài.'
       : `Đã rút ${state.turn}/27 con. Bấm “Hô thai” để tiếp tục hội.`;
 
   const lastOwner = state.lastDraw
@@ -407,23 +435,29 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
         </label>
 
         <label className="bc-voice-control">
-          Giọng xướng
+          Giọng xướng tên
           <select
             value={voiceURI}
             disabled={voiceOptions.length === 0}
             onChange={(event) => setVoiceURI(event.target.value)}
           >
             {voiceOptions.length === 0 ? (
-              <option value="">Giọng hệ thống</option>
+              <option value="">
+                {voiceStatus === 'loading' ? 'Đang nạp giọng…' : 'Giọng mặc định của máy'}
+              </option>
             ) : (
               voiceOptions.map((voice) => (
                 <option value={voice.voiceURI} key={voice.voiceURI}>
-                  {voice.name} · {voice.lang}
+                  {voice.name} · {voice.lang}{voice.default ? ' · mặc định' : ''}
                 </option>
               ))
             )}
           </select>
         </label>
+
+        <button className="bc-reload-voices" type="button" onClick={refreshVoices}>
+          ↻ Nạp lại giọng
+        </button>
 
         <button
           className={`bc-sound-toggle ${soundEnabled ? 'on' : 'off'}`}
@@ -434,25 +468,16 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
           {soundEnabled ? '🔊 Âm thanh: Bật' : '🔇 Âm thanh: Tắt'}
         </button>
 
-        <button
-          className={`bc-chant-toggle ${chantEnabled ? 'on' : 'off'}`}
-          type="button"
-          aria-pressed={chantEnabled}
-          disabled={!soundEnabled}
-          onClick={() => {
-            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-            setChantEnabled((value) => !value);
-          }}
-        >
-          {chantEnabled ? '🎶 Diễn xướng thử: Bật' : '🎙️ Diễn xướng thử: Tắt'}
-        </button>
-
         <div className="rule-chip">9 chòi · 27 con · đủ 3 là TỚI</div>
       </section>
 
       <p className="bc-audio-note">
-        🎶 Ba câu đang có prototype diễn xướng nhiều nhịp: <strong>Ông Ầm · Ba Gà · Cửu Chùa</strong>.
-        Các câu còn lại dùng giọng xướng đã chọn.
+        🎙️ <strong>Voice-pack render sẵn:</strong> Ông Ầm · Ba Gà · Cửu Chùa.
+        Ba câu này phát file audio cố định trên mọi thiết bị. Dropdown giọng chỉ áp dụng cho
+        <strong> xướng tên quân</strong> và các câu chưa có voice-pack.
+        {voiceStatus === 'fallback' && (
+          <> Thiết bị hiện chưa trả danh sách voice, nhưng giọng mặc định vẫn có thể đọc khi trình duyệt hỗ trợ.</>
+        )}
       </p>
 
       <section className="game-card bc-stage">
@@ -470,8 +495,8 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
             {phase === 'thai' && pending ? (
               <>
                 <p className="bc-thai">“{HINTS[pending.name]}”</p>
-                {CHANT_PREVIEWS[pending.name] && chantEnabled && (
-                  <span className="bc-chant-badge">🎶 CÂU DIỄN XƯỚNG THỬ</span>
+                {VOICE_PACK_FILES[pending.name] && (
+                  <span className="bc-chant-badge">🎙️ VOICE-PACK RENDER SẴN</span>
                 )}
                 <button className="bc-reveal-button" type="button" onClick={revealCard}>
                   Xướng tên con bài
@@ -585,7 +610,7 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
       </section>
 
       <details className="rules bc-rules" open>
-        <summary>Luật Bài Chòi v0.3 · cách chơi hội 9 chòi</summary>
+        <summary>Luật Bài Chòi v0.4 · hội 9 chòi</summary>
         <div className="bc-rule-grid">
           <section>
             <b>1 · Chia bài</b>
@@ -593,7 +618,7 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
           </section>
           <section>
             <b>2 · Hô thai</b>
-            <p>Anh Hiệu xóc ống bài tỳ, rút một con rồi hô câu thai. Sau đó tên con bài mới được xướng lên.</p>
+            <p>Anh Hiệu rút một con rồi hô câu thai. Câu có voice-pack sẽ phát file audio render sẵn; câu khác fallback sang TTS.</p>
           </section>
           <section>
             <b>3 · Gõ mõ</b>
@@ -605,14 +630,13 @@ export default function BaiChoiGame({ onBack }: BaiChoiGameProps) {
           </section>
         </div>
         <p className="bc-cultural-note">
-          Bài Chòi vừa là trò chơi vừa là nghệ thuật diễn xướng. Các câu hô thai trong bản web là
-          <strong> câu minh họa mới do dự án biên soạn</strong>, không phải lời cổ truyền nguyên bản.
-          v0.3 nâng tiếng trống/mõ bằng tổng hợp noise + filter; ba câu diễn xướng thử dùng nhiều đoạn Speech Synthesis với nhịp, cao độ và tốc độ khác nhau.
-          Đây vẫn là prototype kỹ thuật, chưa phải bản thu nghệ nhân.
+          Bài Chòi vừa là trò chơi vừa là nghệ thuật diễn xướng. Câu thai trong game là câu minh họa mới của dự án.
+          Voice-pack v0.4 dùng neural TTS tiếng Việt render trước và hậu kỳ để làm baseline cố định trên mọi thiết bị;
+          <strong> đây vẫn chưa phải bản thu nghệ nhân Bài Chòi</strong>. Kiến trúc đã sẵn sàng để thay trực tiếp bằng audio nghệ nhân/render chất lượng cao sau khi chốt chất giọng.
         </p>
       </details>
 
-      <footer>Minigame Việt · Bài Chòi v0.3 · Voice prototype</footer>
+      <footer>Minigame Việt · Bài Chòi v0.4 · Pre-rendered voice-pack baseline</footer>
     </main>
   );
 }

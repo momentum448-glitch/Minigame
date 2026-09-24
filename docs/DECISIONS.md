@@ -233,3 +233,15 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Các câu còn lại dùng giọng xướng đã chọn ở tempo hô chậm.
 - Kiến trúc này là bước đệm cho voice-pack audio render/thu thật; gameplay engine không phụ thuộc nguồn audio.
 - Quyết định: CHỐT ngày 2026-09-24.
+
+
+## D-027 — Bài Chòi pre-rendered neural voice-pack
+- Dừng hướng cố biến browser Speech Synthesis thành hát Bài Chòi.
+- Ba câu mẫu Ông Ầm / Ba Gà / Cửu Chùa chuyển sang **audio render sẵn** để mọi thiết bị nghe cùng một bản.
+- Baseline render dùng Piper neural TTS tiếng Việt `vi_VN-vais1000-medium`, hậu kỳ pitch/tempo/reverb theo segment.
+- Audio được tạo bằng GitHub Actions và commit vào `public/audio/bai-choi/`.
+- Giữ fallback Speech Synthesis cho quân chưa có voice-pack và cho phần xướng tên.
+- Sửa Android voice list bằng retry + `voiceschanged` + refresh trong user gesture + nút **Nạp lại giọng**.
+- Nếu thiết bị vẫn không cung cấp danh sách voice, UI phải hiển thị “Giọng mặc định của máy”, không để dropdown rỗng.
+- Baseline neural TTS không được gọi là bản thu nghệ nhân; mục tiêu là QC kiến trúc voice-pack trước khi thay bằng audio chất lượng cao hơn.
+- Quyết định: CHỐT ngày 2026-09-24.
