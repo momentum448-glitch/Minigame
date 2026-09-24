@@ -182,3 +182,12 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - v0.1 tính thắng bằng tổng số lá ăn được; chưa triển khai Trình làng/Kết/Đè và điểm thưởng truyền thống.
 - Chi tiết nguồn/mâu thuẫn/giả định: `docs/TAM_CUC_RULES.md`.
 - Quyết định: CHỐT ngày 2026-09-24.
+
+
+## D-022 — Tam Cúc rules clarity + selected-card feedback
+- Luật Tam Cúc phải được giải thích ngay trong game theo cấu trúc dễ học, không chỉ một đoạn mô tả ngắn.
+- Phần luật phải làm rõ: mục tiêu, thứ tự sức mạnh, đỏ/đen, flow một lượt, cách tạo đôi/bộ ba, Ngửa bài, Chui, luật lượt đầu, kết thúc và các luật chưa hỗ trợ.
+- Lá đã chọn phải có trạng thái thị giác mạnh: nhấc lên, viền/glow rõ, nền khác và badge **✓ ĐÃ CHỌN**.
+- Khu hành động phải liệt kê tên chính xác các lá đang được chọn và nhắc số lá cần chọn khi đáp.
+- Chỉ thay UX/clarity, không đổi engine/ruleset v0.1.
+- Quyết định: CHỐT ngày 2026-09-24.

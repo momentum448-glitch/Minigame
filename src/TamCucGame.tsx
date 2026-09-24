@@ -176,7 +176,9 @@ export default function TamCucGame({ onBack }: TamCucGameProps) {
         disabled={!canClick}
         onClick={() => toggleCard(card)}
         aria-label={cardLabel(card)}
+        aria-pressed={isSelected}
       >
+        {isSelected && <span className="tc-selected-badge">✓ ĐÃ CHỌN</span>}
         <span className="tc-han">{TAM_CUC_RANK_HAN[card.rank]}</span>
         <span className="tc-name">{cardLabel(card)}</span>
       </button>
@@ -312,6 +314,20 @@ export default function TamCucGame({ onBack }: TamCucGameProps) {
           )}
         </div>
 
+        <div className={`tc-selection-summary ${selected.length > 0 ? 'active' : ''}`}>
+          <span>ĐANG CHỌN</span>
+          <strong>
+            {selected.length > 0
+              ? selected.map((card) => cardLabel(card)).join(' · ')
+              : 'Chưa chọn lá nào'}
+          </strong>
+          <small>
+            {phase === 'lead'
+              ? 'Chọn 1 lá, một đôi cùng tên cùng màu, hoặc một bộ ba hợp lệ.'
+              : `Cần chọn đúng ${lead?.length ?? 0} lá để đáp.`}
+          </small>
+        </div>
+
         <div className="tc-actions">
           {phase === 'lead' ? (
             <>
@@ -371,31 +387,104 @@ export default function TamCucGame({ onBack }: TamCucGameProps) {
         </div>
       </section>
 
-      <details className="rules">
-        <summary>Luật Tam Cúc v0.1 đang dùng</summary>
-        <p>
-          Tay đôi chia đủ 32 lá, mỗi người 16 lá và hai bên biết bài của nhau.
-          Thứ tự mạnh: <strong>Tướng &gt; Sĩ &gt; Tượng &gt; Xe &gt; Pháo &gt; Mã &gt; Tốt</strong>.
-          Hai lá cùng tên thì đỏ mạnh hơn đen.
-        </p>
-        <p>
-          Người giữ cái gọi 1, 2 hoặc 3 cây. Đôi phải cùng tên cùng màu.
-          Bộ ba hợp lệ chỉ gồm <strong>Tướng–Sĩ–Tượng</strong> hoặc <strong>Xe–Pháo–Mã</strong>
-          cùng màu. Người đáp ra cùng số cây rồi có thể Ngửa bài hoặc Chui.
-        </p>
-        <p>
-          Lượt đầu bản v0.1 dùng luật “cấm Tướng, cấm Sĩ, lấy Tượng cầm đầu”.
-          Người thắng lượt giữ cái cho lượt sau. Nếu hai bộ bằng hệt sức mạnh,
-          người giữ cái thắng hòa.
-        </p>
-        <p>
-          Bản v0.1 tính thắng bằng tổng số lá ăn được sau khi hết bài.
-          Luật Trình làng, Kết đôi/Kết ba, Kết Tốt đen và Đè Tốt đen được để sang vòng mở rộng sau QC.
-        </p>
+      <details className="rules tc-rules-guide" open>
+        <summary>Luật Tam Cúc chi tiết · đọc 2 phút là chơi được</summary>
+
+        <section className="tc-rule-intro">
+          <div>
+            <span className="tc-rule-number">1</span>
+            <h3>Mục tiêu</h3>
+            <p>
+              Bản tay đôi dùng đủ <strong>32 lá</strong>, mỗi người <strong>16 lá</strong>.
+              Hai bên nhìn thấy bài của nhau. Mỗi lượt tranh một chồng bài trên chiếu;
+              ai thắng lượt thì ăn toàn bộ số lá của lượt đó và giữ quyền <strong>cái</strong>.
+            </p>
+          </div>
+
+          <div>
+            <span className="tc-rule-number">2</span>
+            <h3>Ai mạnh hơn?</h3>
+            <p>Thứ tự từ mạnh xuống yếu:</p>
+            <div className="tc-rank-ladder" aria-label="Thứ tự sức mạnh Tam Cúc">
+              <b>Tướng</b><i>›</i><b>Sĩ</b><i>›</i><b>Tượng</b><i>›</i>
+              <b>Xe</b><i>›</i><b>Pháo</b><i>›</i><b>Mã</b><i>›</i><b>Tốt</b>
+            </div>
+            <p>
+              Nếu cùng tên quân thì <strong>đỏ thắng đen</strong>.
+              Ví dụ: Xe đỏ thắng Xe đen, nhưng Xe đỏ vẫn thua Tượng đen vì cấp quân thấp hơn.
+            </p>
+          </div>
+        </section>
+
+        <section className="tc-rule-flow">
+          <h3>Một lượt diễn ra thế nào?</h3>
+          <div className="tc-flow-grid">
+            <div><b>① Cái gọi bài</b><span>Chọn 1, 2 hoặc 3 lá hợp lệ rồi bấm “Gọi”.</span></div>
+            <div><b>② Bài cái úp xuống</b><span>Người đáp chỉ biết số lượng lá được gọi.</span></div>
+            <div><b>③ Người đáp chọn</b><span>Chọn đúng số lá tương ứng, sau đó Ngửa bài hoặc Chui.</span></div>
+            <div><b>④ So bài</b><span>Nếu Ngửa, bộ mạnh hơn ăn lượt. Nếu Chui, cái ăn lượt. Người thắng giữ cái.</span></div>
+          </div>
+        </section>
+
+        <section className="tc-rule-groups">
+          <h3>Chọn 1, 2 hay 3 cây thế nào?</h3>
+          <div className="tc-rule-cards">
+            <div>
+              <strong>1 cây</strong>
+              <p>Một lá bất kỳ được phép dùng ở lượt hiện tại. So trực tiếp theo thứ tự quân và màu.</p>
+            </div>
+            <div>
+              <strong>2 cây · Đôi</strong>
+              <p>Hai lá phải <strong>cùng tên + cùng màu</strong>. Ví dụ: 2 Xe đỏ là đôi; Xe đỏ + Xe đen không phải đôi.</p>
+            </div>
+            <div>
+              <strong>3 cây · Bộ ba</strong>
+              <p>Chỉ có hai dạng: <strong>Tướng–Sĩ–Tượng</strong> cùng màu hoặc <strong>Xe–Pháo–Mã</strong> cùng màu.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="tc-rule-special">
+          <div>
+            <h3>Ngửa bài và Chui</h3>
+            <p>
+              <strong>Ngửa bài:</strong> bộ đã chọn phải hợp lệ. Game sẽ so với bộ của cái.
+              Người đáp chỉ thắng khi bộ của mình <strong>mạnh hơn</strong>.
+            </p>
+            <p>
+              <strong>Chui:</strong> người đáp vẫn phải bỏ đúng số lá được gọi nhưng không cần tạo bộ hợp lệ.
+              Các lá đó bị bỏ vào lượt và <strong>cái mặc định thắng</strong>.
+            </p>
+          </div>
+
+          <div>
+            <h3>Luật lượt đầu</h3>
+            <p>
+              Bản dự án hiện dùng câu <strong>“cấm Tướng, cấm Sĩ, lấy Tượng cầm đầu”</strong>:
+              lượt đầu không được dùng Tướng hoặc Sĩ trong bộ ngửa; Tượng đỏ là quân cao nhất được phép dùng.
+            </p>
+            <p className="tc-rule-note">
+              Đây là điểm có dị bản trong nguồn Tam Cúc. Dự án đang dùng biến thể này cho v0.1.
+            </p>
+          </div>
+        </section>
+
+        <section className="tc-rule-ending">
+          <h3>Kết thúc ván trong bản hiện tại</h3>
+          <p>
+            Khi hai người hết bài, game đếm tổng số lá đã ăn. Người có nhiều lá hơn thắng;
+            nếu mỗi bên 16 lá thì hòa. Nếu hai bộ có sức mạnh bằng hệt nhau trong một lượt,
+            <strong>người đang giữ cái thắng hòa</strong>.
+          </p>
+          <p>
+            <strong>Chưa dùng ở bản này:</strong> Trình làng Tứ tử/Ngũ tử, Ngũ tử cướp cái,
+            Kết đôi/Kết ba, Kết Tốt đen, Đè Tốt đen và hệ điểm thưởng truyền thống.
+          </p>
+        </section>
       </details>
 
       <footer>
-        Minigame Việt · Tam Cúc v0.1 · AI {level === 'easy' ? 'Dễ' : level === 'medium' ? 'Vừa' : 'Khó'}
+        Minigame Việt · Tam Cúc v0.2 UX · AI {level === 'easy' ? 'Dễ' : level === 'medium' ? 'Vừa' : 'Khó'}
       </footer>
     </main>
   );
