@@ -8,9 +8,9 @@ Xây một website chứa nhiều minigame Việt Nam. Mỗi game là module ri�
 
 ### Game playable
 1. **Ô ăn quan** — Game 01.
-2. **Cờ Gánh** — Game 02, playable v0.1.
+2. **Cờ Gánh** — Game 02, playable v0.2.
 
-Mốc đang active: **QC Cờ Gánh v0.1**.
+Mốc đang active: **QC Cờ Gánh v0.2 animation**.
 
 ## 2. Repo / Deploy
 
@@ -74,14 +74,21 @@ Xem chi tiết và nguồn tại `docs/CO_GANH_RULES.md`.
 - Local 2 người.
 - Tap quân -> highlight điểm đến -> tap đích.
 - Điểm **Mở** bắt buộc được highlight riêng.
-- Quân bị Gánh/Vây có animation đổi màu.
+- Animation v0.2:
+  - quân được nhấc nhẹ và lướt sang điểm đích trong khoảng **500 ms**;
+  - sau khi đáp xuống nghỉ khoảng **200 ms**;
+  - quân bị **Gánh** flip + đổi màu + glow **lần lượt ~400 ms/quân**;
+  - quân bị **Vây** dùng hiệu ứng riêng dạng **làn sóng** chạy qua nhóm bị khóa;
+  - visual state được phát theo sequence rồi mới commit final state;
+  - khóa input trong toàn bộ chuỗi animation;
+  - AI dùng cùng animation như người chơi.
 - Hiển thị số quân mỗi bên.
 - Route `#/co-ganh`.
 - Thẻ Cờ Gánh trên Kho game đổi từ `Sắp có` thành `Chơi ngay`.
 
 ### QC kỹ thuật
-- Deploy workflow **#23**: success.
-- Deployed commit: `35b90033524186026c7205b40981e31183dbc607`.
+- Deploy workflow **#24**: success.
+- Deployed commit: `e0dd2cabb37f6540d0fd8292a7de3f39703aec94`.
 - `npm test`: **13/13 pass**.
   - Ô ăn quan: 7 tests.
   - Cờ Gánh: 6 tests.
@@ -101,11 +108,12 @@ Xem chi tiết và nguồn tại `docs/CO_GANH_RULES.md`.
 - Bug thắng đã sửa từ kiểm 25 điểm thành kiểm không còn quân đối phương.
 - Run #22: 13/13 test pass nhưng TypeScript bắt lỗi reduce typing.
 - Run #23: test + build + deploy đều pass.
+- Run #24: Cờ Gánh v0.2 animation, test + build + deploy đều pass.
 
 ## 6. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**Thiết kế và triển khai animation Cờ Gánh v0.2 theo quyết định D-013.**
+**QC Cờ Gánh v0.2 animation trên bản live và tinh chỉnh cảm giác nếu cần.**
 
 ### Checklist QC
 1. Kho game hiển thị cả Ô ăn quan và Cờ Gánh là playable.
@@ -119,17 +127,23 @@ Xem chi tiết và nguồn tại `docs/CO_GANH_RULES.md`.
 9. AI Dễ/Vừa/Khó đi hợp lệ và không gây lag đáng kể trên mobile.
 10. Mobile: bàn không bị cắt, điểm bấm đủ lớn, text không tràn.
 
-### Animation direction đã chốt
-- Ưu tiên rõ ràng, nhưng vẫn có cảm giác đẹp.
+### Animation direction đã chốt và triển khai
+- Ưu tiên rõ ràng nhưng vẫn đẹp.
 - Quân di chuyển ~500 ms.
-- Quân nhấc nhẹ -> lướt theo đường -> đáp xuống.
-- Quân bị Gánh: flip + đổi màu + glow.
-- Nếu Gánh nhiều quân: đổi lần lượt, không đồng thời.
+- Nhấc nhẹ -> lướt -> đáp xuống.
+- Nghỉ ~200 ms trước khi capture animation.
+- Gánh: flip + đổi màu + glow, lần lượt ~400 ms/quân.
+- Vây: hiệu ứng riêng dạng làn sóng.
+- Quyết định: xem D-013 và D-014 trong `docs/DECISIONS.md`.
 
-### Còn cần chốt trước khi code
-- Vây có dùng cùng ngôn ngữ hiệu ứng với Gánh hay có hiệu ứng riêng.
-- Nhịp stagger chính xác giữa các quân bị đổi màu.
-- Có thêm khoảng nghỉ ngắn giữa quân đi đáp xuống và bắt đầu chuỗi đổi màu hay không.
+### Checklist animation v0.2
+- Di chuyển phải nhìn rõ quân đi từ điểm cũ sang điểm mới, không teleport.
+- Sau khi đáp xuống phải có nhịp nghỉ đủ để mắt nhận nước đi.
+- Gánh 2/4/6 quân phải đổi lần lượt đúng thứ tự thị giác, không đồng loạt.
+- Vây phải nhìn khác Gánh và đọc được là một nhóm đang bị khóa.
+- Score số quân hai bên thay đổi theo visual sequence, không nhảy thẳng tới kết quả cuối.
+- Trong lúc animation chạy không thao tác nước khác được.
+- AI dùng cùng sequence và không bỏ qua animation.
 
 ## 7. Rủi ro / giả định cần nhớ
 
