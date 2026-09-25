@@ -320,3 +320,18 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Evolution được chọn ở đầu activation kế tiếp sau khi đủ mốc; mỗi tier chọn 1 trong 3 option.
 - Pickup nhỏ auto-use; Artifact mạnh giữ tối đa 1/quái và tốn Main Action để kích hoạt.
 - Quyết định: CHỐT ngày 2026-09-25.
+
+
+## D-033 — Monster Chess prototype v0.1
+- Game 07 có prototype playable tại `#/monster-chess`.
+- Prototype đầu tập trung **local PvP + core rules**, chưa làm art cuối.
+- Engine tách riêng tại `src/monsterchess/`.
+- UI map dùng SVG hex 61 ô.
+- Draft 10★, tối đa 5 unit, species lock, Pass.
+- Battle thực thi Move -> Main Action, skill cooldown, LOS/Cover, pickups, Artifact, EXP/Evolution và wipe-all victory.
+- 8 quái roster v0.1 đã có Basic/Active/Passive metadata; Active Skill được triển khai ở mức prototype gameplay.
+- Game được gắn vào cả danh mục **Game hiện đại** và **Chiến thuật**.
+- Art hiện dùng glyph/emoji placeholder; không coi là visual direction cuối.
+- Balance của star/stat/skill/evolution chưa khóa, phải dựa trên QC/playtest.
+- Deploy #41 success, commit `5a607adc62a2d7a59b99eba639c39cfbf6007063`, 55/55 tests pass.
+- Quyết định: CHỐT ngày 2026-09-25.
