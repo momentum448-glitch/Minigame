@@ -24,4 +24,4 @@
 - Repo: https://github.com/momentum448-glitch/Minigame
 - Live: https://momentum448-glitch.github.io/Minigame/
 - Game playable: Ô ăn quan, Cờ Gánh, Cờ Hùm, Cờ Lúa Ngô, Tam Cúc, Bài Chòi
-- Mốc hiện tại: Game 07 ruleset v0.1 + roster 8 quái draft; tiếp theo review roster rồi prototype hex engine
+- Mốc hiện tại: QC Game 07 Monster Chess prototype v0.1; deploy #41 success, 55/55 tests pass
