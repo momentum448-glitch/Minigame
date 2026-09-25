@@ -5,6 +5,7 @@ import CoHumGame from './CoHumGame';
 import CoLuaNgoGame from './CoLuaNgoGame';
 import TamCucGame from './TamCucGame';
 import BaiChoiGame from './BaiChoiGame';
+import MonsterChessGame from './MonsterChessGame';
 
 type GameId =
   | 'o-an-quan'
@@ -12,7 +13,8 @@ type GameId =
   | 'co-hum'
   | 'co-lua-ngo'
   | 'tam-cuc'
-  | 'bai-choi';
+  | 'bai-choi'
+  | 'monster-chess';
 
 type CategoryId =
   | 'vietnamese-folk'
@@ -86,6 +88,14 @@ const games: GameMeta[] = [
     cta: 'Vào hội chơi',
     categories: ['vietnamese-folk', 'party'],
     eyebrow: 'Đang hoàn thiện audio'
+  },
+  {
+    id: 'monster-chess',
+    title: 'Monster Chess',
+    description: 'Draft đội quái bằng ngân sách sao, tiến hóa giữa trận và đấu chiến thuật trên bản đồ hex ngẫu nhiên.',
+    cta: 'Vào prototype',
+    categories: ['modern', 'strategy'],
+    eyebrow: 'Prototype v0.1'
   }
 ];
 
@@ -114,8 +124,8 @@ const categories: CategoryMeta[] = [
     title: 'Game hiện đại',
     description: 'Mini arcade, phản xạ, roguelite và những ý tưởng mới dành cho vài phút giải lao.',
     accent: 'modern',
-    gameIds: [],
-    note: 'Đang chuẩn bị'
+    gameIds: games.filter((game) => game.categories.includes('modern')).map((game) => game.id),
+    note: '1 game đang chơi được'
   },
   {
     id: 'puzzle',
@@ -238,6 +248,18 @@ function renderGameArt(id: GameId) {
     );
   }
 
+  if (id === 'monster-chess') {
+    return (
+      <div className="game-art monsterchess-art" aria-hidden="true">
+        <div className="mc-mini-hexes">
+          {Array.from({ length: 19 }, (_, index) => <span key={index} />)}
+          <b className="mc-mini-a">⚡</b>
+          <b className="mc-mini-b">🐉</b>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="game-art baichoi-art" aria-hidden="true">
       <div className="baichoi-mini-stage">
@@ -295,6 +317,7 @@ export default function App() {
   if (route === 'co-lua-ngo') return <CoLuaNgoGame onBack={returnFromGame} />;
   if (route === 'tam-cuc') return <TamCucGame onBack={returnFromGame} />;
   if (route === 'bai-choi') return <BaiChoiGame onBack={returnFromGame} />;
+  if (route === 'monster-chess') return <MonsterChessGame onBack={returnFromGame} />;
 
   const currentCategoryId = route.startsWith('category/')
     ? route.slice('category/'.length) as CategoryId
@@ -372,7 +395,7 @@ export default function App() {
     );
   }
 
-  const featuredIds: GameId[] = ['o-an-quan', 'co-ganh', 'bai-choi'];
+  const featuredIds: GameId[] = ['monster-chess', 'o-an-quan', 'co-ganh'];
   const featuredGames = featuredIds.map((id) => gameById[id]);
   const playableCategories = categories.filter((category) => category.gameIds.length > 0);
 
@@ -398,7 +421,7 @@ export default function App() {
           </div>
 
           <div className="lobby-stat-panel">
-            <div><strong>6</strong><span>game đang chơi được</span></div>
+            <div><strong>{games.length}</strong><span>game đang chơi được</span></div>
             <div><strong>{playableCategories.length}</strong><span>danh mục đã có game</span></div>
             <div><strong>∞</strong><span>chỗ cho game mới</span></div>
           </div>
