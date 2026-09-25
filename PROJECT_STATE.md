@@ -13,8 +13,9 @@ Xây một website chứa nhiều minigame theo mô hình **sảnh game đa danh
 4. **Cờ Lúa Ngô** — Game 04, playable v0.1.
 5. **Tam Cúc** — Game 05, playable v0.2 UX.
 6. **Bài Chòi** — Game 06, playable v0.4 pre-rendered voice-pack baseline.
+7. **Monster Chess** — Game 07, playable prototype v0.1.
 
-Mốc đang active: **Game 07 — discovery/ruleset cho game cờ quái vật hiện đại tự sáng tạo**. Home v2 đã deploy #39; Bài Chòi vẫn tạm dừng ở v0.4.
+Mốc đang active: **QC Game 07 — Monster Chess prototype v0.1**. Home v2 đã deploy; Bài Chòi vẫn tạm dừng ở v0.4.
 
 ## 2. Repo / Deploy
 
@@ -39,9 +40,9 @@ Mốc đang active: **Game 07 — discovery/ruleset cho game cờ quái vật hi
 ### Danh mục nền tảng
 - `#/category/vietnamese-folk` — **Dân gian Việt Nam** — 6 game hiện tại.
 - `#/category/world-folk` — **Dân gian thế giới** — đang chuẩn bị.
-- `#/category/modern` — **Game hiện đại** — đang chuẩn bị.
+- `#/category/modern` — **Game hiện đại** — hiện có Monster Chess.
 - `#/category/puzzle` — **Giải đố & Logic** — đang chuẩn bị.
-- `#/category/strategy` — **Chiến thuật** — hiện có Cờ Gánh, Cờ Hùm, Cờ Lúa Ngô.
+- `#/category/strategy` — **Chiến thuật** — hiện có Cờ Gánh, Cờ Hùm, Cờ Lúa Ngô, Monster Chess.
 - `#/category/party` — **May rủi & Party** — hiện có Tam Cúc, Bài Chòi.
 
 ### Route game giữ nguyên
@@ -51,6 +52,7 @@ Mốc đang active: **Game 07 — discovery/ruleset cho game cờ quái vật hi
 - Cờ Lúa Ngô: `#/co-lua-ngo`.
 - Tam Cúc: `#/tam-cuc`.
 - Bài Chòi: `#/bai-choi`.
+- Monster Chess: `#/monster-chess`.
 - Giữ route cũ để không phá link/bookmark.
 - Khi mở game từ một danh mục trong cùng SPA, nút quay lại đưa về danh mục đó; nếu mở trực tiếp/reload route game thì fallback về Sảnh game.
 
@@ -343,97 +345,105 @@ Nguồn đối chiếu:
 ## 10. Game 07 — cờ quái vật hiện đại
 
 ### Trạng thái
-- Game hiện đại tự sáng tạo, chưa có tên chính thức; codename làm việc: **Monster Chess**.
-- Đây không phải chess reskin; mỗi quái vật là một unit riêng có bộ di chuyển/tấn công/skill/tiến hóa riêng.
-- Mục tiêu trận: **tiêu diệt toàn bộ quái vật đối phương**.
-- Thời lượng mục tiêu: khoảng **3–5 phút/ván**.
-- Điều khiển: theo lượt, chạm chọn unit rồi chạm mục tiêu/ô/kỹ năng.
+- Tên làm việc: **Monster Chess**.
+- **Prototype v0.1 playable** trên route `#/monster-chess`.
+- Thuộc cả danh mục **Game hiện đại** và **Chiến thuật**.
+- Mục tiêu hiện tại: QC gameplay/nhịp chiến thuật trước khi làm art/animation cuối.
 
-### Draft trước trận
-- Mỗi người có cùng **ngân sách sao**, ví dụ 10★.
-- Mỗi quái vật có giá sao riêng.
-- Hai người **draft luân phiên**.
-- Quái đã được một bên chọn thì **khóa**, bên kia không được chọn cùng loài.
-- Tổng sao đội hình phải <= ngân sách.
-- Số lượng quái không cố định; đội nhiều quái rẻ và đội ít quái đắt đều hợp lệ.
+### Đã triển khai
+- Local PvP end-to-end.
+- Draft luân phiên:
+  - 10★ mỗi bên;
+  - tối đa 5 quái;
+  - quái đã chọn bị khóa cho đối thủ;
+  - có Pass và bắt đầu trận sau khi cả hai pass.
+- Roster prototype 8 quái:
+  - Mầm Rêu 1★;
+  - Chồn Chớp 1★;
+  - Giáp Tê 2★;
+  - Bọ Hỏa Đao 2★;
+  - Lôi Nhãn 3★;
+  - Mộng Nấm 3★;
+  - Thiết Ngạc 4★;
+  - Long Lăng Kính 5★.
+- Battle:
+  - hex board bán kính 4 = 61 ô;
+  - map random đối xứng/cân bằng;
+  - Ground / Blocker / Cover;
+  - pickup EXP / heal / fury / guard / artifact;
+  - auto deploy hai phía;
+  - round luân phiên quyền đi trước;
+  - mỗi activation: optional Move -> 1 Main Action;
+  - Basic / Active Skill / Artifact / Wait;
+  - Cover giảm ranged damage;
+  - Blocker chặn LOS;
+  - combat 10% miss / 80% normal / 10% crit;
+  - crit x1.5;
+  - EXP riêng từng quái;
+  - Evolution I ở 3 XP, Evolution II ở 7 XP;
+  - mỗi tier chọn 1/3 option;
+  - thắng khi tiêu diệt hết quái đối phương.
+- Active Skill đã có tác dụng gameplay riêng theo loài ở mức prototype.
+- UI dùng SVG hex + emoji/glyph placeholder; chưa phải art cuối.
 
-### Action economy
-- Trận chia theo round.
-- Round 1 coin flip người đi trước; từ round 2 **đổi người kích hoạt trước mỗi round**.
-- Hai bên luân phiên kích hoạt từng quái.
-- Mỗi quái còn sống có tối đa 1 activation mỗi round.
-- Trong activation: **optional Move -> đúng 1 Main Action**.
-- Main Action = Basic Attack / Active Skill / kích hoạt Artifact / Wait.
-- Move diễn ra trước Main Action; không có move sau attack mặc định.
-- Active Skill dùng **cooldown theo activation của chính quái đó**.
-- Đi qua/đứng vào ô chứa item hoặc EXP nhỏ sẽ auto-pickup, không tiêu tốn action riêng.
-- Tối đa **5 quái/đội** để chặn spam quái 1★ thắng bằng action economy thuần.
+### Source
+- `src/monsterchess/types.ts`
+- `src/monsterchess/roster.ts`
+- `src/monsterchess/engine.ts`
+- `src/monsterchess/engine.test.ts`
+- `src/MonsterChessGame.tsx`
+- Rules: `docs/MONSTER_CHESS_RULES.md`
+- Roster design: `docs/MONSTER_CHESS_ROSTER_V01.md`
 
-### Board / map
-- Dùng **hex grid**, không dùng ô vuông.
-- Shape nền v0.1: **hexagon bán kính 4 = 61 ô**, gần quy mô 8×8 nhưng tự nhiên cho hex.
-- Mỗi ván có **bản đồ ngẫu nhiên**.
-- Khung địa hình chiến thuật sinh theo hướng **đối xứng/cân bằng**, còn item/EXP có thể random có kiểm soát.
-- Terrain nền v0.1:
-  - **Ground**: đi/đứng bình thường;
-  - **Blocker**: không đi xuyên, không đứng được, chặn line-of-sight;
-  - **Cover**: đứng được và tạo lợi thế phòng thủ trước ranged.
-- Vật phẩm/EXP spawn ngẫu nhiên trên map.
-- Đi vào ô có item/EXP nhỏ thì **auto-pickup**, không tốn action.
-
-### Combat
-- Combat có RNG nhỏ nhưng rõ ràng và hữu hạn.
-- Mỗi ordinary damaging attack dùng một roll duy nhất:
-  - **10% miss**;
-  - **80% hit thường**;
-  - **10% crit**.
-- Crit = **150% listed damage**, làm tròn lên.
-- Blocker chặn LOS; Cover không chặn LOS.
-- Cover giảm **25% ranged damage** nhận vào; melee bỏ qua Cover.
-- Không dùng accuracy/evasion mặc định khác ngoài roll 10/80/10.
-- Proc/status RNG chỉ tồn tại khi unit/skill ghi rõ.
-
-### EXP / tiến hóa
-- EXP là riêng từng quái.
-- Gây damage trong activation: **+1 XP tối đa một lần/activation**.
-- Hạ quái: **+2 XP**.
-- Nhặt EXP orb: **+1 XP**.
-- Evolution I tại **3 XP**.
-- Evolution II tại **7 total XP**.
-- Khi đạt mốc, đầu activation kế tiếp bắt buộc chọn 1 trong 3 option rồi mới hành động.
-- Tối đa một Evolution prompt trong một activation.
-- Mỗi quái có hệ tiến hóa riêng; lựa chọn giữ đến hết trận.
-
-### Mode nền
-- Định hướng có cả **PvP local** và cấu trúc **roguelite**.
-- Ruleset combat phải dùng chung để sau này solo roguelite và local PvP không thành hai game tách biệt.
+### QC kỹ thuật
+- Deploy workflow **#41**: success.
+- Deployed commit: `5a607adc62a2d7a59b99eba639c39cfbf6007063`.
+- Test suite: **55/55 pass**.
+- Monster Chess engine: **10 tests**.
+- Production build: pass.
+- GitHub Pages deploy: pass.
+- Handoff snapshot #31: success.
+- Chưa có browser interaction QC trực tiếp trên mobile/desktop trong chat này.
 
 ## 11. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**Review roster 8 quái v0.1, sau đó prototype engine/map.**
+**QC Monster Chess prototype v0.1 trên bản live, rồi cân bằng trước art polish.**
 
-### Đã có
-- Ruleset v0.1 draft: `docs/MONSTER_CHESS_RULES.md`.
-- Roster 8 quái đầu tiên: `docs/MONSTER_CHESS_ROSTER_V01.md`.
-- 8 quái hiện tại là **design draft**, chưa CHỐT balance/names.
+### Checklist QC gameplay
+1. Game hiện trong **Game hiện đại** và **Chiến thuật**.
+2. Draft:
+   - đúng 10★;
+   - tối đa 5 quái;
+   - loài đã chọn bị khóa;
+   - Pass luân phiên hợp lý.
+3. Bắt đầu trận phải sinh map hex khác nhau giữa các ván nhưng hai phía không lệch rõ.
+4. Unit hai bên auto deploy ở hai cạnh đối diện.
+5. Chọn unit -> thấy ô đi hợp lệ -> move -> vẫn còn Main Action.
+6. Basic Attack phải thể hiện miss/normal/crit đúng logic.
+7. Cover và Blocker phải có tác dụng đúng.
+8. Mỗi quái chỉ activation một lần/round; quyền đi trước đổi bên sau round.
+9. Pickup phải được nhặt tự động.
+10. Skill của 8 quái phải kích hoạt được theo target hợp lệ.
+11. Quái đạt 3 XP phải mở Evolution I; đạt 7 XP mở Evolution II.
+12. Artifact dùng được và tiêu Main Action.
+13. Tiêu diệt hết đội đối phương phải kết thúc trận.
+14. Mobile: board, side panel và draft card phải đọc/chạm được.
 
-### Cần QC thiết kế trước prototype
-1. Phân bố star cost 1/1/2/2/3/3/4/5 có tạo đủ đội hình thú vị không.
-2. Roster có thiếu archetype quan trọng nào không.
-3. Evolution I/II có đủ cảm giác đổi build thay vì chỉ cộng số.
-4. 10% miss trên đòn high-value có gây khó chịu quá không.
-5. Team 5 quái có áp đảo team 3 quái vì action economy không.
-6. EXP 3/7 có đủ nhanh để thấy Evolution II trong 3–5 phút.
+### Rủi ro cần đánh giá sau QC
+- Team 5 unit có thể áp đảo team 3 unit vì action economy.
+- 10% miss có thể gây khó chịu ở skill/đòn quan trọng.
+- Evolution II có thể quá chậm với mục tiêu 3–5 phút.
+- Một số Active Skill hiện là bản giản lược so với design roster.
+- Map generator hiện ưu tiên symmetry; cần test cảm giác replay.
+- Emoji/glyph chỉ là placeholder.
 
-### Sau khi roster được duyệt
-- Prototype hex engine 61 ô.
-- Generator map cân bằng.
-- Draft 10★ + lock species.
-- Turn/activation engine.
-- Combat RNG + cover/LOS.
-- EXP/evolution flow.
-- Dùng placeholder art trước, chưa sản xuất asset quái cuối.
+### Sau khi QC gameplay ổn
+- Cân bằng stat/star/XP/cooldown.
+- Chốt roster nào giữ/làm lại.
+- Làm animation di chuyển/combat.
+- Thiết kế art direction và asset quái.
+- Sau đó mới cân nhắc roguelite solo.
 
 ## 12. Rủi ro / giả định
 
