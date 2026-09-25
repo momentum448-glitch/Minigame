@@ -300,3 +300,23 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Item/EXP nhỏ trên bản đồ dùng **auto-pickup**, không tốn action riêng.
 - Các chi tiết còn mở: crit multiplier, cover/LOS formula, skill economy, EXP threshold, item chủ động.
 - Quyết định: CHỐT ngày 2026-09-24.
+
+
+## D-032 — Game 07 activation/skill/combat/evolution flow
+- Một activation cho phép **optional Move -> 1 Main Action**.
+- Main Action là Basic Attack / Active Skill / kích hoạt Artifact / Wait.
+- Không có move sau attack mặc định.
+- Active Skill dùng **cooldown theo activation của chính quái**, không dùng mana chung.
+- Round 1 coin flip người kích hoạt trước; từ round sau **đổi quyền đi trước mỗi round**.
+- Blocker chặn LOS; Cover không chặn LOS.
+- Cover giảm **25% ranged damage**; melee bỏ qua Cover.
+- Combat mặc định dùng một roll: **10% miss / 80% normal / 10% crit**.
+- Crit mặc định = **150% damage**, làm tròn lên.
+- EXP riêng từng quái:
+  - gây damage: +1 XP tối đa một lần mỗi activation;
+  - kill: +2 XP;
+  - EXP orb: +1 XP.
+- Evolution I tại **3 XP**, Evolution II tại **7 XP tổng**.
+- Evolution được chọn ở đầu activation kế tiếp sau khi đủ mốc; mỗi tier chọn 1 trong 3 option.
+- Pickup nhỏ auto-use; Artifact mạnh giữ tối đa 1/quái và tốn Main Action để kích hoạt.
+- Quyết định: CHỐT ngày 2026-09-25.

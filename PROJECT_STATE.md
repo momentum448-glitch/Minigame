@@ -359,12 +359,15 @@ Nguồn đối chiếu:
 
 ### Action economy
 - Trận chia theo round.
-- Hai bên **luân phiên kích hoạt từng quái**.
-- Mỗi quái còn sống có tối đa **1 hành động mỗi round**.
-- Hành động có thể gồm di chuyển, tấn công, dùng skill hoặc tương tác đặc biệt.
-- Đi qua/đứng vào ô chứa item hoặc EXP nhỏ sẽ **auto-pickup**, không tiêu tốn action riêng.
-- Thứ tự kích hoạt quái là một phần chiến thuật.
-- **Tối đa 5 quái/đội** để chặn việc đội spam quái 1★ thắng bằng action economy thuần.
+- Round 1 coin flip người đi trước; từ round 2 **đổi người kích hoạt trước mỗi round**.
+- Hai bên luân phiên kích hoạt từng quái.
+- Mỗi quái còn sống có tối đa 1 activation mỗi round.
+- Trong activation: **optional Move -> đúng 1 Main Action**.
+- Main Action = Basic Attack / Active Skill / kích hoạt Artifact / Wait.
+- Move diễn ra trước Main Action; không có move sau attack mặc định.
+- Active Skill dùng **cooldown theo activation của chính quái đó**.
+- Đi qua/đứng vào ô chứa item hoặc EXP nhỏ sẽ auto-pickup, không tiêu tốn action riêng.
+- Tối đa **5 quái/đội** để chặn spam quái 1★ thắng bằng action economy thuần.
 
 ### Board / map
 - Dùng **hex grid**, không dùng ô vuông.
@@ -380,21 +383,26 @@ Nguồn đối chiếu:
 
 ### Combat
 - Combat có RNG nhỏ nhưng rõ ràng và hữu hạn.
-- Đòn tấn công cơ bản có:
+- Mỗi ordinary damaging attack dùng một roll duy nhất:
   - **10% miss**;
-  - **10% crit**;
-  - xác suất còn lại gây hit thường.
-- Không dùng RNG nặng hơn mặc định; các proc/status đặc biệt chỉ xuất hiện nếu skill/unit ghi rõ.
-- Crit multiplier và cách cover tác động lên hit/damage chưa chốt.
+  - **80% hit thường**;
+  - **10% crit**.
+- Crit = **150% listed damage**, làm tròn lên.
+- Blocker chặn LOS; Cover không chặn LOS.
+- Cover giảm **25% ranged damage** nhận vào; melee bỏ qua Cover.
+- Không dùng accuracy/evasion mặc định khác ngoài roll 10/80/10.
+- Proc/status RNG chỉ tồn tại khi unit/skill ghi rõ.
 
 ### EXP / tiến hóa
-- EXP là **riêng từng quái**, không dùng thanh EXP chung cả đội.
-- Mỗi quái vật có hệ tiến hóa riêng.
-- Có tối đa **2 lần tiến hóa trong một trận**.
-- Mỗi lần tiến hóa người chơi chọn **1 trong 3 option tăng tiến**.
-- Các option có thể đổi stat, skill, phạm vi, pattern tấn công hoặc vai trò.
-- Cùng một quái có thể đi theo build khác nhau giữa các ván.
-- Nguồn EXP dự kiến gồm combat, nhặt orb/EXP và objective; trọng số/threshold chưa chốt.
+- EXP là riêng từng quái.
+- Gây damage trong activation: **+1 XP tối đa một lần/activation**.
+- Hạ quái: **+2 XP**.
+- Nhặt EXP orb: **+1 XP**.
+- Evolution I tại **3 XP**.
+- Evolution II tại **7 total XP**.
+- Khi đạt mốc, đầu activation kế tiếp bắt buộc chọn 1 trong 3 option rồi mới hành động.
+- Tối đa một Evolution prompt trong một activation.
+- Mỗi quái có hệ tiến hóa riêng; lựa chọn giữ đến hết trận.
 
 ### Mode nền
 - Định hướng có cả **PvP local** và cấu trúc **roguelite**.
@@ -403,22 +411,29 @@ Nguồn đối chiếu:
 ## 11. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**Chốt ruleset nền Game 07 trước khi prototype.**
+**Review roster 8 quái v0.1, sau đó prototype engine/map.**
 
-### Cần chốt tiếp
-1. Một **action** có cho phép vừa di chuyển vừa tấn công không, hay mỗi action chỉ là một loại thao tác.
-2. Skill dùng cooldown, resource riêng, hay giới hạn số lần dùng mỗi trận.
-3. Initiative đầu round: bên nào kích hoạt trước và có đổi quyền đi trước giữa các round không.
-4. Cách cover/line-of-sight tác động chính xác lên ranged attack.
-5. Crit multiplier mặc định và tương tác crit với armor/cover.
-6. Nguồn EXP cụ thể + threshold tiến hóa I / II + thời điểm chọn tiến hóa.
-7. Item chủ động mạnh: dùng ngay khi nhặt, cất inventory, hay tốn action để kích hoạt.
+### Đã có
+- Ruleset v0.1 draft: `docs/MONSTER_CHESS_RULES.md`.
+- Roster 8 quái đầu tiên: `docs/MONSTER_CHESS_ROSTER_V01.md`.
+- 8 quái hiện tại là **design draft**, chưa CHỐT balance/names.
 
-### Sau khi chốt
-- Viết ruleset v0.1.
-- Thiết kế hệ sao.
-- Thiết kế 8 quái đầu tiên với role, stat, skill và 3 option ở mỗi tầng tiến hóa.
-- Sau đó mới prototype engine/map.
+### Cần QC thiết kế trước prototype
+1. Phân bố star cost 1/1/2/2/3/3/4/5 có tạo đủ đội hình thú vị không.
+2. Roster có thiếu archetype quan trọng nào không.
+3. Evolution I/II có đủ cảm giác đổi build thay vì chỉ cộng số.
+4. 10% miss trên đòn high-value có gây khó chịu quá không.
+5. Team 5 quái có áp đảo team 3 quái vì action economy không.
+6. EXP 3/7 có đủ nhanh để thấy Evolution II trong 3–5 phút.
+
+### Sau khi roster được duyệt
+- Prototype hex engine 61 ô.
+- Generator map cân bằng.
+- Draft 10★ + lock species.
+- Turn/activation engine.
+- Combat RNG + cover/LOS.
+- EXP/evolution flow.
+- Dùng placeholder art trước, chưa sản xuất asset quái cuối.
 
 ## 12. Rủi ro / giả định
 
