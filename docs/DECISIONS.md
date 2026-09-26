@@ -402,3 +402,13 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - 68/68 tests pass; riêng Cờ cá ngựa 13 tests.
 - Chưa có browser/mobile interaction QC sau deploy; không coi visual/gameplay QC là hoàn tất.
 - Quyết định: CHỐT ngày 2026-09-26.
+
+
+## D-039 — Cờ cá ngựa v0.2 visual/animation direction
+- Bàn v0.2 đổi sang **bàn vuông kiểu Cờ cá ngựa Việt Nam**, ưu tiên bố cục truyền thống quen mắt hơn board vòng tròn v0.1.
+- Xúc xắc phải là **khối lập phương có animation lăn/quay thật** trước khi dừng đúng kết quả engine.
+- Hoạt ảnh mặt 1 bay dùng **lift + arc + trail + target highlight + landing**.
+- Hoạt ảnh đá theo phong cách **vui nhộn, wow effect**, gồm impact rõ và quân bị đá bay về sân.
+- Tempo dùng chiến lược **normal move nhanh, special action nổi bật**.
+- Không đổi ruleset D-037; v0.2 chủ yếu là presentation/UX/animation.
+- Quyết định: CHỐT ngày 2026-09-26.
