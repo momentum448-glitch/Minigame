@@ -495,6 +495,16 @@ Nguồn đối chiếu:
 - Tempo: đi thường nhanh; bay và đá được nhấn mạnh hơn để tạo wow effect.
 - Không thay engine/ruleset D-037; v0.2 là refactor presentation/animation + event metadata nếu cần.
 
+### Dice3D settled-state hotfix
+- Screenshot QC sau hotfix #54 cho thấy badge engine **5 + 3 đúng**, nhưng pip face vẫn nhìn gần như 1 chấm trên Android/WebView.
+- Kết luận: ngay cả front-face DOM của cube 3D vẫn không đáng tin cậy khi đứng yên trên WebView này.
+- Fix #56:
+  - **rolling state** vẫn dùng cube 6 mặt CSS 3D;
+  - **settled state** chuyển sang mặt pip 2D ổn định + cạnh trên/cạnh phải 2.5D;
+  - số pip sau khi dừng không còn phụ thuộc `preserve-3d`, `backface-visibility` hay camera transform;
+  - badge số vẫn giữ làm fallback.
+- Đây là thay đổi presentation בלבד, không đổi RNG/engine.
+
 ### Dice3D Android hotfix
 - QC ảnh người dùng ngày 2026-09-26 phát hiện Android/WebView hiển thị sai: cả hai dice đều hiện mặt 1.
 - Nguyên nhân: face-selection dựa trên xoay cả cube + `backface-visibility` không ổn định trên trình duyệt Android.
@@ -507,9 +517,9 @@ Nguồn đối chiếu:
 - Roll animation 3D vẫn giữ nguyên.
 
 ### QC kỹ thuật
-- Deploy workflow **#54**: success.
-- Run ID: `36252593872`.
-- Deployed source commit: `57ae65ad3dfe14d3a7f957c284385742218d0810`.
+- Deploy workflow **#56**: success.
+- Run ID: `36254634287`.
+- Deployed source commit: `8be04a6a3e8883b79fbef7ff1aabca7f6547eb3c`.
 - Test suite: **73/73 pass**.
 - Cờ cá ngựa:
   - engine: **13 tests**;
@@ -517,7 +527,7 @@ Nguồn đối chiếu:
 - Production build: pass.
 - GitHub Pages deploy: pass.
 - Live: `https://momentum448-glitch.github.io/Minigame/#/co-ca-ngua`.
-- Desktop Commander hiện offline nên **chưa có assistant-side browser/mobile interaction QC trực tiếp** sau deploy #54. Người dùng đã cung cấp screenshot QC cho bug dice trước hotfix; cần reload và xác nhận sau hotfix.
+- Desktop Commander hiện offline nên **chưa có assistant-side browser/mobile interaction QC trực tiếp** sau deploy #54. Người dùng đã cung cấp screenshot QC cho bug dice trước hotfix; cần reload và xác nhận sau hotfix settled-state #56.
 
 ## 12. NEXT ACTION — ưu tiên cao nhất
 
