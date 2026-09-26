@@ -354,3 +354,20 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Route dự kiến: `#/co-ca-ngua`.
 - Dự kiến thuộc **Dân gian Việt Nam** và **May rủi & Party**.
 - Quyết định: CHỐT ngày 2026-09-26.
+
+
+## D-036 — Cờ cá ngựa foundation
+- Game 08 hỗ trợ **Local 2–4 người + đấu AI**.
+- Dùng **2 xúc xắc**.
+- Mặt 6 có quyền xuất quân và tạo lượt thưởng; chi tiết cách tính với 1/2 viên ra 6 còn phải chốt chính xác.
+- Mặt 1 có luật đặc biệt do người dùng chọn: nếu không có vật cản thì có thể **bay tới chuồng tiếp theo**; vị trí đích chính xác còn phải chốt trước khi code.
+- Cản/đá:
+  - không vượt qua quân cản;
+  - đi đúng ô đối phương thì đá quân đó về chuồng;
+  - không đá quân mình;
+  - không có nước hợp lệ thì mất lượt.
+- Đích dùng thứ tự **6–5–4–3**.
+- v0.1 không dùng thầu mạ/sập hầm hoặc luật thưởng/phạt giao kèo.
+- Animation phải có xúc xắc lắc/nảy, ngựa đi từng ô, hiệu ứng đá và leo chuồng.
+- Các chi tiết chưa chốt không được tự suy diễn khi implement.
+- Quyết định: CHỐT ngày 2026-09-26.
