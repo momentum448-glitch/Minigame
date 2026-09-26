@@ -426,3 +426,16 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - 73/73 tests pass; Cờ cá ngựa có 13 engine tests + 5 geometry tests.
 - Chưa có browser/mobile interaction QC sau deploy vì Desktop Commander offline.
 - Quyết định: CHỐT ngày 2026-09-26.
+
+
+## D-041 — Dice3D Android/WebView compatibility hotfix
+- Screenshot QC trên Android cho thấy cube v0.2 có thể hiển thị sai physical face: cả hai dice nhìn như mặt 1.
+- Không đổi RNG/engine xúc xắc.
+- Dice3D đổi chiến lược render:
+  - front face luôn là giá trị engine thực tế;
+  - các face còn lại chỉ phục vụ thể tích trong animation;
+  - không xoay cube sang physical face theo kết quả nữa.
+- Giữ animation throw/roll 3D, rồi snap về front result face.
+- Thêm badge số nhỏ làm fallback nhận diện trên WebView.
+- Deploy #54 success, run `36252593872`, source commit `57ae65ad3dfe14d3a7f957c284385742218d0810`.
+- Quyết định: CHỐT ngày 2026-09-26.
