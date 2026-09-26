@@ -412,3 +412,17 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Tempo dùng chiến lược **normal move nhanh, special action nổi bật**.
 - Không đổi ruleset D-037; v0.2 chủ yếu là presentation/UX/animation.
 - Quyết định: CHỐT ngày 2026-09-26.
+
+
+## D-040 — Cờ cá ngựa v0.2 deployed
+- v0.2 giữ nguyên ruleset D-037, đổi mạnh lớp presentation/animation.
+- Board chuyển sang **vuông kiểu Việt Nam**, engine vẫn dùng 56 track index cũ.
+- Geometry UI tách riêng tại `src/cacngua/geometry.ts`.
+- Dice tách thành `src/cacngua/Dice3D.tsx`, render cube 6 mặt CSS 3D và có throw/roll animation trước khi hiện kết quả.
+- Fly mặt 1 dùng SVG motion path + trail; kick dùng impact ring/comic burst + victim arc về sân.
+- Normal move ~175 ms/ô; fly ~820 ms; kick ~780 ms.
+- Input vẫn khóa trong action animation; AI dùng cùng presentation flow.
+- Deploy #52 success, run `36251905009`, source commit `c357536da4e79c352921a0c7827e73d613506aff`.
+- 73/73 tests pass; Cờ cá ngựa có 13 engine tests + 5 geometry tests.
+- Chưa có browser/mobile interaction QC sau deploy vì Desktop Commander offline.
+- Quyết định: CHỐT ngày 2026-09-26.
