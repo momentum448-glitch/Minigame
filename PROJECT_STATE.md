@@ -15,7 +15,7 @@ Xây một website chứa nhiều minigame theo mô hình **sảnh game đa danh
 6. **Bài Chòi** — Game 06, playable v0.4 pre-rendered voice-pack baseline.
 7. **Monster Chess** — Game 07, playable prototype v0.1.
 
-Mốc đang active: **QC Game 07 — Monster Chess prototype v0.1**. Home v2 đã deploy; Bài Chòi vẫn tạm dừng ở v0.4.
+Mốc đang active: **Không có game đang được triển khai tiếp. Monster Chess v0.1 tạm dừng có chủ đích; Bài Chòi v0.4 vẫn tạm dừng.**
 
 ## 2. Repo / Deploy
 
@@ -405,45 +405,34 @@ Nguồn đối chiếu:
 - Handoff snapshot #31: success.
 - Chưa có browser interaction QC trực tiếp trên mobile/desktop trong chat này.
 
+### Trạng thái tạm dừng Monster Chess
+- Người dùng chốt ngày 2026-09-26: **tạm lưu dự án Game 07 tại đây để chuyển sang việc khác**.
+- Mốc lưu: **Monster Chess prototype v0.1 playable**.
+- Deploy kỹ thuật gần nhất vẫn là **#41**, commit `5a607adc62a2d7a59b99eba639c39cfbf6007063`, 55/55 tests pass.
+- Ruleset nền D-030 → D-033 giữ nguyên; không hỏi lại khi tiếp tục.
+- Balance của roster/stat/star/cooldown/evolution **chưa khóa**.
+- Chưa có QC tương tác trực tiếp trên bản live sau deploy.
+- Khi quay lại, ưu tiên:
+  1. QC draft 10★ + species lock + Pass.
+  2. QC map hex random/cân bằng, Cover/Blocker/LOS.
+  3. QC Move → Main Action, skill, pickup, Artifact, EXP/Evolution.
+  4. Đánh giá action economy giữa đội 5 unit và đội 3 unit.
+  5. Sau khi gameplay ổn mới làm animation/art quái và roguelite.
+
 ## 11. NEXT ACTION — ưu tiên cao nhất
 
-### Task
-**QC Monster Chess prototype v0.1 trên bản live, rồi cân bằng trước art polish.**
+### Trạng thái
+**Không có task triển khai đang active. Monster Chess v0.1 đã được tạm dừng có chủ đích.**
 
-### Checklist QC gameplay
-1. Game hiện trong **Game hiện đại** và **Chiến thuật**.
-2. Draft:
-   - đúng 10★;
-   - tối đa 5 quái;
-   - loài đã chọn bị khóa;
-   - Pass luân phiên hợp lý.
-3. Bắt đầu trận phải sinh map hex khác nhau giữa các ván nhưng hai phía không lệch rõ.
-4. Unit hai bên auto deploy ở hai cạnh đối diện.
-5. Chọn unit -> thấy ô đi hợp lệ -> move -> vẫn còn Main Action.
-6. Basic Attack phải thể hiện miss/normal/crit đúng logic.
-7. Cover và Blocker phải có tác dụng đúng.
-8. Mỗi quái chỉ activation một lần/round; quyền đi trước đổi bên sau round.
-9. Pickup phải được nhặt tự động.
-10. Skill của 8 quái phải kích hoạt được theo target hợp lệ.
-11. Quái đạt 3 XP phải mở Evolution I; đạt 7 XP mở Evolution II.
-12. Artifact dùng được và tiêu Main Action.
-13. Tiêu diệt hết đội đối phương phải kết thúc trận.
-14. Mobile: board, side panel và draft card phải đọc/chạm được.
+### Khi quay lại Monster Chess
+- Bắt đầu từ route `#/monster-chess` và engine hiện tại, không dựng lại từ đầu.
+- Đọc `docs/MONSTER_CHESS_RULES.md`, `docs/MONSTER_CHESS_ROSTER_V01.md`, D-030 → D-034.
+- Đối chiếu `docs/AUTO_TECH_STATUS.md` và GitHub Actions thật trước khi sửa/deploy.
+- Ưu tiên QC gameplay + cân bằng trước art polish.
 
-### Rủi ro cần đánh giá sau QC
-- Team 5 unit có thể áp đảo team 3 unit vì action economy.
-- 10% miss có thể gây khó chịu ở skill/đòn quan trọng.
-- Evolution II có thể quá chậm với mục tiêu 3–5 phút.
-- Một số Active Skill hiện là bản giản lược so với design roster.
-- Map generator hiện ưu tiên symmetry; cần test cảm giác replay.
-- Emoji/glyph chỉ là placeholder.
-
-### Sau khi QC gameplay ổn
-- Cân bằng stat/star/XP/cooldown.
-- Chốt roster nào giữ/làm lại.
-- Làm animation di chuyển/combat.
-- Thiết kế art direction và asset quái.
-- Sau đó mới cân nhắc roguelite solo.
+### Khi người dùng chuyển sang task khác
+- Thực hiện task mới theo yêu cầu.
+- Không tự động tiếp tục Monster Chess hoặc tự chọn Game 08 nếu người dùng chưa yêu cầu.
 
 ## 12. Rủi ro / giả định
 
