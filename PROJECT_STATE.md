@@ -495,10 +495,21 @@ Nguồn đối chiếu:
 - Tempo: đi thường nhanh; bay và đá được nhấn mạnh hơn để tạo wow effect.
 - Không thay engine/ruleset D-037; v0.2 là refactor presentation/animation + event metadata nếu cần.
 
+### Dice3D Android hotfix
+- QC ảnh người dùng ngày 2026-09-26 phát hiện Android/WebView hiển thị sai: cả hai dice đều hiện mặt 1.
+- Nguyên nhân: face-selection dựa trên xoay cả cube + `backface-visibility` không ổn định trên trình duyệt Android.
+- Fix:
+  - mặt trước luôn render **giá trị thật của engine**;
+  - 5 mặt còn lại chỉ tạo thể tích khi roll;
+  - bỏ phụ thuộc `show-1…show-6` để chọn physical face;
+  - sau roll cube snap về front-face ổn định;
+  - thêm numeric badge nhỏ làm fallback nhận diện.
+- Roll animation 3D vẫn giữ nguyên.
+
 ### QC kỹ thuật
-- Deploy workflow **#52**: success.
-- Run ID: `36251905009`.
-- Deployed source commit: `c357536da4e79c352921a0c7827e73d613506aff`.
+- Deploy workflow **#54**: success.
+- Run ID: `36252593872`.
+- Deployed source commit: `57ae65ad3dfe14d3a7f957c284385742218d0810`.
 - Test suite: **73/73 pass**.
 - Cờ cá ngựa:
   - engine: **13 tests**;
@@ -506,7 +517,7 @@ Nguồn đối chiếu:
 - Production build: pass.
 - GitHub Pages deploy: pass.
 - Live: `https://momentum448-glitch.github.io/Minigame/#/co-ca-ngua`.
-- Desktop Commander hiện offline nên **chưa có browser/mobile interaction QC trực tiếp** sau deploy #52.
+- Desktop Commander hiện offline nên **chưa có assistant-side browser/mobile interaction QC trực tiếp** sau deploy #54. Người dùng đã cung cấp screenshot QC cho bug dice trước hotfix; cần reload và xác nhận sau hotfix.
 
 ## 12. NEXT ACTION — ưu tiên cao nhất
 
