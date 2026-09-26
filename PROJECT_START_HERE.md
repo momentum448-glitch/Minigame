@@ -24,4 +24,4 @@
 - Repo: https://github.com/momentum448-glitch/Minigame
 - Live: https://momentum448-glitch.github.io/Minigame/
 - Game playable: Ô ăn quan, Cờ Gánh, Cờ Hùm, Cờ Lúa Ngô, Tam Cúc, Bài Chòi, Monster Chess prototype v0.1, Cờ cá ngựa v0.1
-- Mốc hiện tại: Cờ cá ngựa v0.2 + Dice3D Android hotfix deploy #54; cần QC lại dice trên mobile rồi tiếp tục fly/kick QC
+- Mốc hiện tại: Cờ cá ngựa v0.2 + Dice settled-state hotfix deploy #56; cần QC lại pip 5/3 trên Android rồi tiếp tục fly/kick QC
