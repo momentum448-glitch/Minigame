@@ -439,3 +439,16 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Thêm badge số nhỏ làm fallback nhận diện trên WebView.
 - Deploy #54 success, run `36252593872`, source commit `57ae65ad3dfe14d3a7f957c284385742218d0810`.
 - Quyết định: CHỐT ngày 2026-09-26.
+
+
+## D-042 — Dice3D settled-state compatibility redesign
+- Screenshot QC sau D-041 xác nhận engine/badge ra đúng **5 + 3** nhưng pip trên cube đứng yên vẫn render sai trên Android/WebView.
+- Rolling state vẫn giữ full CSS 3D cube để đáp ứng yêu cầu “lăn thật”.
+- Settled state **không dùng six-face cube** nữa:
+  - render một mặt pip 2D chính xác;
+  - thêm top/right faces dạng 2.5D để vẫn nhìn như khối lập phương;
+  - do đó kết quả sau khi dừng không phụ thuộc browser 3D backface.
+- Badge số nhỏ tiếp tục làm fallback.
+- Không đổi RNG, bonus-six logic hay engine.
+- Deploy #56 success, run `36254634287`, source commit `8be04a6a3e8883b79fbef7ff1aabca7f6547eb3c`.
+- Quyết định: CHỐT ngày 2026-09-26.
