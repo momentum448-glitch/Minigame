@@ -424,7 +424,8 @@ Nguồn đối chiếu:
 ## 11. Game 08 — Cờ cá ngựa
 
 ### Trạng thái
-- **Playable v0.1** trên route `#/co-ca-ngua`.
+- **Playable v0.2** trên route `#/co-ca-ngua`.
+- v0.2 tập trung board vuông kiểu Việt Nam + xúc xắc 3D + fly/kick FX; ruleset D-037 giữ nguyên.
 - Thuộc **Dân gian Việt Nam** và **May rủi & Party**.
 - Ruleset dự án là biến thể đã chốt với người dùng, không mặc định đại diện cho mọi luật Cờ cá ngựa.
 
@@ -462,9 +463,26 @@ Nguồn đối chiếu:
   - 1 vs 3 AI;
   - Dễ / Vừa / Khó.
 - UI chọn từng viên xúc xắc rồi chọn ngựa; khi mặt 1 có cả đi thường và bay, game hiện lựa chọn riêng.
-- Bàn SVG vòng đua 56 ô + 4 chuồng 1→6.
-- Xúc xắc có trạng thái lắc trước khi ra số.
-- Ngựa đi thường được phát từng bước khoảng **190 ms/ô** ở lớp trình diễn.
+- Geometry board tách riêng tại `src/cacngua/geometry.ts`.
+- Bàn SVG vuông 56 ô:
+  - 4 sân màu ở 4 góc;
+  - 4 cửa chuồng ở trung điểm bốn cạnh;
+  - 4 lane 1→6 hướng vào trung tâm.
+- Xúc xắc tách component `src/cacngua/Dice3D.tsx`:
+  - khối lập phương 6 mặt bằng CSS 3D;
+  - animation shake/throw/roll trước khi snap đúng kết quả engine;
+  - mặt 6 hiện +1 xúc xắc.
+- Ngựa đi thường phát từng ô khoảng **175 ms/ô**.
+- Bay mặt 1:
+  - đường cong quadratic;
+  - trail sáng;
+  - quân bay bằng SVG animateMotion;
+  - duration khoảng **820 ms**.
+- Đá quân:
+  - impact flash/ring + nhãn **BỐP!**;
+  - quân bị đá bay theo cung về sân;
+  - duration khoảng **780 ms**.
+- Layer motion và layer squash/rotate được tách để tránh tranh SVG transform.
 - Có flow xuất quân, đi, bay mặt 1, đá quân, leo chuồng, tung bù và thắng.
 - Game đã đăng ký trong lobby và category registry.
 
@@ -478,76 +496,47 @@ Nguồn đối chiếu:
 - Không thay engine/ruleset D-037; v0.2 là refactor presentation/animation + event metadata nếu cần.
 
 ### QC kỹ thuật
-- Deploy workflow **#46**: success.
-- Run ID: `36248901658`.
-- Deployed commit: `bb650b41957ff8b84d902677bdbaad70c7c05dd3`.
-- Test suite: **68/68 pass**.
-- Cờ cá ngựa engine: **13 tests**.
+- Deploy workflow **#52**: success.
+- Run ID: `36251905009`.
+- Deployed source commit: `c357536da4e79c352921a0c7827e73d613506aff`.
+- Test suite: **73/73 pass**.
+- Cờ cá ngựa:
+  - engine: **13 tests**;
+  - square-board geometry: **5 tests**.
 - Production build: pass.
 - GitHub Pages deploy: pass.
 - Live: `https://momentum448-glitch.github.io/Minigame/#/co-ca-ngua`.
-- Chưa có browser/mobile interaction QC trực tiếp sau deploy #46.
+- Desktop Commander hiện offline nên **chưa có browser/mobile interaction QC trực tiếp** sau deploy #52.
 
 ## 12. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**Triển khai Cờ cá ngựa v0.2 visual/animation theo 5 phase, giữ nguyên ruleset.**
+**QC tương tác Cờ cá ngựa v0.2 trên bản live, sau đó tune visual/tempo theo feedback.**
 
-### Phase 0 — bảo vệ engine trước khi đổi UI
-- Giữ `src/cacngua/engine.ts` làm source of truth.
-- Bổ sung test regression nếu UI cần metadata mới cho capture/fly.
-- Không thay luật 2 xúc xắc, mặt 6, mặt 1, cản/đá, vào chuồng.
-- Gate: 68/68 tests hiện tại phải tiếp tục xanh trước và sau refactor.
+### Checklist QC v0.2
+1. Bàn phải đọc ngay là **bàn Cờ cá ngựa vuông kiểu Việt Nam**.
+2. 4 sân màu, 4 cửa chuồng và lane 1→6 phải dễ hiểu trên mobile.
+3. 2 xúc xắc phải nhìn như **khối lập phương thật**, có roll/quay trước khi dừng.
+4. Dice result phải khớp engine; 6 vẫn sinh đúng bonus die.
+5. Move thường phải đi từng ô, không teleport.
+6. Mặt 1 bay:
+   - source/target rõ;
+   - thấy cung bay và trail;
+   - landing rõ.
+7. Đá thường:
+   - attacker tới đích trước;
+   - impact rõ;
+   - victim bay về sân, không biến mất tức thì.
+8. Bay + đá nối sequence tự nhiên.
+9. Input khóa trong animation; AI không đi chồng animation.
+10. Không regress Local 2/3/4 và AI 1/2/3.
+11. Mobile không bị panel/dice che board; ô/ngựa đủ lớn để tap.
+12. Reduced motion không gây lỗi trạng thái.
 
-### Phase 1 — board vuông kiểu Việt Nam
-- Tách mapping `track index -> screen coordinate` khỏi component.
-- Thay `polarPoint()` bằng mapping đường đua vuông 56 ô.
-- Bố trí 4 sân ở 4 góc, 4 cửa chuồng, 4 lane 1→6 hướng vào trung tâm.
-- Giữ cùng index/progress của engine để không migrate gameplay state.
-- Mobile-first: board vuông phải fit width, quân/ô vẫn đủ lớn để tap.
-- Gate: Local 2/3/4 người hiển thị đúng màu, vị trí, cửa và chuồng.
-
-### Phase 2 — xúc xắc lập phương lăn thật
-- Tạo component Dice3D riêng cho mỗi viên.
-- Cube 6 mặt bằng CSS 3D/transform; kết quả engine chỉ được commit sau sequence roll.
-- Sequence: shake -> throw/roll -> decelerate -> snap đúng face.
-- 6 phải giữ badge +1 die sau khi dừng.
-- `prefers-reduced-motion` có fallback ngắn.
-- Gate: 2 dice độc lập, bonus dice 1 hoặc 2 viên vẫn chạy đúng flow.
-
-### Phase 3 — hoạt ảnh bay mặt 1
-- Tạo animation layer độc lập trên board.
-- Tính start/end từ mapping board vuông.
-- Sequence: source pulse -> horse lift -> bezier arc -> light trail -> target pulse -> landing bounce.
-- Nếu bay tới cửa chuồng mình, kết thúc ở đúng cửa/home rank 0.
-- Nếu đích có quân địch, nối sang Phase 4 capture animation.
-- Gate: người chơi luôn phân biệt được “đi 1” và “bay”.
-
-### Phase 4 — hoạt ảnh đá vui nhộn / epic
-- Trước khi apply visual state cuối, phát capture sequence dựa trên before/after state.
-- Sequence: attacker landing -> impact flash/ring -> victim squash/shake -> comic burst -> victim arc về yard -> settle bounce.
-- Khóa input xuyên suốt sequence; AI dùng cùng animation.
-- Không bạo lực; feel arcade/vui.
-- Gate: đá thường và đá sau cú bay đều không teleport, không mất sync engine.
-
-### Phase 5 — polish + QC
-- Tune tempo:
-  - normal move khoảng 160–200ms/ô;
-  - fly khoảng 650–900ms;
-  - kick sequence khoảng 700–1000ms.
-- QC mobile: kích thước ô/ngựa, dice cube, panel không đè board.
-- QC desktop.
-- Test all Local/AI modes, 6+4, 6+6, bonus chain, fly, block, kick, home climb, victory.
-- Deploy một build QC riêng.
-- Chỉ sau khi gameplay/UX pass mới thêm sound.
-
-### Definition of Done v0.2
-- Bàn vuông mang mental model Cờ cá ngựa Việt Nam rõ ngay khi nhìn.
-- Hai xúc xắc đọc như cube thật và có roll animation rõ.
-- Fly và kick có wow effect nhưng không che thông tin hoặc làm game lê thê.
-- Engine tests không regress.
-- Build/deploy success.
-- QC tương tác mobile/desktop pass.
+### Sau QC
+- Sửa mismatch board/animation nếu có.
+- Tune fly/kick duration nếu quá nhanh hoặc quá chậm.
+- Chỉ khi visual pass mới thêm sound impact/dice/horse.
 
 ## 13. Rủi ro / giả định
 
