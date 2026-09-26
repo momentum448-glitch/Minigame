@@ -335,3 +335,14 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Balance của star/stat/skill/evolution chưa khóa, phải dựa trên QC/playtest.
 - Deploy #41 success, commit `5a607adc62a2d7a59b99eba639c39cfbf6007063`, 55/55 tests pass.
 - Quyết định: CHỐT ngày 2026-09-25.
+
+
+## D-034 — Tạm dừng Monster Chess sau prototype v0.1
+- Tạm dừng Game 07 **Monster Chess** tại mốc **prototype v0.1 playable** để chuyển sang việc khác.
+- Giữ nguyên ruleset và prototype hiện tại; không dựng lại từ đầu khi tiếp tục.
+- D-030 → D-033 vẫn có hiệu lực.
+- Balance của roster/stat/star/cooldown/evolution chưa khóa và phải dựa trên QC/playtest sau này.
+- Chưa có browser/mobile QC tương tác trực tiếp sau deploy #41.
+- Khi quay lại, ưu tiên QC gameplay/cân bằng trước animation, art cuối và roguelite.
+- Deploy kỹ thuật mốc lưu: workflow #41, commit `5a607adc62a2d7a59b99eba639c39cfbf6007063`, 55/55 tests pass.
+- Quyết định: CHỐT ngày 2026-09-26.
