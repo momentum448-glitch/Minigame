@@ -649,17 +649,16 @@ export default function CoCaNguaGame({ onBack }: CoCaNguaGameProps) {
             })}
 
             {motionFx && (
-              <g
-                key={motionFx.id}
-                className={`ccn-fx-horse seat-${motionFx.seat} ${motionFx.kind}`}
-              >
+              <g key={motionFx.id} className="ccn-fx-motion">
                 <animateMotion
                   dur={`${motionFx.durationMs}ms`}
                   path={motionFx.path}
                   fill="freeze"
                 />
-                <circle r="20" />
-                <text x="0" y="7">♞</text>
+                <g className={`ccn-fx-horse seat-${motionFx.seat} ${motionFx.kind}`}>
+                  <circle r="20" />
+                  <text x="0" y="7">♞</text>
+                </g>
               </g>
             )}
           </svg>
