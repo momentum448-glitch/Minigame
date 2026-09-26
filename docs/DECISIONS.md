@@ -371,3 +371,20 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Animation phải có xúc xắc lắc/nảy, ngựa đi từng ô, hiệu ứng đá và leo chuồng.
 - Các chi tiết chưa chốt không được tự suy diễn khi implement.
 - Quyết định: CHỐT ngày 2026-09-26.
+
+
+## D-037 — Cờ cá ngựa ruleset v0.1
+- Dùng **2 xúc xắc**, xử lý từng viên riêng; có thể áp dụng hai viên lên hai ngựa khác nhau hoặc nối tiếp cùng một ngựa.
+- Mỗi mặt **6** có thể dùng để xuất quân và đồng thời tạo **1 viên xúc xắc tung bù** sau khi xử lý lô hiện tại.
+- 6+4 -> tung bù 1 viên; 6+6 -> tung bù 2 viên; 6 trong lượt bù tiếp tục sinh lượt bù.
+- Mặt **1** của ngựa đang ở đường đua có thể:
+  - đi 1 ô bình thường; hoặc
+  - bay tới **cửa chuồng kế tiếp phía trước** nếu không có quân cản giữa đường.
+- Engine v0.1 dùng đường đua **56 ô**, 4 cửa chuồng cách nhau 14 ô.
+- Cản/đá: không vượt quân, không vào ô quân mình, đáp đúng ô địch thì đá về sân.
+- Phải đi đúng số để hoàn thành vòng và tới cửa chuồng mình.
+- Leo chuồng 1→6: mỗi lần chỉ lên một bậc kế tiếp khi xúc xắc đúng số bậc kế tiếp.
+- Thắng khi 4 ngựa chiếm đủ bậc **3,4,5,6**.
+- v0.1 không dùng thầu mạ/sập hầm.
+- Chi tiết tại `docs/CO_CA_NGUA_RULES.md`.
+- Quyết định: CHỐT ngày 2026-09-26.

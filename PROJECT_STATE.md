@@ -454,26 +454,39 @@ Nguồn đối chiếu:
   - đá có hit/knockback về chuồng;
   - leo chuồng có nhịp lên bậc rõ.
 
-### Còn mơ hồ bắt buộc phải chốt
-1. Với **2 xúc xắc**, hai số được xử lý **riêng từng viên** hay cộng tổng để đi.
-2. Nếu ra **6–6**, được xuất mấy quân / thêm mấy lượt.
-3. “Ra 1 bay tới chuồng tiếp theo” chính xác là bay từ đâu tới đâu và có dùng từng viên xúc xắc riêng hay không.
+### Ruleset v0.1 đã chốt
+- Hai viên xúc xắc xử lý **riêng từng viên**, thứ tự tự chọn.
+- Có thể dùng hai viên cho hai ngựa khác nhau hoặc nối tiếp trên cùng một ngựa.
+- Mỗi mặt 6:
+  - có thể xuất 1 ngựa;
+  - sinh **1 viên xúc xắc tung bù** sau lô hiện tại.
+- 6+4 -> tung bù 1 viên; 6+6 -> tung bù 2 viên.
+- Nếu tung bù lại ra 6 thì tiếp tục sinh viên tung bù tương ứng.
+- Mặt 1 trên đường đua:
+  - có thể đi 1 ô bình thường; hoặc
+  - bay tới **cửa chuồng kế tiếp phía trước** nếu không có quân cản giữa đường.
+- Đường đua engine v0.1: **56 ô**, 4 cửa chuồng cách nhau 14 ô.
+- Ngựa phải đi đúng số để hoàn thành vòng và tới cửa chuồng mình.
+- Chuồng leo bậc 1→6; mỗi lần chỉ lên bậc kế tiếp nếu mặt xúc xắc đúng số bậc đó.
+- Chi tiết đầy đủ: `docs/CO_CA_NGUA_RULES.md`.
 
 ## 12. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**Chốt ruleset Game 08 Cờ cá ngựa trước khi prototype.**
+**Hoàn thiện engine/test Cờ cá ngựa v0.1, sau đó ráp UI.**
 
-### Cần chốt với người dùng
-1. Hai viên xúc xắc dùng tách riêng hay cộng tổng khi di chuyển.
-2. Cách xử lý chính xác 6–x và 6–6: xuất quân, đi số còn lại và số lượt thưởng.
-3. Định nghĩa chính xác cơ chế **mặt 1 → bay tới chuồng tiếp theo**.
+### Đang triển khai
+- Ruleset: `docs/CO_CA_NGUA_RULES.md`.
+- Engine: `src/cacngua/engine.ts`.
+- Types: `src/cacngua/types.ts`.
+- Test: `src/cacngua/engine.test.ts`.
 
-### Sau khi chốt
-- Viết `docs/CO_CA_NGUA_RULES.md`.
-- Thêm quyết định ruleset vào DECISIONS.
-- Thiết kế engine/test trước UI.
-- Sau đó mới tích hợp route `#/co-ca-ngua` và deploy.
+### Sau engine xanh CI
+- Thiết kế AI Dễ/Vừa/Khó.
+- Ráp bàn cờ + xúc xắc + animation.
+- Tích hợp route `#/co-ca-ngua`.
+- Thêm vào Dân gian Việt Nam + Party.
+- Deploy rồi QC mobile.
 
 ## 13. Rủi ro / giả định
 

@@ -24,4 +24,4 @@
 - Repo: https://github.com/momentum448-glitch/Minigame
 - Live: https://momentum448-glitch.github.io/Minigame/
 - Game playable: Ô ăn quan, Cờ Gánh, Cờ Hùm, Cờ Lúa Ngô, Tam Cúc, Bài Chòi, Monster Chess prototype v0.1
-- Mốc hiện tại: Game 08 Cờ cá ngựa — foundation đã chốt; còn 3 chi tiết về 2 xúc xắc và luật mặt 1 cần xác nhận
+- Mốc hiện tại: Game 08 Cờ cá ngựa — ruleset v0.1 đã chốt; đang làm engine/test trước UI
