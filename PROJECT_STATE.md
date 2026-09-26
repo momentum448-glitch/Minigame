@@ -432,14 +432,32 @@ Nguồn đối chiếu:
 - ZaloPay: tổng quan 2–4 người, 4 quân/màu, 1–2 xúc xắc, nguồn gốc từ Ludo/Pachisi.
 - covua.net.vn: luật ra quân/leo chuồng theo biến thể 2 xúc xắc.
 
-### Điểm cần chốt trước khi code
-- Số người/chế độ chơi.
-- 1 hay 2 xúc xắc.
-- Điều kiện xuất quân và lượt thưởng.
-- Luật cản/đá.
-- Cách vào chuồng.
-- Có dùng luật phụ thầu mạ/sập hầm hay không.
-- AI và animation.
+### Các điểm đã chốt
+- Chế độ: **Local 2–4 người + đấu AI**.
+- Dùng **2 xúc xắc**.
+- Luật 6:
+  - có thể dùng mặt 6 để **xuất quân**;
+  - có **lượt thưởng liên quan tới số viên xúc xắc ra 6**; chi tiết trường hợp 1 viên/2 viên ra 6 cần xác nhận cách tính chính xác.
+- Luật 1:
+  - có cơ chế đặc biệt **“bay tới chuồng tiếp theo nếu không có vật cản”**;
+  - “chuồng tiếp theo” cần người dùng xác định chính xác vị trí đích trên bàn trước khi code.
+- Cản/đá:
+  - không được vượt quân đang cản đường;
+  - đi đúng ô đối phương thì đá về chuồng;
+  - không đá quân mình;
+  - không có nước hợp lệ thì mất lượt.
+- Đích dùng luật **6–5–4–3**.
+- v0.1 **không dùng** thầu mạ/sập hầm hay luật phạt/thưởng giao kèo.
+- Animation:
+  - xúc xắc lắc/nảy rồi dừng;
+  - ngựa đi từng ô;
+  - đá có hit/knockback về chuồng;
+  - leo chuồng có nhịp lên bậc rõ.
+
+### Còn mơ hồ bắt buộc phải chốt
+1. Với **2 xúc xắc**, hai số được xử lý **riêng từng viên** hay cộng tổng để đi.
+2. Nếu ra **6–6**, được xuất mấy quân / thêm mấy lượt.
+3. “Ra 1 bay tới chuồng tiếp theo” chính xác là bay từ đâu tới đâu và có dùng từng viên xúc xắc riêng hay không.
 
 ## 12. NEXT ACTION — ưu tiên cao nhất
 
@@ -447,13 +465,9 @@ Nguồn đối chiếu:
 **Chốt ruleset Game 08 Cờ cá ngựa trước khi prototype.**
 
 ### Cần chốt với người dùng
-1. Local 2–4 người và/hoặc đấu AI.
-2. Dùng 1 xúc xắc hay 2 xúc xắc.
-3. Điều kiện xuất quân và có tung thêm khi ra số đặc biệt không.
-4. Luật cản/đá.
-5. Luật leo chuồng và thứ tự 6–5–4–3.
-6. Có dùng luật phụ thầu mạ/sập hầm hay không.
-7. Mức animation vật lý cho xúc xắc/ngựa.
+1. Hai viên xúc xắc dùng tách riêng hay cộng tổng khi di chuyển.
+2. Cách xử lý chính xác 6–x và 6–6: xuất quân, đi số còn lại và số lượt thưởng.
+3. Định nghĩa chính xác cơ chế **mặt 1 → bay tới chuồng tiếp theo**.
 
 ### Sau khi chốt
 - Viết `docs/CO_CA_NGUA_RULES.md`.
