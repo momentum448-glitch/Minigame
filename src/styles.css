@@ -4058,3 +4058,32 @@ button.game-tile {
     animation-iteration-count: 1 !important;
   }
 }
+
+
+/* Dice Android/WebView compatibility fix */
+.ccn-cube-button:not(.rolling) .ccn-dice-cube {
+  transform: rotateX(-7deg) rotateY(9deg);
+}
+.ccn-cube-button:not(.rolling) .ccn-cube-face.result-face {
+  visibility: visible;
+  opacity: 1;
+}
+.ccn-die-value-badge {
+  position: absolute;
+  left: 7px;
+  bottom: 6px;
+  min-width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(38,32,27,.82);
+  color: #fff8e8;
+  font-size: .66rem;
+  font-weight: 950;
+  line-height: 1;
+  pointer-events: none;
+}
+.ccn-cube-button.bonus .ccn-die-value-badge {
+  background: #8c6716;
+}
