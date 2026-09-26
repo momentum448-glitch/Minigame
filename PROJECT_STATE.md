@@ -15,7 +15,7 @@ Xây một website chứa nhiều minigame theo mô hình **sảnh game đa danh
 6. **Bài Chòi** — Game 06, playable v0.4 pre-rendered voice-pack baseline.
 7. **Monster Chess** — Game 07, playable prototype v0.1.
 
-Mốc đang active: **Không có game đang được triển khai tiếp. Monster Chess v0.1 tạm dừng có chủ đích; Bài Chòi v0.4 vẫn tạm dừng.**
+Mốc đang active: **Game 08 — discovery/ruleset Cờ cá ngựa**. Monster Chess v0.1 và Bài Chòi v0.4 vẫn tạm dừng.
 
 ## 2. Repo / Deploy
 
@@ -419,22 +419,49 @@ Nguồn đối chiếu:
   4. Đánh giá action economy giữa đội 5 unit và đội 3 unit.
   5. Sau khi gameplay ổn mới làm animation/art quái và roguelite.
 
-## 11. NEXT ACTION — ưu tiên cao nhất
+## 11. Game 08 — Cờ cá ngựa
 
 ### Trạng thái
-**Không có task triển khai đang active. Monster Chess v0.1 đã được tạm dừng có chủ đích.**
+- Người dùng chọn **Cờ cá ngựa** làm game tiếp theo ngày 2026-09-26.
+- Chưa code; đang ở bước discovery/ruleset vì luật Việt Nam có nhiều dị bản.
+- Dự kiến thuộc danh mục **Dân gian Việt Nam** và **May rủi & Party**; có thể thêm Chiến thuật nếu gameplay triển khai đủ chiều sâu.
+- Route dự kiến: `#/co-ca-ngua`.
 
-### Khi quay lại Monster Chess
-- Bắt đầu từ route `#/monster-chess` và engine hiện tại, không dựng lại từ đầu.
-- Đọc `docs/MONSTER_CHESS_RULES.md`, `docs/MONSTER_CHESS_ROSTER_V01.md`, D-030 → D-034.
-- Đối chiếu `docs/AUTO_TECH_STATUS.md` và GitHub Actions thật trước khi sửa/deploy.
-- Ưu tiên QC gameplay + cân bằng trước art polish.
+### Nguồn đối chiếu ban đầu
+- Thegioididong: luật 1 xúc xắc/2 xúc xắc, xuất quân, đá, cản, vào chuồng và điều kiện thắng.
+- ZaloPay: tổng quan 2–4 người, 4 quân/màu, 1–2 xúc xắc, nguồn gốc từ Ludo/Pachisi.
+- covua.net.vn: luật ra quân/leo chuồng theo biến thể 2 xúc xắc.
 
-### Khi người dùng chuyển sang task khác
-- Thực hiện task mới theo yêu cầu.
-- Không tự động tiếp tục Monster Chess hoặc tự chọn Game 08 nếu người dùng chưa yêu cầu.
+### Điểm cần chốt trước khi code
+- Số người/chế độ chơi.
+- 1 hay 2 xúc xắc.
+- Điều kiện xuất quân và lượt thưởng.
+- Luật cản/đá.
+- Cách vào chuồng.
+- Có dùng luật phụ thầu mạ/sập hầm hay không.
+- AI và animation.
 
-## 12. Rủi ro / giả định
+## 12. NEXT ACTION — ưu tiên cao nhất
+
+### Task
+**Chốt ruleset Game 08 Cờ cá ngựa trước khi prototype.**
+
+### Cần chốt với người dùng
+1. Local 2–4 người và/hoặc đấu AI.
+2. Dùng 1 xúc xắc hay 2 xúc xắc.
+3. Điều kiện xuất quân và có tung thêm khi ra số đặc biệt không.
+4. Luật cản/đá.
+5. Luật leo chuồng và thứ tự 6–5–4–3.
+6. Có dùng luật phụ thầu mạ/sập hầm hay không.
+7. Mức animation vật lý cho xúc xắc/ngựa.
+
+### Sau khi chốt
+- Viết `docs/CO_CA_NGUA_RULES.md`.
+- Thêm quyết định ruleset vào DECISIONS.
+- Thiết kế engine/test trước UI.
+- Sau đó mới tích hợp route `#/co-ca-ngua` và deploy.
+
+## 13. Rủi ro / giả định
 
 - Cờ Lúa Ngô có dị bản và một số nguồn thay “Đỗ” bằng từ khác; dự án dùng chuỗi **Lúa · Ngô · Khoai · Sắn · Đỗ** theo Báo Nam Định và các nguồn giáo dục đối chiếu.
 - Nguồn không nói rõ việc quay lại node đã đi trong cùng lượt; v0.1 cấm lặp node để tránh backtracking vô hạn.
@@ -446,7 +473,7 @@ Nguồn đối chiếu:
 - Tên con Bài Chòi có dị bản địa phương; v0.1 khóa một bộ 27 tên theo nguồn Bình Định.
 - Hô thai thật là nghệ thuật ứng khẩu và có nhiều dị bản; v0.1 dùng câu minh họa mới, không coi là corpus truyền thống chuẩn.
 
-## 13. Việc chưa làm
+## 14. Việc chưa làm
 
 - Sound design.
 - Tutorial/onboarding hoàn chỉnh.
@@ -455,7 +482,7 @@ Nguồn đối chiếu:
 - Game 07.
 - QC nhiều thiết bị.
 
-## 14. Quy tắc cập nhật state
+## 15. Quy tắc cập nhật state
 
 Sau mỗi mốc:
 - cập nhật **Đã có**;
