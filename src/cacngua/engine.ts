@@ -128,7 +128,7 @@ function circularDistance(from: number, to: number): number {
 }
 
 export function nextGateAhead(trackIndex: number): { gateIndex: number; distance: number } {
-  let bestGate = GATE_INDICES[0];
+  let bestGate: number = GATE_INDICES[0];
   let bestDistance = TRACK_LENGTH + 1;
 
   for (const gate of GATE_INDICES) {
