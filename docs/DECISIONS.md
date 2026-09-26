@@ -346,3 +346,11 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Khi quay lại, ưu tiên QC gameplay/cân bằng trước animation, art cuối và roguelite.
 - Deploy kỹ thuật mốc lưu: workflow #41, commit `5a607adc62a2d7a59b99eba639c39cfbf6007063`, 55/55 tests pass.
 - Quyết định: CHỐT ngày 2026-09-26.
+
+
+## D-035 — Game 08
+- Game tiếp theo của Kho Minigame là **Cờ cá ngựa**.
+- Chưa khóa ruleset vì luật Việt Nam có nhiều dị bản; phải chốt số xúc xắc, xuất quân, lượt thưởng, cản/đá, vào chuồng và luật phụ trước khi code.
+- Route dự kiến: `#/co-ca-ngua`.
+- Dự kiến thuộc **Dân gian Việt Nam** và **May rủi & Party**.
+- Quyết định: CHỐT ngày 2026-09-26.
