@@ -6,6 +6,7 @@ import CoLuaNgoGame from './CoLuaNgoGame';
 import TamCucGame from './TamCucGame';
 import BaiChoiGame from './BaiChoiGame';
 import MonsterChessGame from './MonsterChessGame';
+import CoCaNguaGame from './CoCaNguaGame';
 
 type GameId =
   | 'o-an-quan'
@@ -14,7 +15,8 @@ type GameId =
   | 'co-lua-ngo'
   | 'tam-cuc'
   | 'bai-choi'
-  | 'monster-chess';
+  | 'monster-chess'
+  | 'co-ca-ngua';
 
 type CategoryId =
   | 'vietnamese-folk'
@@ -90,6 +92,14 @@ const games: GameMeta[] = [
     eyebrow: 'Đang hoàn thiện audio'
   },
   {
+    id: 'co-ca-ngua',
+    title: 'Cờ cá ngựa',
+    description: 'Hai xúc xắc, bốn ngựa mỗi màu, đá quân, bay tới cửa chuồng và đua lên bậc 6·5·4·3.',
+    cta: 'Vào đường đua',
+    categories: ['vietnamese-folk', 'party'],
+    eyebrow: 'Game mới'
+  },
+  {
     id: 'monster-chess',
     title: 'Monster Chess',
     description: 'Draft đội quái bằng ngân sách sao, tiến hóa giữa trận và đấu chiến thuật trên bản đồ hex ngẫu nhiên.',
@@ -107,7 +117,7 @@ const categories: CategoryMeta[] = [
     description: 'Những trò chơi, bàn cờ và cuộc vui truyền thống được số hóa theo tinh thần Việt.',
     accent: 'viet',
     gameIds: games.filter((game) => game.categories.includes('vietnamese-folk')).map((game) => game.id),
-    note: '6 game đang chơi được'
+    note: `${games.filter((game) => game.categories.includes('vietnamese-folk')).length} game đang chơi được`
   },
   {
     id: 'world-folk',
@@ -125,7 +135,7 @@ const categories: CategoryMeta[] = [
     description: 'Mini arcade, phản xạ, roguelite và những ý tưởng mới dành cho vài phút giải lao.',
     accent: 'modern',
     gameIds: games.filter((game) => game.categories.includes('modern')).map((game) => game.id),
-    note: '1 game đang chơi được'
+    note: `${games.filter((game) => game.categories.includes('modern')).length} game đang chơi được`
   },
   {
     id: 'puzzle',
@@ -143,7 +153,7 @@ const categories: CategoryMeta[] = [
     description: 'Các game thiên về đọc thế, tính đường đi và khóa không gian của đối thủ.',
     accent: 'strategy',
     gameIds: games.filter((game) => game.categories.includes('strategy')).map((game) => game.id),
-    note: '3 game đang chơi được'
+    note: `${games.filter((game) => game.categories.includes('strategy')).length} game đang chơi được`
   },
   {
     id: 'party',
@@ -152,7 +162,7 @@ const categories: CategoryMeta[] = [
     description: 'Nhẹ luật, vui nhanh và hợp những ván chơi mang tính hội hè hoặc bất ngờ.',
     accent: 'party',
     gameIds: games.filter((game) => game.categories.includes('party')).map((game) => game.id),
-    note: '2 game đang chơi được'
+    note: `${games.filter((game) => game.categories.includes('party')).length} game đang chơi được`
   }
 ];
 
@@ -248,6 +258,19 @@ function renderGameArt(id: GameId) {
     );
   }
 
+  if (id === 'co-ca-ngua') {
+    return (
+      <div className="game-art cacngua-art" aria-hidden="true">
+        <div className="ccn-mini-track">
+          {Array.from({ length: 20 }, (_, index) => <span key={index} />)}
+          <b className="ccn-mini-horse a">♞</b>
+          <b className="ccn-mini-horse b">♞</b>
+          <i>🎲 🎲</i>
+        </div>
+      </div>
+    );
+  }
+
   if (id === 'monster-chess') {
     return (
       <div className="game-art monsterchess-art" aria-hidden="true">
@@ -318,6 +341,7 @@ export default function App() {
   if (route === 'tam-cuc') return <TamCucGame onBack={returnFromGame} />;
   if (route === 'bai-choi') return <BaiChoiGame onBack={returnFromGame} />;
   if (route === 'monster-chess') return <MonsterChessGame onBack={returnFromGame} />;
+  if (route === 'co-ca-ngua') return <CoCaNguaGame onBack={returnFromGame} />;
 
   const currentCategoryId = route.startsWith('category/')
     ? route.slice('category/'.length) as CategoryId
@@ -395,7 +419,7 @@ export default function App() {
     );
   }
 
-  const featuredIds: GameId[] = ['monster-chess', 'o-an-quan', 'co-ganh'];
+  const featuredIds: GameId[] = ['co-ca-ngua', 'monster-chess', 'o-an-quan'];
   const featuredGames = featuredIds.map((id) => gameById[id]);
   const playableCategories = categories.filter((category) => category.gameIds.length > 0);
 
