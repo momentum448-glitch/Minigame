@@ -17,9 +17,20 @@ const PIPS: Record<number, number[]> = {
   6: [1, 3, 4, 6, 7, 9]
 };
 
-function DiceFace({ value, face }: { value: number; face: string }) {
+function PipFace({
+  value,
+  face,
+  result = false
+}: {
+  value: number;
+  face: string;
+  result?: boolean;
+}) {
   return (
-    <span className={`ccn-cube-face ${face}`} aria-hidden="true">
+    <span
+      className={`ccn-cube-face ${face} ${result ? 'result-face' : 'decorative-face'}`}
+      aria-hidden="true"
+    >
       {Array.from({ length: 9 }, (_, index) => {
         const slot = index + 1;
         return (
@@ -43,12 +54,12 @@ export default function Dice3D({
   onClick
 }: Dice3DProps) {
   const safeValue = Math.min(6, Math.max(1, Math.round(value || 1)));
+
   return (
     <button
       type="button"
       className={[
         'ccn-cube-button',
-        `show-${safeValue}`,
         rolling ? 'rolling' : '',
         selected ? 'selected' : '',
         used ? 'used' : '',
@@ -57,17 +68,27 @@ export default function Dice3D({
       disabled={disabled}
       onClick={onClick}
       aria-label={rolling ? 'Xúc xắc đang lăn' : `Xúc xắc mặt ${safeValue}`}
+      data-value={safeValue}
     >
       <span className="ccn-cube-stage">
         <span className="ccn-dice-cube">
-          <DiceFace value={1} face="front" />
-          <DiceFace value={6} face="back" />
-          <DiceFace value={2} face="right" />
-          <DiceFace value={5} face="left" />
-          <DiceFace value={3} face="top" />
-          <DiceFace value={4} face="bottom" />
+          {/* Result is ALWAYS rendered on the front face.
+              This avoids Android/WebView backface-selection bugs while
+              keeping a full six-face cube during the roll animation. */}
+          <PipFace value={safeValue} face="front" result />
+          <PipFace value={6} face="back" />
+          <PipFace value={3} face="right" />
+          <PipFace value={4} face="left" />
+          <PipFace value={2} face="top" />
+          <PipFace value={5} face="bottom" />
         </span>
       </span>
+
+      {!rolling && (
+        <span className="ccn-die-value-badge" aria-hidden="true">
+          {safeValue}
+        </span>
+      )}
       {bonus && !rolling && <small>+1 🎲</small>}
     </button>
   );
