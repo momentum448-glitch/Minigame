@@ -388,3 +388,17 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - v0.1 không dùng thầu mạ/sập hầm.
 - Chi tiết tại `docs/CO_CA_NGUA_RULES.md`.
 - Quyết định: CHỐT ngày 2026-09-26.
+
+
+## D-038 — Cờ cá ngựa playable v0.1
+- Cờ cá ngựa Game 08 đã có bản playable tại `#/co-ca-ngua`.
+- Hỗ trợ Local 2–4 người và 1 người đấu 1–3 AI.
+- AI có ba mức Dễ / Vừa / Khó ở mức heuristic v0.1.
+- Bàn UI dùng SVG vòng đua 56 ô + 4 dãy chuồng 1→6.
+- Người chơi chọn từng viên xúc xắc; nếu mặt 1 có cả đi 1 và bay, phải cho người chơi chọn rõ, không auto quyết định.
+- Animation đi thường phát từng ô khoảng 190 ms/ô; mặt 1 bay dùng nhịp riêng.
+- Game thuộc cả **Dân gian Việt Nam** và **May rủi & Party**.
+- Deploy #46 success, run `36248901658`, commit `bb650b41957ff8b84d902677bdbaad70c7c05dd3`.
+- 68/68 tests pass; riêng Cờ cá ngựa 13 tests.
+- Chưa có browser/mobile interaction QC sau deploy; không coi visual/gameplay QC là hoàn tất.
+- Quyết định: CHỐT ngày 2026-09-26.
