@@ -14,8 +14,9 @@ Xây một website chứa nhiều minigame theo mô hình **sảnh game đa danh
 5. **Tam Cúc** — Game 05, playable v0.2 UX.
 6. **Bài Chòi** — Game 06, playable v0.4 pre-rendered voice-pack baseline.
 7. **Monster Chess** — Game 07, playable prototype v0.1.
+8. **Cờ cá ngựa** — Game 08, playable v0.1.
 
-Mốc đang active: **Game 08 — discovery/ruleset Cờ cá ngựa**. Monster Chess v0.1 và Bài Chòi v0.4 vẫn tạm dừng.
+Mốc đang active: **QC Game 08 — Cờ cá ngựa v0.1**. Monster Chess v0.1 và Bài Chòi v0.4 vẫn tạm dừng.
 
 ## 2. Repo / Deploy
 
@@ -38,12 +39,12 @@ Mốc đang active: **Game 08 — discovery/ruleset Cờ cá ngựa**. Monster C
 - Một game có thể thuộc nhiều danh mục thông qua registry trong `src/App.tsx`.
 
 ### Danh mục nền tảng
-- `#/category/vietnamese-folk` — **Dân gian Việt Nam** — 6 game hiện tại.
+- `#/category/vietnamese-folk` — **Dân gian Việt Nam** — hiện có 7 game, gồm Cờ cá ngựa.
 - `#/category/world-folk` — **Dân gian thế giới** — đang chuẩn bị.
 - `#/category/modern` — **Game hiện đại** — hiện có Monster Chess.
 - `#/category/puzzle` — **Giải đố & Logic** — đang chuẩn bị.
 - `#/category/strategy` — **Chiến thuật** — hiện có Cờ Gánh, Cờ Hùm, Cờ Lúa Ngô, Monster Chess.
-- `#/category/party` — **May rủi & Party** — hiện có Tam Cúc, Bài Chòi.
+- `#/category/party` — **May rủi & Party** — hiện có Tam Cúc, Bài Chòi, Cờ cá ngựa.
 
 ### Route game giữ nguyên
 - Ô ăn quan: `#/o-an-quan`.
@@ -53,6 +54,7 @@ Mốc đang active: **Game 08 — discovery/ruleset Cờ cá ngựa**. Monster C
 - Tam Cúc: `#/tam-cuc`.
 - Bài Chòi: `#/bai-choi`.
 - Monster Chess: `#/monster-chess`.
+- Cờ cá ngựa: `#/co-ca-ngua`.
 - Giữ route cũ để không phá link/bookmark.
 - Khi mở game từ một danh mục trong cùng SPA, nút quay lại đưa về danh mục đó; nếu mở trực tiếp/reload route game thì fallback về Sảnh game.
 
@@ -422,71 +424,86 @@ Nguồn đối chiếu:
 ## 11. Game 08 — Cờ cá ngựa
 
 ### Trạng thái
-- Người dùng chọn **Cờ cá ngựa** làm game tiếp theo ngày 2026-09-26.
-- Chưa code; đang ở bước discovery/ruleset vì luật Việt Nam có nhiều dị bản.
-- Dự kiến thuộc danh mục **Dân gian Việt Nam** và **May rủi & Party**; có thể thêm Chiến thuật nếu gameplay triển khai đủ chiều sâu.
-- Route dự kiến: `#/co-ca-ngua`.
+- **Playable v0.1** trên route `#/co-ca-ngua`.
+- Thuộc **Dân gian Việt Nam** và **May rủi & Party**.
+- Ruleset dự án là biến thể đã chốt với người dùng, không mặc định đại diện cho mọi luật Cờ cá ngựa.
 
-### Nguồn đối chiếu ban đầu
-- Thegioididong: luật 1 xúc xắc/2 xúc xắc, xuất quân, đá, cản, vào chuồng và điều kiện thắng.
-- ZaloPay: tổng quan 2–4 người, 4 quân/màu, 1–2 xúc xắc, nguồn gốc từ Ludo/Pachisi.
-- covua.net.vn: luật ra quân/leo chuồng theo biến thể 2 xúc xắc.
-
-### Các điểm đã chốt
-- Chế độ: **Local 2–4 người + đấu AI**.
-- Dùng **2 xúc xắc**.
-- Luật 6:
-  - có thể dùng mặt 6 để **xuất quân**;
-  - có **lượt thưởng liên quan tới số viên xúc xắc ra 6**; chi tiết trường hợp 1 viên/2 viên ra 6 cần xác nhận cách tính chính xác.
-- Luật 1:
-  - có cơ chế đặc biệt **“bay tới chuồng tiếp theo nếu không có vật cản”**;
-  - “chuồng tiếp theo” cần người dùng xác định chính xác vị trí đích trên bàn trước khi code.
-- Cản/đá:
-  - không được vượt quân đang cản đường;
-  - đi đúng ô đối phương thì đá về chuồng;
-  - không đá quân mình;
-  - không có nước hợp lệ thì mất lượt.
-- Đích dùng luật **6–5–4–3**.
-- v0.1 **không dùng** thầu mạ/sập hầm hay luật phạt/thưởng giao kèo.
-- Animation:
-  - xúc xắc lắc/nảy rồi dừng;
-  - ngựa đi từng ô;
-  - đá có hit/knockback về chuồng;
-  - leo chuồng có nhịp lên bậc rõ.
-
-### Ruleset v0.1 đã chốt
-- Hai viên xúc xắc xử lý **riêng từng viên**, thứ tự tự chọn.
-- Có thể dùng hai viên cho hai ngựa khác nhau hoặc nối tiếp trên cùng một ngựa.
+### Ruleset đã chốt
+- Local 2–4 người + đấu AI.
+- Dùng **2 xúc xắc**, xử lý từng viên riêng.
+- Hai viên có thể dùng cho hai ngựa khác nhau hoặc nối tiếp cùng một ngựa.
 - Mỗi mặt 6:
-  - có thể xuất 1 ngựa;
-  - sinh **1 viên xúc xắc tung bù** sau lô hiện tại.
-- 6+4 -> tung bù 1 viên; 6+6 -> tung bù 2 viên.
-- Nếu tung bù lại ra 6 thì tiếp tục sinh viên tung bù tương ứng.
-- Mặt 1 trên đường đua:
-  - có thể đi 1 ô bình thường; hoặc
+  - có thể dùng để xuất quân;
+  - sinh đúng **1 viên xúc xắc tung bù**.
+- 6+4 -> tung bù 1 viên; 6+6 -> tung bù 2 viên; lượt bù ra 6 tiếp tục sinh lượt bù.
+- Mặt 1:
+  - đi 1 ô bình thường; hoặc
   - bay tới **cửa chuồng kế tiếp phía trước** nếu không có quân cản giữa đường.
-- Đường đua engine v0.1: **56 ô**, 4 cửa chuồng cách nhau 14 ô.
-- Ngựa phải đi đúng số để hoàn thành vòng và tới cửa chuồng mình.
-- Chuồng leo bậc 1→6; mỗi lần chỉ lên bậc kế tiếp nếu mặt xúc xắc đúng số bậc đó.
-- Chi tiết đầy đủ: `docs/CO_CA_NGUA_RULES.md`.
+- Engine dùng đường đua **56 ô**, 4 cửa chuồng cách nhau 14 ô.
+- Không vượt quân cản; đáp đúng quân đối phương thì đá về sân; không vào ô quân mình.
+- Phải đi đúng số để hoàn thành vòng và tới cửa chuồng mình.
+- Chuồng leo 1→6; mỗi lần chỉ lên bậc kế tiếp nếu xúc xắc đúng số bậc đó.
+- Thắng khi 4 ngựa chiếm đủ **3,4,5,6**.
+- Không dùng thầu mạ/sập hầm ở v0.1.
+- Chi tiết: `docs/CO_CA_NGUA_RULES.md`.
+
+### Đã triển khai
+- Engine riêng: `src/cacngua/engine.ts`.
+- Types: `src/cacngua/types.ts`.
+- Engine test: `src/cacngua/engine.test.ts`.
+- UI: `src/CoCaNguaGame.tsx`.
+- Local:
+  - 2 người đối diện;
+  - 3 người;
+  - 4 người.
+- AI:
+  - 1 vs 1 AI;
+  - 1 vs 2 AI;
+  - 1 vs 3 AI;
+  - Dễ / Vừa / Khó.
+- UI chọn từng viên xúc xắc rồi chọn ngựa; khi mặt 1 có cả đi thường và bay, game hiện lựa chọn riêng.
+- Bàn SVG vòng đua 56 ô + 4 chuồng 1→6.
+- Xúc xắc có trạng thái lắc trước khi ra số.
+- Ngựa đi thường được phát từng bước khoảng **190 ms/ô** ở lớp trình diễn.
+- Có flow xuất quân, đi, bay mặt 1, đá quân, leo chuồng, tung bù và thắng.
+- Game đã đăng ký trong lobby và category registry.
+
+### QC kỹ thuật
+- Deploy workflow **#46**: success.
+- Run ID: `36248901658`.
+- Deployed commit: `bb650b41957ff8b84d902677bdbaad70c7c05dd3`.
+- Test suite: **68/68 pass**.
+- Cờ cá ngựa engine: **13 tests**.
+- Production build: pass.
+- GitHub Pages deploy: pass.
+- Live: `https://momentum448-glitch.github.io/Minigame/#/co-ca-ngua`.
+- Chưa có browser/mobile interaction QC trực tiếp sau deploy #46.
 
 ## 12. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**Hoàn thiện engine/test Cờ cá ngựa v0.1, sau đó ráp UI.**
+**QC Cờ cá ngựa v0.1 trên bản live rồi sửa gameplay/UX trước polish art.**
 
-### Đang triển khai
-- Ruleset: `docs/CO_CA_NGUA_RULES.md`.
-- Engine: `src/cacngua/engine.ts`.
-- Types: `src/cacngua/types.ts`.
-- Test: `src/cacngua/engine.test.ts`.
+### Checklist QC
+1. Route và category mở đúng.
+2. Local 2/3/4 người khởi tạo đúng số màu.
+3. AI 1/2/3 máy tự tung và tự đi; Dễ/Vừa/Khó không treo.
+4. Hai xúc xắc được dùng riêng và có thể dùng nối tiếp trên cùng ngựa.
+5. Mỗi mặt 6 sinh đúng một viên tung bù; 6+6 sinh hai viên.
+6. Mặt 1 cho lựa chọn đi 1 hoặc bay tới cửa chuồng kế tiếp khi đường trống.
+7. Quân cản phải ngăn nước đi/bay đúng luật.
+8. Đáp đúng quân địch phải đá về sân.
+9. Hoàn thành vòng phải đi đúng số để vào cửa chuồng.
+10. Leo chuồng phải đúng thứ tự mặt 1→6.
+11. Điều kiện thắng 3·4·5·6 hoạt động.
+12. Mobile: bàn, xúc xắc, ngựa phát sáng và panel hành động phải dễ chạm/đọc.
+13. Animation đi từng ô phải đủ rõ nhưng không làm ván quá chậm.
 
-### Sau engine xanh CI
-- Thiết kế AI Dễ/Vừa/Khó.
-- Ráp bàn cờ + xúc xắc + animation.
-- Tích hợp route `#/co-ca-ngua`.
-- Thêm vào Dân gian Việt Nam + Party.
-- Deploy rồi QC mobile.
+### Sau QC
+- Sửa bug/rule mismatch.
+- Cân AI và tempo.
+- Thêm sound/animation đá quân đẹp hơn.
+- Chỉ sau đó mới polish art bàn/ngựa cuối.
 
 ## 13. Rủi ro / giả định
 
