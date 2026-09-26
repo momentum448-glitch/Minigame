@@ -4087,3 +4087,108 @@ button.game-tile {
 .ccn-cube-button.bonus .ccn-die-value-badge {
   background: #8c6716;
 }
+
+
+/* Dice settled-state redesign: real 3D while rolling, stable 2.5D result after stop */
+.ccn-cube-button.settled {
+  perspective: none;
+}
+.ccn-settled-die {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 58px;
+  height: 58px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.ccn-settled-face {
+  position: absolute;
+  left: 4px;
+  top: 7px;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  padding: 7px;
+  border: 1px solid #b8ae9e;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #fffdf6, #e9dfce);
+  box-shadow:
+    inset 3px 3px 7px rgba(255,255,255,.95),
+    inset -4px -4px 8px rgba(93,76,54,.10),
+    0 6px 8px rgba(0,0,0,.22);
+  z-index: 3;
+}
+.ccn-settled-face .pip {
+  width: 7px;
+  height: 7px;
+  place-self: center;
+  border-radius: 50%;
+  background: transparent;
+}
+.ccn-settled-face .pip.on {
+  background: #302a25;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.22), 0 1px 1px rgba(0,0,0,.20);
+}
+.ccn-settled-top {
+  position: absolute;
+  left: 10px;
+  top: 1px;
+  width: 42px;
+  height: 13px;
+  border-radius: 7px 7px 3px 3px;
+  background: linear-gradient(180deg, #fffef9, #d8ccb9);
+  transform: skewX(-38deg);
+  transform-origin: left bottom;
+  border: 1px solid #b8ae9e;
+  z-index: 2;
+}
+.ccn-settled-side {
+  position: absolute;
+  right: 0;
+  top: 13px;
+  width: 13px;
+  height: 42px;
+  border-radius: 3px 7px 7px 3px;
+  background: linear-gradient(90deg, #d9cdb9, #bcae98);
+  transform: skewY(-38deg);
+  transform-origin: left top;
+  border: 1px solid #a89b88;
+  z-index: 1;
+}
+.ccn-cube-button.settled.selected .ccn-settled-face {
+  outline: 3px solid #ffe26c;
+  outline-offset: 3px;
+  box-shadow:
+    inset 3px 3px 7px rgba(255,255,255,.95),
+    inset -4px -4px 8px rgba(93,76,54,.10),
+    0 0 16px rgba(255,226,108,.55),
+    0 6px 8px rgba(0,0,0,.22);
+}
+.ccn-cube-button.settled.used .ccn-settled-die {
+  opacity: .45;
+  filter: grayscale(.85);
+}
+@media (max-width: 650px) {
+  .ccn-settled-die {
+    width: 54px;
+    height: 54px;
+  }
+  .ccn-settled-face {
+    width: 44px;
+    height: 44px;
+    padding: 6px;
+  }
+  .ccn-settled-face .pip {
+    width: 6px;
+    height: 6px;
+  }
+  .ccn-settled-top {
+    width: 38px;
+  }
+  .ccn-settled-side {
+    height: 38px;
+  }
+}
