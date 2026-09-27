@@ -466,3 +466,14 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Không đổi RNG, bonus-six logic hay engine.
 - Deploy #59 success, run `36327114398`, source commit `ede6d3190182820137108028d7f7394a0be8b62a`.
 - Quyết định: CHỐT ngày 2026-09-27.
+
+
+## D-044 — Cờ cá ngựa chuyển sang 3D renderer
+- Cờ cá ngựa sẽ chuyển từ renderer SVG/2D sang **3D thật**.
+- Engine/ruleset D-037 giữ nguyên làm source of truth.
+- Board, horse pieces, dice và action FX sẽ render trong WebGL 3D scene.
+- Dice phải có animation lăn mượt và **lăn trên toàn bàn cờ**, không chỉ trong panel UI.
+- Khi cả hai dice hiện tại đều không có nước hợp lệ, UI dùng **một thao tác bỏ toàn bộ batch** thay vì bắt người chơi bỏ từng viên.
+- Giả định làm việc: nếu batch đã tạo bonus dice từ mặt 6 thì bonus dice vẫn tiếp tục theo D-037 sau khi bỏ batch không hợp lệ.
+- SVG v0.2 chỉ là transitional/fallback renderer, không phải hướng cuối.
+- Quyết định: CHỐT ngày 2026-09-27.
