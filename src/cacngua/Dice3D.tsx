@@ -33,30 +33,49 @@ function PipGrid({ value }: { value: number }) {
   );
 }
 
-function RollingCube() {
+function DieShell({
+  children,
+  rolling = false
+}: {
+  children: React.ReactNode;
+  rolling?: boolean;
+}) {
   return (
-    <span className="ccn-cube-stage" aria-hidden="true">
-      <span className="ccn-dice-cube">
-        <span className="ccn-cube-face front"><PipGrid value={1} /></span>
-        <span className="ccn-cube-face back"><PipGrid value={6} /></span>
-        <span className="ccn-cube-face right"><PipGrid value={3} /></span>
-        <span className="ccn-cube-face left"><PipGrid value={4} /></span>
-        <span className="ccn-cube-face top"><PipGrid value={2} /></span>
-        <span className="ccn-cube-face bottom"><PipGrid value={5} /></span>
-      </span>
+    <span className={rolling ? 'ccn-roll-shell' : 'ccn-settled-die'} aria-hidden="true">
+      <span className={rolling ? 'ccn-roll-top' : 'ccn-settled-top'} />
+      <span className={rolling ? 'ccn-roll-side' : 'ccn-settled-side'} />
+      {children}
     </span>
+  );
+}
+
+function RollingDieVisual() {
+  const sequence = [2, 5, 1, 6, 4, 3];
+
+  return (
+    <DieShell rolling>
+      <span className="ccn-roll-face-stack">
+        {sequence.map((faceValue, index) => (
+          <span
+            key={faceValue}
+            className="ccn-roll-frame"
+            style={{ animationDelay: `${index * 120}ms` }}
+          >
+            <PipGrid value={faceValue} />
+          </span>
+        ))}
+      </span>
+    </DieShell>
   );
 }
 
 function SettledDie({ value }: { value: number }) {
   return (
-    <span className="ccn-settled-die" aria-hidden="true">
-      <span className="ccn-settled-top" />
-      <span className="ccn-settled-side" />
+    <DieShell>
       <span className="ccn-settled-face">
         <PipGrid value={value} />
       </span>
-    </span>
+    </DieShell>
   );
 }
 
@@ -76,7 +95,7 @@ export default function Dice3D({
       type="button"
       className={[
         'ccn-cube-button',
-        rolling ? 'rolling' : 'settled',
+        rolling ? 'rolling rolling-2d5' : 'settled',
         selected ? 'selected' : '',
         used ? 'used' : '',
         bonus ? 'bonus' : ''
@@ -86,7 +105,7 @@ export default function Dice3D({
       aria-label={rolling ? 'Xúc xắc đang lăn' : `Xúc xắc mặt ${safeValue}`}
       data-value={safeValue}
     >
-      {rolling ? <RollingCube /> : <SettledDie value={safeValue} />}
+      {rolling ? <RollingDieVisual /> : <SettledDie value={safeValue} />}
 
       {!rolling && (
         <span className="ccn-die-value-badge" aria-hidden="true">
