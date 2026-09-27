@@ -452,3 +452,17 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Không đổi RNG, bonus-six logic hay engine.
 - Deploy #56 success, run `36254634287`, source commit `8be04a6a3e8883b79fbef7ff1aabca7f6547eb3c`.
 - Quyết định: CHỐT ngày 2026-09-26.
+
+
+## D-043 — Dice rolling-state Android compatibility redesign
+- QC screenshot sau D-042 xác nhận settled state đã hiển thị đúng, nhưng rolling state vẫn lỗi trên Android/WebView vì còn dùng full six-face CSS 3D cube.
+- Rolling state đổi sang:
+  - **2.5D shell**;
+  - một front face 2D duy nhất;
+  - chuỗi pip frames đổi nhanh để mô phỏng đổi mặt;
+  - translate/rotate/scale 2D để mô phỏng tung/lăn.
+- Settled state giữ D-042.
+- Không dùng `preserve-3d` / `backface-visibility` cho rolling result visuals nữa.
+- Không đổi RNG, bonus-six logic hay engine.
+- Deploy #59 success, run `36327114398`, source commit `ede6d3190182820137108028d7f7394a0be8b62a`.
+- Quyết định: CHỐT ngày 2026-09-27.
