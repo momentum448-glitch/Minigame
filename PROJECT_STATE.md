@@ -541,6 +541,12 @@ Nguồn đối chiếu:
 - Live: `https://momentum448-glitch.github.io/Minigame/#/co-ca-ngua`.
 - Desktop Commander hiện offline nên **chưa có assistant-side browser/mobile interaction QC trực tiếp** sau deploy #54. Người dùng đã cung cấp screenshot QC cho bug dice trước hotfix; cần reload và xác nhận rolling animation sau hotfix #59.
 
+### v0.3 visual lock
+- Camera: **3/4 isometric cố định**.
+- Material board: **gỗ sơn màu kiểu Cờ cá ngựa Việt Nam**, polish hiện đại.
+- Quân: **đầu ngựa stylized 3D**.
+- Giả định làm việc cho “Bỏ lượt”: nếu toàn bộ dice hiện tại đều không có nước hợp lệ, thao tác Bỏ lượt **consume toàn bộ dice còn lại và hủy bonus chưa tung của lượt đó**, rồi chuyển người chơi. Nếu người dùng sửa quyết định này thì cập nhật engine/test tương ứng.
+
 ### v0.3 3D architecture direction
 - Người dùng chốt ngày 2026-09-27:
   - nếu **cả hai xúc xắc hiện tại đều không có nước hợp lệ**, UI chỉ cần **một nút bỏ cả batch/lượt** thay vì bỏ từng viên;
@@ -558,27 +564,31 @@ Nguồn đối chiếu:
 ## 12. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**Chốt 3 quyết định visual/camera cuối cho Cờ cá ngựa 3D, sau đó migrate renderer sang 3D.**
+**Bắt đầu migration Cờ cá ngựa v0.3 sang renderer 3D thật.**
 
-### Quy tắc đã khóa
-- Engine luật giữ nguyên.
-- Khi toàn bộ dice hiện tại đều không có action hợp lệ, UI có **một nút “Bỏ lượt”** để consume toàn bộ dice chưa dùng trong batch.
-- Nếu batch đó đã sinh bonus dice từ mặt 6, bonus dice vẫn được xử lý sau batch theo luật D-037 trừ khi người dùng đổi quyết định này.
-- Dice phải lăn trên không gian bàn cờ 3D, không nằm trong panel.
-- Game phải là 3D thật, không dùng SVG board làm renderer chính.
+### Visual đã khóa
+- Camera 3/4 isometric cố định.
+- Board gỗ sơn màu kiểu Việt Nam, polish hiện đại.
+- Quân đầu ngựa stylized 3D.
+- Dice lăn/nảy trên mặt bàn 3D, không nằm trong panel.
 
-### Kiến trúc đề xuất
-- React + Three.js / React Three Fiber.
-- Camera fixed mobile-first.
-- 3D board scene tách khỏi HUD.
-- Physics dice dùng rigid-body simulation/hybrid; kết quả engine vẫn deterministic.
-- Horse pieces là mesh 3D; move/fly/kick đều phát trong world-space.
-- SVG/CSS v0.2 giữ tạm làm fallback cho tới khi 3D scene đạt parity.
+### Thứ tự triển khai
+1. Thêm 3D stack và scene shell.
+2. Dựng board 3D parity với 56 track index + 4 yard + 4 home lane.
+3. Dựng horse mesh stylized + picking/tap.
+4. Dựng dice physics/hybrid roll trên mặt bàn; kết quả cuối phải khớp engine.
+5. Chuyển move/fly/kick sang world-space animation.
+6. Thêm one-tap **Bỏ lượt** khi cả batch không có action.
+7. Mobile perf pass + fallback/reduced motion.
+8. Deploy QC rồi mới bỏ SVG renderer cũ.
 
-### Cần chốt trước khi code renderer 3D
-1. Camera.
-2. Material/art style board.
-3. Style quân ngựa.
+### Acceptance
+- Engine/ruleset không regress.
+- Camera không cần người chơi xoay.
+- Nhìn ngay ra board Cờ cá ngựa Việt Nam.
+- Dice thực sự di chuyển qua vùng board trong lúc tung.
+- Horse/fly/kick có chiều cao, bóng đổ và va chạm thị giác 3D.
+- Mobile touch vẫn rõ và mượt.
 
 ## 13. Rủi ro / giả định
 
