@@ -495,6 +495,18 @@ Nguồn đối chiếu:
 - Tempo: đi thường nhanh; bay và đá được nhấn mạnh hơn để tạo wow effect.
 - Không thay engine/ruleset D-037; v0.2 là refactor presentation/animation + event metadata nếu cần.
 
+### Dice rolling-state Android hotfix
+- Screenshot QC ngày 2026-09-27 xác nhận:
+  - settled state sau #56 đã hiển thị đúng pip;
+  - rolling state vẫn lỗi vì còn dùng full six-face CSS 3D cube.
+- Fix #59:
+  - bỏ full CSS 3D cube khỏi **rolling state**;
+  - rolling dùng **2.5D shell + front pip frames** đổi nhanh 1→6;
+  - motion dùng translate/rotate/scale 2D để tạo cảm giác tung/lăn;
+  - settled state tiếp tục dùng mặt pip 2D ổn định + top/right faces 2.5D;
+  - không còn phụ thuộc `preserve-3d` / `backface-visibility` ở bất kỳ trạng thái hiển thị kết quả nào.
+- Không đổi RNG/engine/bonus-six logic.
+
 ### Dice3D settled-state hotfix
 - Screenshot QC sau hotfix #54 cho thấy badge engine **5 + 3 đúng**, nhưng pip face vẫn nhìn gần như 1 chấm trên Android/WebView.
 - Kết luận: ngay cả front-face DOM của cube 3D vẫn không đáng tin cậy khi đứng yên trên WebView này.
@@ -517,9 +529,9 @@ Nguồn đối chiếu:
 - Roll animation 3D vẫn giữ nguyên.
 
 ### QC kỹ thuật
-- Deploy workflow **#56**: success.
-- Run ID: `36254634287`.
-- Deployed source commit: `8be04a6a3e8883b79fbef7ff1aabca7f6547eb3c`.
+- Deploy workflow **#59**: success.
+- Run ID: `36327114398`.
+- Deployed source commit: `ede6d3190182820137108028d7f7394a0be8b62a`.
 - Test suite: **73/73 pass**.
 - Cờ cá ngựa:
   - engine: **13 tests**;
@@ -527,7 +539,7 @@ Nguồn đối chiếu:
 - Production build: pass.
 - GitHub Pages deploy: pass.
 - Live: `https://momentum448-glitch.github.io/Minigame/#/co-ca-ngua`.
-- Desktop Commander hiện offline nên **chưa có assistant-side browser/mobile interaction QC trực tiếp** sau deploy #54. Người dùng đã cung cấp screenshot QC cho bug dice trước hotfix; cần reload và xác nhận sau hotfix settled-state #56.
+- Desktop Commander hiện offline nên **chưa có assistant-side browser/mobile interaction QC trực tiếp** sau deploy #54. Người dùng đã cung cấp screenshot QC cho bug dice trước hotfix; cần reload và xác nhận rolling animation sau hotfix #59.
 
 ## 12. NEXT ACTION — ưu tiên cao nhất
 
