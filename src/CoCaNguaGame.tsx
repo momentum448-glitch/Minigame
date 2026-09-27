@@ -3,26 +3,22 @@ import {
   START_INDEX,
   applyHorseAction,
   batchComplete,
+  batchHasNoPlayableActions,
   clearCompletedBatch,
   createHorseGame,
   endTurnIfReady,
   legalActionsForDie,
   rollBonusDice,
   rollInitialDice,
+  skipDeadBatch,
   trackIndexForHorse
 } from './cacngua/engine';
-import Dice3D from './cacngua/Dice3D';
 import {
-  BOARD_CENTER,
-  BOARD_SIZE,
-  GATE_SEAT_BY_INDEX,
-  TRACK_CELL_SIZE,
-  YARD_RECTS,
   homeLanePoint,
-  quadraticArcPath,
   trackPoint,
   yardPoint
 } from './cacngua/geometry';
+import Horse3DScene, { type HorseMotion3D } from './cacngua/Horse3DScene';
 import type { BoardPoint } from './cacngua/geometry';
 import type { HorseAction, HorseGameState, HorsePiece, HorseSeat } from './cacngua/types';
 
@@ -31,16 +27,6 @@ interface CoCaNguaGameProps {
 }
 
 type AiDifficulty = 'easy' | 'medium' | 'hard';
-type MotionKind = 'fly' | 'kick' | 'deploy';
-
-interface MotionFx {
-  id: number;
-  kind: MotionKind;
-  horseId: string;
-  seat: HorseSeat;
-  path: string;
-  durationMs: number;
-}
 
 const SEAT_NAMES: Record<HorseSeat, string> = {
   0: 'Đỏ',
@@ -185,7 +171,7 @@ export default function CoCaNguaGame({ onBack }: CoCaNguaGameProps) {
   const [animating, setAnimating] = useState(false);
   const [visualPoints, setVisualPoints] = useState<Record<string, BoardPoint>>({});
   const [hiddenHorseIds, setHiddenHorseIds] = useState<string[]>([]);
-  const [motionFx, setMotionFx] = useState<MotionFx | null>(null);
+  const [motionFx, setMotionFx] = useState<HorseMotion3D | null>(null);
   const [impactPoint, setImpactPoint] = useState<BoardPoint | null>(null);
   const fxSerial = useRef(0);
 
@@ -209,6 +195,16 @@ export default function CoCaNguaGame({ onBack }: CoCaNguaGameProps) {
     [game, selectedDie]
   );
 
+  const actionableHorseIds = useMemo(
+    () => Array.from(new Set(
+      selectedActions
+        .filter((action): action is Extract<HorseAction, { horseId: string }> => 'horseId' in action)
+        .map((action) => action.horseId)
+    )),
+    [selectedActions]
+  );
+
+  const deadBatch = useMemo(() => batchHasNoPlayableActions(game), [game]);
   const currentIsAi = aiSeats.includes(game.currentSeat);
 
   const startMatch = (playerCount: 2 | 3 | 4, aiCount: number) => {
@@ -236,7 +232,7 @@ export default function CoCaNguaGame({ onBack }: CoCaNguaGameProps) {
     setRollingValues(values);
     setRolling(true);
     setAnimating(true);
-    await sleep(960);
+    await sleep(1120);
     setGame(rolledState);
     setRolling(false);
     setRollingValues([]);
@@ -244,12 +240,11 @@ export default function CoCaNguaGame({ onBack }: CoCaNguaGameProps) {
   };
 
   const playMotion = async (
-    kind: MotionKind,
+    kind: HorseMotion3D['kind'],
     horse: HorsePiece,
     from: BoardPoint,
     to: BoardPoint,
-    durationMs: number,
-    lift: number
+    durationMs: number
   ) => {
     const id = ++fxSerial.current;
     setHiddenHorseIds((current) => [...new Set([...current, horse.id])]);
@@ -258,7 +253,8 @@ export default function CoCaNguaGame({ onBack }: CoCaNguaGameProps) {
       kind,
       horseId: horse.id,
       seat: horse.owner,
-      path: quadraticArcPath(from, to, lift),
+      from,
+      to,
       durationMs
     });
     await sleep(durationMs);
@@ -298,8 +294,7 @@ export default function CoCaNguaGame({ onBack }: CoCaNguaGameProps) {
         horse,
         horseBasePoint(horse),
         horseBasePoint(resolvedHorse),
-        FLY_MS,
-        132
+        FLY_MS
       );
     }
 
@@ -309,8 +304,7 @@ export default function CoCaNguaGame({ onBack }: CoCaNguaGameProps) {
         horse,
         horseBasePoint(horse),
         horseBasePoint(resolvedHorse),
-        DEPLOY_MS,
-        72
+        DEPLOY_MS
       );
     }
 
@@ -333,8 +327,7 @@ export default function CoCaNguaGame({ onBack }: CoCaNguaGameProps) {
         kickedHorse,
         hitPoint,
         horseBasePoint(kickedAfter),
-        KICK_MS,
-        152
+        KICK_MS
       );
       setImpactPoint(null);
     }
@@ -372,6 +365,11 @@ export default function CoCaNguaGame({ onBack }: CoCaNguaGameProps) {
         return;
       }
 
+      if (batchHasNoPlayableActions(game)) {
+        setGame(normalizeAfterAction(skipDeadBatch(game)));
+        return;
+      }
+
       const dieIndex = game.batch.used.findIndex((used) => !used);
       if (dieIndex < 0) {
         setGame(normalizeAfterAction(game));
@@ -384,12 +382,16 @@ export default function CoCaNguaGame({ onBack }: CoCaNguaGameProps) {
     return () => window.clearTimeout(timer);
   }, [started, currentIsAi, game, animating, rolling, difficulty]);
 
-  const horseScreenPoint = (horse: HorsePiece) =>
-    visualPoints[horse.id] ?? horseBasePoint(horse);
-
   const actionsForHorse = (horseId: string) => selectedActions.filter(
     (action) => 'horseId' in action && action.horseId === horseId
   );
+
+  const skipWholeDeadBatch = () => {
+    if (!deadBatch || currentIsAi || animating || rolling) return;
+    setGame(normalizeAfterAction(skipDeadBatch(game)));
+    setSelectedDie(null);
+    setSelectedHorse(null);
+  };
 
   const handleHorseClick = (horseId: string) => {
     if (
@@ -483,11 +485,11 @@ export default function CoCaNguaGame({ onBack }: CoCaNguaGameProps) {
     selectedActions.length === 1 && selectedActions[0].type === 'discard-die';
 
   return (
-    <main className="ccn-shell ccn-v2">
+    <main className="ccn-shell ccn-v2 ccn-v3">
       <header className="ccn-game-head">
         <button className="hub-back-button" type="button" onClick={onBack}>← Sảnh game</button>
         <div>
-          <p className="eyebrow">CỜ CÁ NGỰA · v0.2</p>
+          <p className="eyebrow">CỜ CÁ NGỰA · v0.3 3D</p>
           <h1>Lượt {game.turn}</h1>
           <p>{game.message}</p>
         </div>
@@ -508,165 +510,29 @@ export default function CoCaNguaGame({ onBack }: CoCaNguaGameProps) {
       )}
 
       <section className="ccn-layout">
-        <div className="ccn-board-wrap">
-          <svg
-            className="ccn-board ccn-square-board"
-            viewBox={`0 0 ${BOARD_SIZE} ${BOARD_SIZE}`}
-            aria-label="Bàn Cờ cá ngựa vuông kiểu Việt Nam"
-          >
-            <rect x="60" y="60" width="580" height="580" rx="28" className="ccn-board-paper" />
-
-            {([0, 1, 2, 3] as HorseSeat[]).map((seat) => {
-              const yard = YARD_RECTS[seat];
-              return (
-                <g
-                  key={seat}
-                  className={`ccn-yard seat-${seat} ${game.activeSeats.includes(seat) ? 'active' : 'inactive'}`}
-                >
-                  <rect
-                    x={yard.x}
-                    y={yard.y}
-                    width={yard.width}
-                    height={yard.height}
-                    rx="26"
-                  />
-                  <text
-                    x={yard.x + yard.width / 2}
-                    y={yard.y + 24}
-                    className="ccn-yard-label"
-                  >
-                    SÂN {SEAT_NAMES[seat].toUpperCase()}
-                  </text>
-                  {[0, 1, 2, 3].map((horseIndex) => {
-                    const point = yardPoint(seat, horseIndex);
-                    return <circle key={horseIndex} cx={point.x} cy={point.y} r="23" className="ccn-yard-slot" />;
-                  })}
-                </g>
-              );
-            })}
-
-            {Array.from({ length: 56 }, (_, index) => {
-              const point = trackPoint(index);
-              const gateSeat = GATE_SEAT_BY_INDEX[index];
-              return (
-                <g
-                  key={index}
-                  className={`ccn-track-cell square ${gateSeat !== undefined ? `gate seat-${gateSeat}` : ''}`}
-                >
-                  <rect
-                    x={point.x - TRACK_CELL_SIZE / 2}
-                    y={point.y - TRACK_CELL_SIZE / 2}
-                    width={TRACK_CELL_SIZE}
-                    height={TRACK_CELL_SIZE}
-                    rx="7"
-                  />
-                  {gateSeat !== undefined && (
-                    <text x={point.x} y={point.y + 4}>⌂</text>
-                  )}
-                </g>
-              );
-            })}
-
-            {([0, 1, 2, 3] as HorseSeat[]).map((seat) => (
-              <g
-                key={seat}
-                className={`ccn-home-lane seat-${seat} ${game.activeSeats.includes(seat) ? 'active' : 'inactive'}`}
-              >
-                {Array.from({ length: 6 }, (_, i) => i + 1).map((rank) => {
-                  const point = homeLanePoint(seat, rank);
-                  return (
-                    <g key={rank}>
-                      <rect
-                        x={point.x - 15}
-                        y={point.y - 15}
-                        width="30"
-                        height="30"
-                        rx="8"
-                      />
-                      <text x={point.x} y={point.y + 4}>{rank}</text>
-                    </g>
-                  );
-                })}
-              </g>
-            ))}
-
-            <rect
-              x={BOARD_CENTER - 48}
-              y={BOARD_CENTER - 48}
-              width="96"
-              height="96"
-              rx="18"
-              className="ccn-center"
-              transform={`rotate(45 ${BOARD_CENTER} ${BOARD_CENTER})`}
-            />
-            <text x={BOARD_CENTER} y={BOARD_CENTER - 4} className="ccn-center-title">CỜ CÁ NGỰA</text>
-            <text x={BOARD_CENTER} y={BOARD_CENTER + 18} className="ccn-center-sub">VIỆT NAM · 2 XÚC XẮC</text>
-
-            {motionFx?.kind === 'fly' && (
-              <path
-                key={`trail-${motionFx.id}`}
-                d={motionFx.path}
-                className="ccn-flight-trail"
-              />
-            )}
-
-            {impactPoint && (
-              <g
-                className="ccn-impact-fx"
-                transform={`translate(${impactPoint.x} ${impactPoint.y})`}
-              >
-                <circle r="18" />
-                <circle r="34" />
-                <text x="0" y="-28">BỐP!</text>
-              </g>
-            )}
-
-            {game.horses.map((horse) => {
-              const point = horseScreenPoint(horse);
-              const actionable = actionsForHorse(horse.id).length > 0;
-              const selected = selectedHorse === horse.id;
-              const hidden = hiddenHorseIds.includes(horse.id);
-              return (
-                <g
-                  key={horse.id}
-                  className={[
-                    'ccn-horse',
-                    `seat-${horse.owner}`,
-                    actionable ? 'actionable' : '',
-                    selected ? 'selected' : '',
-                    visualPoints[horse.id] ? 'moving' : '',
-                    hidden ? 'fx-hidden' : ''
-                  ].filter(Boolean).join(' ')}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    handleHorseClick(horse.id);
-                  }}
-                >
-                  <circle cx={point.x} cy={point.y} r="18" />
-                  <text x={point.x} y={point.y + 7}>♞</text>
-                </g>
-              );
-            })}
-
-            {motionFx && (
-              <g key={motionFx.id} className="ccn-fx-motion">
-                <animateMotion
-                  dur={`${motionFx.durationMs}ms`}
-                  path={motionFx.path}
-                  fill="freeze"
-                />
-                <g className={`ccn-fx-horse seat-${motionFx.seat} ${motionFx.kind}`}>
-                  <circle r="20" />
-                  <text x="0" y="7">♞</text>
-                </g>
-              </g>
-            )}
-          </svg>
-
+        <div className="ccn-board-wrap ccn-board-wrap-3d">
+          <Horse3DScene
+            game={game}
+            actionableHorseIds={actionableHorseIds}
+            selectedHorseId={selectedHorse}
+            hiddenHorseIds={hiddenHorseIds}
+            visualPoints={visualPoints}
+            motionFx={motionFx}
+            impactPoint={impactPoint}
+            rolling={rolling}
+            rollingValues={rollingValues}
+            selectedDie={selectedDie}
+            onHorseClick={handleHorseClick}
+            onDieClick={(dieIndex) => {
+              if (currentIsAi || animating || rolling || game.batch?.used[dieIndex]) return;
+              setSelectedDie(dieIndex);
+              setSelectedHorse(null);
+            }}
+          />
           <div className="ccn-board-caption">
-            <span>⌂ Cửa chuồng</span>
-            <span>1→6 Leo chuồng</span>
-            <span>♞ Ô sáng = có nước hợp lệ</span>
+            <span>3D isometric cố định</span>
+            <span>🎲 Xúc xắc lăn trực tiếp trên bàn</span>
+            <span>♞ Chạm quân phát sáng để đi</span>
           </div>
         </div>
 
@@ -683,86 +549,98 @@ export default function CoCaNguaGame({ onBack }: CoCaNguaGameProps) {
 
           <div className="ccn-dice-panel">
             <div className="ccn-dice-title">
-              <b>Hai xúc xắc lập phương</b>
+              <b>Xúc xắc trên bàn 3D</b>
               {game.bonusDiceToRoll > 0 && !game.batch && !rolling && (
                 <span>+{game.bonusDiceToRoll} viên tung bù</span>
               )}
             </div>
 
             {rolling ? (
-              <div className="ccn-cube-row rolling-now">
-                {rollingValues.map((value, index) => (
-                  <Dice3D key={index} value={value} rolling disabled />
-                ))}
-              </div>
+              <div className="ccn-world-roll-note">🎲 Đang lăn trên bàn...</div>
             ) : game.batch ? (
-              <div className="ccn-cube-row">
+              <div className="ccn-dice-result-buttons">
                 {game.batch.values.map((value, index) => (
-                  <Dice3D
+                  <button
                     key={index}
-                    value={value}
-                    selected={selectedDie === index}
-                    used={game.batch?.used[index]}
-                    bonus={value === 6}
+                    type="button"
+                    className={[
+                      selectedDie === index ? 'selected' : '',
+                      game.batch?.used[index] ? 'used' : '',
+                      value === 6 ? 'six' : ''
+                    ].filter(Boolean).join(' ')}
                     disabled={Boolean(game.batch?.used[index]) || currentIsAi || animating}
                     onClick={() => {
                       setSelectedDie(index);
                       setSelectedHorse(null);
                     }}
-                  />
+                  >
+                    <span>🎲</span>
+                    <b>Mặt {value}</b>
+                    {value === 6 && <small>+1 tung bù</small>}
+                  </button>
                 ))}
               </div>
             ) : game.winner === null ? (
-              <>
-                <div className="ccn-cube-row idle">
-                  <Dice3D value={1} disabled />
-                  <Dice3D value={6} disabled />
-                </div>
-                <button
-                  className="ccn-roll-button"
-                  type="button"
-                  disabled={animating || currentIsAi}
-                  onClick={() => void rollCurrentDice()}
-                >
-                  {game.bonusDiceToRoll > 0
-                    ? `Tung bù ${game.bonusDiceToRoll} xúc xắc`
-                    : 'Lắc và tung 2 xúc xắc'}
-                </button>
-              </>
+              <button
+                className="ccn-roll-button"
+                type="button"
+                disabled={animating || currentIsAi}
+                onClick={() => void rollCurrentDice()}
+              >
+                {game.bonusDiceToRoll > 0
+                  ? `Tung bù ${game.bonusDiceToRoll} xúc xắc`
+                  : 'Tung 2 xúc xắc lên bàn'}
+              </button>
             ) : null}
           </div>
 
-          {!currentIsAi &&
-            game.batch &&
-            selectedDie !== null &&
-            !game.batch.used[selectedDie] && (
-              <div className="ccn-action-panel">
-                <span>ĐANG DÙNG MẶT {selectedDieValue}</span>
-                {onlyDiscard ? (
+          {!currentIsAi && game.batch && (
+            <div className="ccn-action-panel">
+              {deadBatch ? (
+                <>
+                  <span>KHÔNG CÓ NƯỚC HỢP LỆ</span>
+                  <p>Cả batch xúc xắc đều không dùng được.</p>
                   <button
                     type="button"
-                    onClick={() => void performAction(selectedActions[0])}
+                    className="ccn-skip-turn-button"
+                    disabled={animating || rolling}
+                    onClick={skipWholeDeadBatch}
                   >
-                    Không có nước hợp lệ · bỏ viên
+                    Bỏ lượt
                   </button>
-                ) : selectedHorseActions.length > 1 ? (
-                  <>
-                    <p>Ngựa này có nhiều lựa chọn:</p>
-                    {selectedHorseActions.map((action, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        onClick={() => void performAction(action)}
-                      >
-                        {actionLabel(action)}
-                      </button>
-                    ))}
-                  </>
-                ) : (
-                  <p>Chạm ngựa đang phát sáng để dùng viên xúc xắc này.</p>
-                )}
-              </div>
-            )}
+                </>
+              ) : selectedDie !== null && !game.batch.used[selectedDie] ? (
+                <>
+                  <span>ĐANG DÙNG MẶT {selectedDieValue}</span>
+                  {onlyDiscard ? (
+                    <button
+                      type="button"
+                      onClick={() => void performAction(selectedActions[0])}
+                    >
+                      Bỏ viên {selectedDieValue}
+                    </button>
+                  ) : selectedHorseActions.length > 1 ? (
+                    <>
+                      <p>Ngựa này có nhiều lựa chọn:</p>
+                      {selectedHorseActions.map((action, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => void performAction(action)}
+                        >
+                          {actionLabel(action)}
+                        </button>
+                      ))}
+                    </>
+                  ) : (
+                    <p>Chạm quân phát sáng trên bàn 3D để dùng viên xúc xắc này.</p>
+                  )}
+                </>
+              ) : (
+                <p>Chọn một viên xúc xắc chưa dùng.</p>
+              )}
+            </div>
+          )}
 
           <div className="ccn-status-panel">
             {game.activeSeats.map((seat) => {
