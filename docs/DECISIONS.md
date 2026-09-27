@@ -487,3 +487,22 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Working assumption cho thao tác **Bỏ lượt**: nếu tất cả dice hiện tại vô hiệu, một lần bấm sẽ consume toàn batch và **hủy bonus chưa tung** của lượt đó rồi chuyển lượt.
 - Renderer SVG/CSS v0.2 là transitional fallback, không phải hướng cuối.
 - Quyết định: CHỐT ngày 2026-09-27.
+
+
+## D-046 — Cờ cá ngựa v0.3 3D playable
+- Renderer chính chuyển sang **Three.js + React Three Fiber**, không còn dùng SVG board làm renderer chính.
+- Camera: fixed 3/4 isometric.
+- Board, track, yard, home lane, center và quân đều là geometry 3D thật có lighting/shadow.
+- Quân dùng procedural **stylized horse-head mesh**.
+- Dice là cube mesh 3D trong world-space, chạy trajectory tung/lăn/nảy qua board rồi dừng ở kết quả engine.
+- Dice roll v0.3 là **kinematic/hybrid world-space animation**, chưa dùng rigid-body physics solver; ưu tiên deterministic result và mobile stability.
+- Move/fly/deploy/kick presentation chuyển sang world-space 3D; kick có spin + impact ring.
+- Dead-batch UX:
+  - `batchHasNoPlayableActions()`;
+  - `skipDeadBatch()`;
+  - một nút **Bỏ lượt** consume toàn batch và hủy bonus chưa tung.
+- AI áp dụng cùng dead-batch rule.
+- 3 regression tests mới; tổng suite **76/76 pass**.
+- Deploy #68 success, run `36329067282`, source commit `e5ae5bea9de900e32adb382f22d0a18a43de8ddd`.
+- Chưa có assistant-side browser/mobile QC vì Desktop Commander offline; cần user QC live WebGL.
+- Quyết định: CHỐT ngày 2026-09-27.
