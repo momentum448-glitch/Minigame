@@ -21,6 +21,7 @@
   "devDependencies": {
     "@types/react": "latest",
     "@types/react-dom": "latest",
-    "vitest": "latest"
+    "vitest": "latest",
+    "@types/three": "latest"
   }
 }
