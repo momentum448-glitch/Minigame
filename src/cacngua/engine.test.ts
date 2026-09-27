@@ -6,8 +6,10 @@ import {
   applyHorseAction,
   canFlyNextGate,
   clearCompletedBatch,
+  batchHasNoPlayableActions,
   createDiceBatch,
   createHorseGame,
+  skipDeadBatch,
   legalActionsForDie,
   nextGateAhead,
   rollBonusDice,
@@ -172,5 +174,28 @@ describe('Cờ cá ngựa home lane and victory', () => {
 
     state = applyHorseAction(state, action!);
     expect(state.winner).toBe(0);
+  });
+});
+
+
+describe('Cờ cá ngựa dead-batch UX', () => {
+  it('detects when every unused die has no playable action', () => {
+    const state = withDice(createHorseGame(2), [2, 5]);
+    expect(batchHasNoPlayableActions(state)).toBe(true);
+  });
+
+  it('skips the whole dead batch in one action and cancels pending bonus dice', () => {
+    const state = withDice(createHorseGame(2), [2, 5], 2);
+    const skipped = skipDeadBatch(state);
+
+    expect(skipped.batch?.used).toEqual([true, true]);
+    expect(skipped.bonusDiceToRoll).toBe(0);
+    expect(skipped.message).toContain('bỏ lượt');
+  });
+
+  it('does not skip a batch if at least one die has a playable move', () => {
+    let state = withDice(createHorseGame(2), [6, 2], 1);
+    expect(batchHasNoPlayableActions(state)).toBe(false);
+    expect(skipDeadBatch(state)).toBe(state);
   });
 });
