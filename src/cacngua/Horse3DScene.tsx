@@ -152,7 +152,6 @@ function BoardBase({ activeSeats }: { activeSeats: HorseSeat[] }) {
                   key={horseIndex}
                   receiveShadow
                   position={[sx - x, 0.59, sz - z]}
-                  rotation={[-Math.PI / 2, 0, 0]}
                 >
                   <cylinderGeometry args={[0.30, 0.30, 0.055, 24]} />
                   <meshStandardMaterial
@@ -501,7 +500,7 @@ function SceneContent(props: Horse3DSceneProps) {
       />
       <pointLight position={[-7, 4, -5]} intensity={0.9} color="#9fd7ff" />
 
-      <mesh receiveShadow position={[0, -0.38, 0]}>
+      <mesh receiveShadow position={[0, -0.38, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[35, 35]} />
         <meshStandardMaterial color="#10181d" roughness={0.95} />
       </mesh>
