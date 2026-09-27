@@ -14,9 +14,9 @@ Xây một website chứa nhiều minigame theo mô hình **sảnh game đa danh
 5. **Tam Cúc** — Game 05, playable v0.2 UX.
 6. **Bài Chòi** — Game 06, playable v0.4 pre-rendered voice-pack baseline.
 7. **Monster Chess** — Game 07, playable prototype v0.1.
-8. **Cờ cá ngựa** — Game 08, playable v0.1.
+8. **Cờ cá ngựa** — Game 08, playable v0.3 3D.
 
-Mốc đang active: **QC Game 08 — Cờ cá ngựa v0.1**. Monster Chess v0.1 và Bài Chòi v0.4 vẫn tạm dừng.
+Mốc đang active: **QC Game 08 — Cờ cá ngựa v0.3 3D**. Monster Chess v0.1 và Bài Chòi v0.4 vẫn tạm dừng.
 
 ## 2. Repo / Deploy
 
@@ -424,8 +424,9 @@ Nguồn đối chiếu:
 ## 11. Game 08 — Cờ cá ngựa
 
 ### Trạng thái
-- **Playable v0.2** trên route `#/co-ca-ngua`.
-- v0.2 tập trung board vuông kiểu Việt Nam + xúc xắc 3D + fly/kick FX; ruleset D-037 giữ nguyên.
+- **Playable v0.3 3D** trên route `#/co-ca-ngua`.
+- Renderer chính đã chuyển sang **WebGL/Three.js thật**; ruleset D-037 giữ nguyên.
+- SVG/CSS v0.2 không còn là renderer chính.
 - Thuộc **Dân gian Việt Nam** và **May rủi & Party**.
 - Ruleset dự án là biến thể đã chốt với người dùng, không mặc định đại diện cho mọi luật Cờ cá ngựa.
 
@@ -486,6 +487,46 @@ Nguồn đối chiếu:
 - Có flow xuất quân, đi, bay mặt 1, đá quân, leo chuồng, tung bù và thắng.
 - Game đã đăng ký trong lobby và category registry.
 
+### v0.3 đã triển khai
+- Stack 3D:
+  - `three`;
+  - `@react-three/fiber`;
+  - `@types/three`.
+- Scene chính: `src/cacngua/Horse3DScene.tsx`.
+- Camera **3/4 isometric cố định**.
+- Board thật 3D:
+  - base gỗ có chiều dày;
+  - top board gỗ sáng;
+  - 56 track tile là mesh riêng;
+  - 4 yard màu là mesh 3D;
+  - 4 lane chuồng 1→6 là mesh 3D;
+  - center block có chiều cao.
+- Lighting:
+  - ambient + hemisphere + directional light;
+  - cast/receive shadow;
+  - fog/background riêng cho scene.
+- Quân:
+  - procedural stylized horse-head mesh bằng primitive 3D;
+  - picking trực tiếp trên scene;
+  - ring emissive cho quân có nước hợp lệ/đang chọn.
+- Dice:
+  - là cube mesh 3D thật trong world-space;
+  - tung từ hai vùng phía sau bàn;
+  - bay/nảy/xoay qua vùng board rồi đáp trên mặt bàn;
+  - kết quả cuối vẫn lấy từ engine;
+  - settled dice có pip 3D trên mặt trên và có thể tap để chọn.
+- Move/fly/kick:
+  - move thường dùng world positions qua geometry mapping;
+  - fly/deploy/kick dùng horse mesh động trong world-space;
+  - fly/kick có chiều cao thực trong trục Y;
+  - kick có spin + impact torus 3D.
+- UX **Bỏ lượt**:
+  - thêm engine helper `batchHasNoPlayableActions()` và `skipDeadBatch()`;
+  - nếu toàn batch vô hiệu, người chơi bấm **Bỏ lượt** một lần;
+  - toàn batch được consume và bonus chưa tung bị hủy;
+  - AI cũng dùng cùng rule.
+- Thêm 3 regression tests cho dead-batch UX.
+
 ### Visual/animation v0.2 đã chốt
 - Bàn đổi từ vòng tròn SVG sang **bàn vuông kiểu Cờ cá ngựa Việt Nam**.
 - Ưu tiên cấu trúc quen thuộc: 4 sân/chuồng ở 4 góc, đường đua vuông, 4 cửa chuồng và lane 1→6 rõ.
@@ -529,17 +570,19 @@ Nguồn đối chiếu:
 - Roll animation 3D vẫn giữ nguyên.
 
 ### QC kỹ thuật
-- Deploy workflow **#59**: success.
-- Run ID: `36327114398`.
-- Deployed source commit: `ede6d3190182820137108028d7f7394a0be8b62a`.
-- Test suite: **73/73 pass**.
+- Deploy workflow **#68**: success.
+- Run ID: `36329067282`.
+- Deployed source commit: `e5ae5bea9de900e32adb382f22d0a18a43de8ddd`.
+- Test suite: **76/76 pass**.
 - Cờ cá ngựa:
-  - engine: **13 tests**;
+  - engine: **16 tests**;
   - square-board geometry: **5 tests**.
 - Production build: pass.
 - GitHub Pages deploy: pass.
+- Three.js dependency install/build: pass.
 - Live: `https://momentum448-glitch.github.io/Minigame/#/co-ca-ngua`.
-- Desktop Commander hiện offline nên **chưa có assistant-side browser/mobile interaction QC trực tiếp** sau deploy #54. Người dùng đã cung cấp screenshot QC cho bug dice trước hotfix; cần reload và xác nhận rolling animation sau hotfix #59.
+- Desktop Commander vẫn offline nên **chưa có assistant-side browser/mobile interaction QC trực tiếp** cho renderer WebGL v0.3.
+- Người dùng cần QC thực tế: camera framing, touch picking, dice traversal, frame rate, horse readability, fly/kick feel.
 
 ### v0.3 visual lock
 - Camera: **3/4 isometric cố định**.
@@ -564,31 +607,35 @@ Nguồn đối chiếu:
 ## 12. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**Bắt đầu migration Cờ cá ngựa v0.3 sang renderer 3D thật.**
+**QC tương tác Cờ cá ngựa v0.3 3D trên mobile thực tế, rồi tune camera/performance/FX.**
 
-### Visual đã khóa
-- Camera 3/4 isometric cố định.
-- Board gỗ sơn màu kiểu Việt Nam, polish hiện đại.
-- Quân đầu ngựa stylized 3D.
-- Dice lăn/nảy trên mặt bàn 3D, không nằm trong panel.
+### Checklist QC v0.3
+1. Scene phải render được WebGL trên Android hiện tại, không blank/crash.
+2. Camera 3/4 phải nhìn trọn board, không cắt yard/track.
+3. Board phải đọc ngay là Cờ cá ngựa Việt Nam dù chuyển sang 3D.
+4. Quân đầu ngựa phải dễ phân biệt màu và dễ tap.
+5. Quân có nước hợp lệ phải có ring sáng rõ.
+6. Hai dice phải:
+   - xuất hiện trong world-space;
+   - lăn/nảy/xoay qua vùng board;
+   - dừng đúng kết quả engine;
+   - tap chọn được sau khi dừng.
+7. HUD result button và dice trên board phải sync selected state.
+8. Cả batch vô hiệu -> chỉ hiện một nút **Bỏ lượt**.
+9. Bỏ lượt phải consume toàn batch và chuyển người chơi ngay, không yêu cầu bấm từng die.
+10. Move thường không teleport.
+11. Fly mặt 1 có chiều cao rõ trong 3D.
+12. Kick phải có impact + victim spin/arc về yard.
+13. AI không đi chồng animation.
+14. Mobile frame rate phải chấp nhận được, không nóng/lag rõ sau vài lượt.
+15. Local 2/3/4 và AI 1/2/3 không regress.
 
-### Thứ tự triển khai
-1. Thêm 3D stack và scene shell.
-2. Dựng board 3D parity với 56 track index + 4 yard + 4 home lane.
-3. Dựng horse mesh stylized + picking/tap.
-4. Dựng dice physics/hybrid roll trên mặt bàn; kết quả cuối phải khớp engine.
-5. Chuyển move/fly/kick sang world-space animation.
-6. Thêm one-tap **Bỏ lượt** khi cả batch không có action.
-7. Mobile perf pass + fallback/reduced motion.
-8. Deploy QC rồi mới bỏ SVG renderer cũ.
-
-### Acceptance
-- Engine/ruleset không regress.
-- Camera không cần người chơi xoay.
-- Nhìn ngay ra board Cờ cá ngựa Việt Nam.
-- Dice thực sự di chuyển qua vùng board trong lúc tung.
-- Horse/fly/kick có chiều cao, bóng đổ và va chạm thị giác 3D.
-- Mobile touch vẫn rõ và mượt.
+### Sau QC
+- Tune camera FOV/height nếu board quá nhỏ hoặc bị cắt.
+- Tune shadow/DPR nếu mobile chậm.
+- Tune dice trajectory để nhìn tự nhiên hơn.
+- Sau visual parity mới cân nhắc thêm rigid-body physics thật nếu cần; hiện v0.3 dùng world-space kinematic/hybrid roll để giữ kết quả engine deterministic.
+- Khi QC pass mới xóa hẳn code/CSS fallback v0.2 không còn dùng.
 
 ## 13. Rủi ro / giả định
 
