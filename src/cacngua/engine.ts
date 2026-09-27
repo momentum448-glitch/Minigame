@@ -462,3 +462,31 @@ export function endTurnIfReady(state: HorseGameState): HorseGameState {
     message: `Tới lượt người chơi ${nextSeat + 1}.`
   };
 }
+
+
+export function batchHasNoPlayableActions(state: HorseGameState): boolean {
+  if (!state.batch || state.winner !== null) return false;
+
+  const unusedIndices = state.batch.used
+    .map((used, index) => used ? -1 : index)
+    .filter((index) => index >= 0);
+
+  if (unusedIndices.length === 0) return false;
+
+  return unusedIndices.every((dieIndex) => {
+    const actions = legalActionsForDie(state, dieIndex);
+    return actions.length === 1 && actions[0].type === 'discard-die';
+  });
+}
+
+export function skipDeadBatch(state: HorseGameState): HorseGameState {
+  if (!batchHasNoPlayableActions(state) || !state.batch) return state;
+
+  const used = state.batch.used.map(() => true);
+  return {
+    ...state,
+    batch: { ...state.batch, used },
+    bonusDiceToRoll: 0,
+    message: 'Không có nước hợp lệ · bỏ lượt.'
+  };
+}
