@@ -4308,3 +4308,157 @@ button.game-tile {
     animation-iteration-count:1 !important;
   }
 }
+
+
+/* ===== Cờ cá ngựa v0.3 true 3D renderer ===== */
+.ccn-board-wrap-3d {
+  padding: 8px;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(237, 196, 127, .10), transparent 40%),
+    linear-gradient(145deg, #1b2830, #10181d);
+}
+.ccn-three-shell {
+  position: relative;
+  width: 100%;
+  height: min(72vw, 720px);
+  min-height: 560px;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #18242b;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.06),
+    inset 0 -30px 60px rgba(0,0,0,.20);
+}
+.ccn-three-shell canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  touch-action: manipulation;
+}
+.ccn-three-badge {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  z-index: 3;
+  padding: 5px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,236,194,.25);
+  background: rgba(18,26,31,.68);
+  color: #f0dca9;
+  font-size: .58rem;
+  font-weight: 950;
+  letter-spacing: .10em;
+  pointer-events: none;
+  backdrop-filter: blur(6px);
+}
+.ccn-world-roll-note {
+  display: grid;
+  place-items: center;
+  min-height: 58px;
+  border-radius: 13px;
+  border: 1px solid rgba(241, 212, 123, .18);
+  background: rgba(241, 212, 123, .07);
+  color: #f3df9c;
+  font-size: .78rem;
+  font-weight: 900;
+  animation: ccnWorldRollPulse .62s ease-in-out infinite alternate;
+}
+@keyframes ccnWorldRollPulse {
+  to {
+    transform: translateY(-2px);
+    box-shadow: 0 0 18px rgba(238, 204, 102, .12);
+  }
+}
+.ccn-dice-result-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+.ccn-dice-result-buttons button {
+  position: relative;
+  min-height: 58px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 7px;
+  align-items: center;
+  padding: 8px 9px;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 12px;
+  background: rgba(255,255,255,.035);
+  color: #f7efe3;
+  text-align: left;
+  cursor: pointer;
+}
+.ccn-dice-result-buttons button > span {
+  font-size: 1.25rem;
+}
+.ccn-dice-result-buttons button b {
+  font-size: .75rem;
+}
+.ccn-dice-result-buttons button small {
+  grid-column: 1 / -1;
+  color: #e8c963;
+  font-size: .58rem;
+  font-weight: 900;
+}
+.ccn-dice-result-buttons button.selected {
+  border-color: #ffe06a;
+  background: rgba(255,224,106,.10);
+  box-shadow: 0 0 0 2px rgba(255,224,106,.13);
+}
+.ccn-dice-result-buttons button.used {
+  opacity: .34;
+  filter: grayscale(.8);
+}
+.ccn-dice-result-buttons button.six {
+  background: rgba(229, 182, 51, .11);
+}
+.ccn-skip-turn-button {
+  min-height: 48px !important;
+  background: linear-gradient(135deg, #e6bc57, #f0d989) !important;
+  color: #332814 !important;
+  border: 0 !important;
+  box-shadow: 0 4px 0 #8e6f2d;
+}
+.ccn-v3 .ccn-board-caption {
+  background: rgba(11,18,22,.32);
+  border-radius: 0 0 14px 14px;
+}
+.ccn-v3 .ccn-dice-panel {
+  overflow: visible;
+}
+@media (max-width: 900px) {
+  .ccn-three-shell {
+    height: min(88vw, 720px);
+    min-height: 520px;
+  }
+}
+@media (max-width: 650px) {
+  .ccn-board-wrap-3d {
+    padding: 3px;
+  }
+  .ccn-three-shell {
+    height: 92vw;
+    min-height: 330px;
+    max-height: 620px;
+    border-radius: 14px;
+  }
+  .ccn-three-badge {
+    left: 6px;
+    top: 6px;
+    font-size: .50rem;
+  }
+  .ccn-v3 .ccn-board-caption {
+    font-size: .54rem;
+    gap: 5px 9px;
+  }
+}
+@media (max-width: 420px) {
+  .ccn-three-shell {
+    height: 96vw;
+    min-height: 320px;
+  }
+  .ccn-dice-result-buttons {
+    grid-template-columns: 1fr 1fr;
+  }
+}
