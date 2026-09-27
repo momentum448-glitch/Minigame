@@ -477,3 +477,13 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Giả định làm việc: nếu batch đã tạo bonus dice từ mặt 6 thì bonus dice vẫn tiếp tục theo D-037 sau khi bỏ batch không hợp lệ.
 - SVG v0.2 chỉ là transitional/fallback renderer, không phải hướng cuối.
 - Quyết định: CHỐT ngày 2026-09-27.
+
+
+## D-045 — Cờ cá ngựa v0.3 visual lock
+- Camera: **3/4 isometric cố định**.
+- Board: **gỗ sơn màu kiểu Cờ cá ngựa Việt Nam**, có chiều dày/bevel/bóng đổ, polish hiện đại.
+- Quân: **đầu ngựa stylized 3D**.
+- Dice: phải lăn/nảy trong world-space trên bàn 3D, không bị giới hạn trong panel.
+- Working assumption cho thao tác **Bỏ lượt**: nếu tất cả dice hiện tại vô hiệu, một lần bấm sẽ consume toàn batch và **hủy bonus chưa tung** của lượt đó rồi chuyển lượt.
+- Renderer SVG/CSS v0.2 là transitional fallback, không phải hướng cuối.
+- Quyết định: CHỐT ngày 2026-09-27.
