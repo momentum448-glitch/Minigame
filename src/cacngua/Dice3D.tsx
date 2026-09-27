@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 interface Dice3DProps {
   value: number;
   rolling?: boolean;
@@ -37,7 +39,7 @@ function DieShell({
   children,
   rolling = false
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   rolling?: boolean;
 }) {
   return (
