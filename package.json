@@ -14,7 +14,9 @@
     "vite": "latest",
     "typescript": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "three": "latest",
+    "@react-three/fiber": "latest"
   },
   "devDependencies": {
     "@types/react": "latest",
