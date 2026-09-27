@@ -541,35 +541,44 @@ Nguồn đối chiếu:
 - Live: `https://momentum448-glitch.github.io/Minigame/#/co-ca-ngua`.
 - Desktop Commander hiện offline nên **chưa có assistant-side browser/mobile interaction QC trực tiếp** sau deploy #54. Người dùng đã cung cấp screenshot QC cho bug dice trước hotfix; cần reload và xác nhận rolling animation sau hotfix #59.
 
+### v0.3 3D architecture direction
+- Người dùng chốt ngày 2026-09-27:
+  - nếu **cả hai xúc xắc hiện tại đều không có nước hợp lệ**, UI chỉ cần **một nút bỏ cả batch/lượt** thay vì bỏ từng viên;
+  - animation tung xúc xắc phải mượt hơn và **xúc xắc lăn trên toàn bàn**, không bị nhốt trong panel bên phải;
+  - Cờ cá ngựa từ mốc tiếp theo phải là **game 3D thật**, không tiếp tục theo hướng board SVG 2D.
+- Hướng kiến trúc đề xuất:
+  - giữ engine/ruleset hiện tại làm source of truth;
+  - thay lớp board/horse/dice presentation bằng **WebGL 3D scene**;
+  - React chỉ giữ shell, HUD, nút và overlay;
+  - dice là rigid-body visual/physics nhưng kết quả cuối vẫn phải khớp RNG/engine;
+  - board, horse pieces, gates, home lanes đều có geometry 3D;
+  - fly/kick animation chuyển sang world-space 3D.
+- Không tiếp tục đầu tư thêm vào renderer SVG v0.2 ngoài bugfix chặn việc bàn giao.
+
 ## 12. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC tương tác Cờ cá ngựa v0.2 trên bản live, sau đó tune visual/tempo theo feedback.**
+**Chốt 3 quyết định visual/camera cuối cho Cờ cá ngựa 3D, sau đó migrate renderer sang 3D.**
 
-### Checklist QC v0.2
-1. Bàn phải đọc ngay là **bàn Cờ cá ngựa vuông kiểu Việt Nam**.
-2. 4 sân màu, 4 cửa chuồng và lane 1→6 phải dễ hiểu trên mobile.
-3. 2 xúc xắc phải nhìn như **khối lập phương thật**, có roll/quay trước khi dừng.
-4. Dice result phải khớp engine; 6 vẫn sinh đúng bonus die.
-5. Move thường phải đi từng ô, không teleport.
-6. Mặt 1 bay:
-   - source/target rõ;
-   - thấy cung bay và trail;
-   - landing rõ.
-7. Đá thường:
-   - attacker tới đích trước;
-   - impact rõ;
-   - victim bay về sân, không biến mất tức thì.
-8. Bay + đá nối sequence tự nhiên.
-9. Input khóa trong animation; AI không đi chồng animation.
-10. Không regress Local 2/3/4 và AI 1/2/3.
-11. Mobile không bị panel/dice che board; ô/ngựa đủ lớn để tap.
-12. Reduced motion không gây lỗi trạng thái.
+### Quy tắc đã khóa
+- Engine luật giữ nguyên.
+- Khi toàn bộ dice hiện tại đều không có action hợp lệ, UI có **một nút “Bỏ lượt”** để consume toàn bộ dice chưa dùng trong batch.
+- Nếu batch đó đã sinh bonus dice từ mặt 6, bonus dice vẫn được xử lý sau batch theo luật D-037 trừ khi người dùng đổi quyết định này.
+- Dice phải lăn trên không gian bàn cờ 3D, không nằm trong panel.
+- Game phải là 3D thật, không dùng SVG board làm renderer chính.
 
-### Sau QC
-- Sửa mismatch board/animation nếu có.
-- Tune fly/kick duration nếu quá nhanh hoặc quá chậm.
-- Chỉ khi visual pass mới thêm sound impact/dice/horse.
+### Kiến trúc đề xuất
+- React + Three.js / React Three Fiber.
+- Camera fixed mobile-first.
+- 3D board scene tách khỏi HUD.
+- Physics dice dùng rigid-body simulation/hybrid; kết quả engine vẫn deterministic.
+- Horse pieces là mesh 3D; move/fly/kick đều phát trong world-space.
+- SVG/CSS v0.2 giữ tạm làm fallback cho tới khi 3D scene đạt parity.
+
+### Cần chốt trước khi code renderer 3D
+1. Camera.
+2. Material/art style board.
+3. Style quân ngựa.
 
 ## 13. Rủi ro / giả định
 
