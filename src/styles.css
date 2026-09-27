@@ -4192,3 +4192,119 @@ button.game-tile {
     height: 38px;
   }
 }
+
+
+/* Android-safe rolling dice v3: 2.5D shell + 2D pip-frame animation */
+.ccn-cube-button.rolling-2d5 {
+  perspective: none;
+  overflow: visible;
+}
+.ccn-roll-shell {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 58px;
+  height: 58px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: ccnRollShellMotion 960ms cubic-bezier(.16,.7,.2,1);
+}
+.ccn-roll-face-stack {
+  position: absolute;
+  left: 4px;
+  top: 7px;
+  width: 48px;
+  height: 48px;
+  z-index: 3;
+  transform-origin: center;
+  animation: ccnRollFaceTilt 960ms cubic-bezier(.16,.7,.2,1);
+}
+.ccn-roll-frame {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  grid-template-rows: repeat(3,1fr);
+  padding: 7px;
+  border: 1px solid #b8ae9e;
+  border-radius: 10px;
+  background: linear-gradient(145deg,#fffdf6,#e9dfce);
+  box-shadow:
+    inset 3px 3px 7px rgba(255,255,255,.95),
+    inset -4px -4px 8px rgba(93,76,54,.10),
+    0 6px 8px rgba(0,0,0,.22);
+  opacity: 0;
+  animation: ccnRollFaceSwap 720ms steps(1,end) infinite;
+}
+.ccn-roll-frame .pip {
+  width: 7px;
+  height: 7px;
+  place-self: center;
+  border-radius: 50%;
+  background: transparent;
+}
+.ccn-roll-frame .pip.on {
+  background: #302a25;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.22),0 1px 1px rgba(0,0,0,.20);
+}
+.ccn-roll-top {
+  position: absolute;
+  left: 10px;
+  top: 1px;
+  width: 42px;
+  height: 13px;
+  border-radius: 7px 7px 3px 3px;
+  background: linear-gradient(180deg,#fffef9,#d8ccb9);
+  transform: skewX(-38deg);
+  transform-origin: left bottom;
+  border: 1px solid #b8ae9e;
+  z-index: 2;
+}
+.ccn-roll-side {
+  position: absolute;
+  right: 0;
+  top: 13px;
+  width: 13px;
+  height: 42px;
+  border-radius: 3px 7px 7px 3px;
+  background: linear-gradient(90deg,#d9cdb9,#bcae98);
+  transform: skewY(-38deg);
+  transform-origin: left top;
+  border: 1px solid #a89b88;
+  z-index: 1;
+}
+@keyframes ccnRollFaceSwap {
+  0%, 15% { opacity: 1; }
+  16%, 100% { opacity: 0; }
+}
+@keyframes ccnRollShellMotion {
+  0%   { translate: -18px 18px; rotate: -18deg; scale: .84; }
+  18%  { translate: 10px -21px; rotate: 54deg; scale: 1.08; }
+  38%  { translate: -9px 9px; rotate: 132deg; scale: .95; }
+  58%  { translate: 7px -8px; rotate: 218deg; scale: 1.04; }
+  77%  { translate: -4px 4px; rotate: 302deg; scale: .99; }
+  100% { translate: 0 0; rotate: 360deg; scale: 1; }
+}
+@keyframes ccnRollFaceTilt {
+  0%   { transform: skew(-5deg,3deg) scale(.94); }
+  22%  { transform: skew(7deg,-5deg) scale(1.04); }
+  46%  { transform: skew(-8deg,4deg) scale(.96); }
+  70%  { transform: skew(5deg,-3deg) scale(1.02); }
+  100% { transform: skew(0deg,0deg) scale(1); }
+}
+@media (max-width:650px) {
+  .ccn-roll-shell { width:54px;height:54px; }
+  .ccn-roll-face-stack { width:44px;height:44px; }
+  .ccn-roll-frame { padding:6px; }
+  .ccn-roll-frame .pip { width:6px;height:6px; }
+  .ccn-roll-top { width:38px; }
+  .ccn-roll-side { height:38px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ccn-roll-shell,
+  .ccn-roll-face-stack,
+  .ccn-roll-frame {
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+  }
+}
