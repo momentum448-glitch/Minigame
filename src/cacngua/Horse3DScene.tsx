@@ -312,8 +312,9 @@ function MovingHorse({ motion }: { motion: HorseMotion3D }) {
   useFrame(({ clock }) => {
     if (!group.current) return;
     const now = clock.getElapsedTime();
+    const started = startedAt.current ?? now;
     if (startedAt.current === null) startedAt.current = now;
-    const t = Math.min(1, (now - startedAt.current) / (motion.durationMs / 1000));
+    const t = Math.min(1, (now - started) / (motion.durationMs / 1000));
     const eased = 1 - Math.pow(1 - t, 3);
     const height =
       motion.kind === 'fly' ? 2.5 :
@@ -349,8 +350,9 @@ function ImpactBurst({ point }: { point: BoardPoint }) {
   useFrame(({ clock }) => {
     if (!group.current) return;
     const now = clock.getElapsedTime();
+    const started = startedAt.current ?? now;
     if (startedAt.current === null) startedAt.current = now;
-    const t = Math.min(1, (now - startedAt.current) / 0.45);
+    const t = Math.min(1, (now - started) / 0.45);
     group.current.scale.setScalar(0.3 + t * 2.0);
     group.current.rotation.y = t * Math.PI;
     group.current.visible = t < 1;
@@ -419,8 +421,9 @@ function WorldDie({
     }
 
     const now = clock.getElapsedTime();
+    const started = startedAt.current ?? now;
     if (startedAt.current === null) startedAt.current = now;
-    const t = Math.min(1, (now - startedAt.current) / 1.12);
+    const t = Math.min(1, (now - started) / 1.12);
     const eased = 1 - Math.pow(1 - t, 2.5);
     const lateral = Math.sin(t * Math.PI * 3 + index) * (1 - t) * 1.05;
     const bounce = Math.abs(Math.sin(t * Math.PI * 4.2)) * (1 - t) * 0.65;
@@ -439,7 +442,7 @@ function WorldDie({
     <group
       ref={group}
       position={rolling ? start : end}
-      onPointerDown={(event) => {
+      onPointerDown={(event: ThreeEvent<PointerEvent>) => {
         event.stopPropagation();
         if (!rolling && !used) onDieClick(index);
       }}
