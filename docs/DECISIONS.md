@@ -530,3 +530,16 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Không thay RNG, bonus-six logic hay ruleset D-037; đây là presentation/UX.
 - Deploy #71 success, run `36377864223`, source commit `f4a56ed255017b68bc7ad1ab4e7a8b0bfe7bcb64`, 76/76 tests pass.
 - Quyết định: CHỐT ngày 2026-09-28.
+
+
+## D-049 — Cờ cá ngựa attacker strike animation
+- Khi một quân đá quân đối phương, animation phải làm rõ **quân tấn công là bên chủ động**, không chỉ phô diễn quân bị đá.
+- Trước impact, attacker có một strike beat riêng khoảng **480 ms**:
+  - lùi/lấy đà ngắn;
+  - surge/bật về phía va chạm;
+  - nhô cao, tilt và scale nhẹ để đọc lực;
+  - vòng sáng/energy ring dưới chân.
+- Sau strike mới phát impact và victim spin/arc về yard như baseline trước.
+- Không đổi engine, ruleset D-037 hay kết quả đá; đây là presentation/UX.
+- Deploy #72 success, run `36383476229`, source commit `ffd19fbe090ddc4fc5c01b9be8ea857713d8624a`, 76/76 tests pass.
+- Quyết định: CHỐT ngày 2026-09-28.
