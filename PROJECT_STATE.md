@@ -514,8 +514,10 @@ Nguồn đối chiếu:
   - là cube mesh 3D thật trong world-space;
   - tung từ hai vùng phía sau bàn;
   - bay/nảy/xoay qua vùng board rồi đáp trên mặt bàn;
-  - kết quả cuối vẫn lấy từ engine;
-  - settled dice có pip 3D trên mặt trên và có thể tap để chọn.
+  - khi đang lăn, cả 6 mặt đều có pip chuẩn 1–6 và visual không tiết lộ kết quả engine;
+  - chỉ khi animation settle mới xoay để mặt trên khớp kết quả engine;
+  - thời lượng roll chuẩn mới là khoảng **1.68 giây** (+50% so với 1.12 giây trước);
+  - settled dice có pip 3D và có thể tap để chọn.
 - Move/fly/kick:
   - move thường dùng world positions qua geometry mapping;
   - fly/deploy/kick dùng horse mesh động trong world-space;
@@ -571,10 +573,10 @@ Nguồn đối chiếu:
 - Roll animation 3D vẫn giữ nguyên.
 
 ### QC kỹ thuật
-- Deploy workflow **#70**: success.
-- Run ID: `36377031190`.
-- Deployed source commit: `871f7fc4672717ee78e66cdd64b043ac64e04e57`.
-- Thay đổi #70: nâng camera thêm một nấc và cho quân quay đầu theo hướng đi; không đổi engine/rules.
+- Deploy workflow **#71**: success.
+- Run ID: `36377864223`.
+- Deployed source commit: `f4a56ed255017b68bc7ad1ab4e7a8b0bfe7bcb64`.
+- Thay đổi #71: dice rolling render đủ 6 mặt 1–6 để không lộ kết quả trước khi settle; tăng thời lượng roll từ 1.12s lên 1.68s; không đổi engine/RNG/rules.
 - Test suite: **76/76 pass**.
 - Cờ cá ngựa:
   - engine: **16 tests**;
@@ -590,6 +592,7 @@ Nguồn đối chiếu:
 - Camera: **3/4 isometric cố định**, ưu tiên góc cao đủ để quân không che đường đi.
 - Material board: **gỗ sơn màu kiểu Cờ cá ngựa Việt Nam**, polish hiện đại.
 - Quân: **đầu ngựa stylized 3D**, phải quay đầu theo hướng di chuyển/đường đi thay vì giữ một hướng cố định theo màu.
+- Dice rolling: phải nhìn như xúc xắc 6 mặt thật; không được để người chơi suy ra kết quả engine khi dice còn đang lăn. Roll baseline khoảng **1.68 giây**.
 - Giả định làm việc cho “Bỏ lượt”: nếu toàn bộ dice hiện tại đều không có nước hợp lệ, thao tác Bỏ lượt **consume toàn bộ dice còn lại và hủy bonus chưa tung của lượt đó**, rồi chuyển người chơi. Nếu người dùng sửa quyết định này thì cập nhật engine/test tương ứng.
 
 ### v0.3 3D architecture direction
@@ -619,8 +622,9 @@ Nguồn đối chiếu:
 5. Quân có nước hợp lệ phải có ring sáng rõ.
 6. Hai dice phải:
    - xuất hiện trong world-space;
-   - lăn/nảy/xoay qua vùng board;
-   - dừng đúng kết quả engine;
+   - lăn/nảy/xoay qua vùng board khoảng 1.68 giây;
+   - trong lúc lăn nhìn thấy hệ mặt 1–6 đầy đủ, không lộ sớm kết quả engine;
+   - chỉ khi settle mới hiện đúng mặt kết quả engine;
    - tap chọn được sau khi dừng.
 7. HUD result button và dice trên board phải sync selected state.
 8. Cả batch vô hiệu -> chỉ hiện một nút **Bỏ lượt**.
