@@ -38,6 +38,7 @@ const SEAT_NAMES: Record<HorseSeat, string> = {
 const STEP_MS = 175;
 const FLY_MS = 820;
 const KICK_MS = 780;
+const STRIKE_MS = 480;
 const DEPLOY_MS = 430;
 const DICE_ROLL_MS = 1680;
 
@@ -321,6 +322,15 @@ export default function CoCaNguaGame({ onBack }: CoCaNguaGameProps) {
     if (kickedHorse) {
       const kickedAfter = after.horses.find((candidate) => candidate.id === kickedHorse.id)!;
       const hitPoint = horseBasePoint(kickedHorse);
+
+      await playMotion(
+        'strike',
+        horse,
+        horseBasePoint(horse),
+        hitPoint,
+        STRIKE_MS
+      );
+
       setImpactPoint(hitPoint);
       await sleep(120);
       await playMotion(

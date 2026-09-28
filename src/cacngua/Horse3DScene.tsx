@@ -13,7 +13,7 @@ import type { BoardPoint } from './geometry';
 import { START_INDEX, trackIndexForHorse } from './engine';
 import type { HorseGameState, HorsePiece, HorseSeat } from './types';
 
-export type HorseMotionKind = 'fly' | 'kick' | 'deploy';
+export type HorseMotionKind = 'fly' | 'kick' | 'deploy' | 'strike';
 
 export interface HorseMotion3D {
   id: number;
@@ -361,6 +361,27 @@ function MovingHorse({ motion }: { motion: HorseMotion3D }) {
     if (startedAt.current === null) startedAt.current = now;
     const t = Math.min(1, (now - started) / (motion.durationMs / 1000));
     const eased = 1 - Math.pow(1 - t, 3);
+    if (motion.kind === 'strike') {
+      const recoil = -0.34 * Math.sin(Math.PI * Math.min(1, t / 0.42));
+      const surgeT = Math.max(0, Math.min(1, (t - 0.24) / 0.76));
+      const surge = 0.62 * Math.sin(Math.PI * surgeT);
+      const thrust = recoil + surge;
+      const forwardX = Math.sin(travelFacing);
+      const forwardZ = Math.cos(travelFacing);
+      const hop = Math.sin(Math.PI * t) * 0.52;
+
+      group.current.position.set(
+        to[0] + forwardX * thrust,
+        HORSE_Y + hop,
+        to[2] + forwardZ * thrust
+      );
+      group.current.rotation.x = -Math.sin(Math.PI * t) * 0.34;
+      group.current.rotation.y = travelFacing + Math.sin(Math.PI * t) * 0.12;
+      group.current.rotation.z = Math.sin(Math.PI * t * 2) * 0.10;
+      group.current.scale.setScalar(1 + Math.sin(Math.PI * t) * 0.16);
+      return;
+    }
+
     const height =
       motion.kind === 'fly' ? 2.5 :
       motion.kind === 'kick' ? 2.1 :
@@ -371,17 +392,45 @@ function MovingHorse({ motion }: { motion: HorseMotion3D }) {
       HORSE_Y + Math.sin(Math.PI * t) * height,
       THREE.MathUtils.lerp(from[2], to[2], eased)
     );
+    group.current.scale.setScalar(1);
+    group.current.rotation.x = 0;
 
     if (motion.kind === 'kick') {
       group.current.rotation.y = travelFacing + t * Math.PI * 4.5;
       group.current.rotation.z = Math.sin(t * Math.PI * 5) * 0.32;
     } else {
       group.current.rotation.y = travelFacing + Math.sin(t * Math.PI) * 0.14;
+      group.current.rotation.z = 0;
     }
   });
 
   return (
     <group ref={group} position={from}>
+      {motion.kind === 'strike' && (
+        <>
+          <mesh position={[0, 0.04, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[0.46, 0.075, 12, 32]} />
+            <meshStandardMaterial
+              color="#ffd36a"
+              emissive="#ff7b32"
+              emissiveIntensity={1.9}
+              transparent
+              opacity={0.92}
+            />
+          </mesh>
+          <mesh position={[0, 0.035, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[0.18, 0.28, 24]} />
+            <meshStandardMaterial
+              color="#fff0a6"
+              emissive="#ffb240"
+              emissiveIntensity={1.6}
+              transparent
+              opacity={0.82}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+        </>
+      )}
       <HorseModel seat={motion.seat} facingRotation={0} />
     </group>
   );
