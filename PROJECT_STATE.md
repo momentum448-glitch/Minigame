@@ -493,7 +493,7 @@ Nguồn đối chiếu:
   - `@react-three/fiber`;
   - `@types/three`.
 - Scene chính: `src/cacngua/Horse3DScene.tsx`.
-- Camera **3/4 isometric cố định**; deploy #69 đã nâng góc nhìn từ `[8.8, 10.6, 10.4]` lên `[8.0, 12.4, 9.5]` để quân ít che track phía sau hơn mà vẫn giữ cảm giác 3D.
+- Camera **3/4 isometric cố định**; deploy #70 nâng thêm góc nhìn lên `[7.0, 14.2, 8.4]` để giảm che khuất track nhưng vẫn giữ cảm giác tabletop 3D.
 - Board thật 3D:
   - base gỗ có chiều dày;
   - top board gỗ sáng;
@@ -508,7 +508,8 @@ Nguồn đối chiếu:
 - Quân:
   - procedural stylized horse-head mesh bằng primitive 3D;
   - picking trực tiếp trên scene;
-  - ring emissive cho quân có nước hợp lệ/đang chọn.
+  - ring emissive cho quân có nước hợp lệ/đang chọn;
+  - hướng đầu ngựa bám theo hướng di chuyển: trên track nhìn về ô kế tiếp, trong lane chuồng nhìn vào tâm, trong yard nhìn về cửa xuất phát; fly/deploy nhìn theo vector bay.
 - Dice:
   - là cube mesh 3D thật trong world-space;
   - tung từ hai vùng phía sau bàn;
@@ -570,10 +571,10 @@ Nguồn đối chiếu:
 - Roll animation 3D vẫn giữ nguyên.
 
 ### QC kỹ thuật
-- Deploy workflow **#69**: success.
-- Run ID: `36376320118`.
-- Deployed source commit: `9eae3c1d628fac03141c823ec7e71e0aee243f1b`.
-- Thay đổi #69: nâng camera 3D để giảm che khuất đường đi; không đổi engine/rules.
+- Deploy workflow **#70**: success.
+- Run ID: `36377031190`.
+- Deployed source commit: `871f7fc4672717ee78e66cdd64b043ac64e04e57`.
+- Thay đổi #70: nâng camera thêm một nấc và cho quân quay đầu theo hướng đi; không đổi engine/rules.
 - Test suite: **76/76 pass**.
 - Cờ cá ngựa:
   - engine: **16 tests**;
@@ -586,9 +587,9 @@ Nguồn đối chiếu:
 - Người dùng cần QC thực tế: camera framing, touch picking, dice traversal, frame rate, horse readability, fly/kick feel.
 
 ### v0.3 visual lock
-- Camera: **3/4 isometric cố định**.
+- Camera: **3/4 isometric cố định**, ưu tiên góc cao đủ để quân không che đường đi.
 - Material board: **gỗ sơn màu kiểu Cờ cá ngựa Việt Nam**, polish hiện đại.
-- Quân: **đầu ngựa stylized 3D**.
+- Quân: **đầu ngựa stylized 3D**, phải quay đầu theo hướng di chuyển/đường đi thay vì giữ một hướng cố định theo màu.
 - Giả định làm việc cho “Bỏ lượt”: nếu toàn bộ dice hiện tại đều không có nước hợp lệ, thao tác Bỏ lượt **consume toàn bộ dice còn lại và hủy bonus chưa tung của lượt đó**, rồi chuyển người chơi. Nếu người dùng sửa quyết định này thì cập nhật engine/test tương ứng.
 
 ### v0.3 3D architecture direction
@@ -612,9 +613,9 @@ Nguồn đối chiếu:
 
 ### Checklist QC v0.3
 1. Scene phải render được WebGL trên Android hiện tại, không blank/crash.
-2. Camera 3/4 mới từ deploy #69 phải nhìn trọn board, giảm việc quân che track phía sau và không cắt yard/track.
+2. Camera 3/4 mới từ deploy #70 phải nhìn trọn board, giảm việc quân che track phía sau và không cắt yard/track.
 3. Board phải đọc ngay là Cờ cá ngựa Việt Nam dù chuyển sang 3D.
-4. Quân đầu ngựa phải dễ phân biệt màu và dễ tap.
+4. Quân đầu ngựa phải dễ phân biệt màu, dễ tap và quay đúng hướng đường đi ở track/home lane.
 5. Quân có nước hợp lệ phải có ring sáng rõ.
 6. Hai dice phải:
    - xuất hiện trong world-space;
