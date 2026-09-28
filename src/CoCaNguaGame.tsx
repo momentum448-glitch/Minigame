@@ -39,6 +39,7 @@ const STEP_MS = 175;
 const FLY_MS = 820;
 const KICK_MS = 780;
 const DEPLOY_MS = 430;
+const DICE_ROLL_MS = 1680;
 
 function sleep(ms: number) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -232,7 +233,7 @@ export default function CoCaNguaGame({ onBack }: CoCaNguaGameProps) {
     setRollingValues(values);
     setRolling(true);
     setAnimating(true);
-    await sleep(1120);
+    await sleep(DICE_ROLL_MS);
     setGame(rolledState);
     setRolling(false);
     setRollingValues([]);

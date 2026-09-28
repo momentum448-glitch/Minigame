@@ -419,9 +419,15 @@ function ImpactBurst({ point }: { point: BoardPoint }) {
   );
 }
 
-function DiceTopPips({ value }: { value: number }) {
+function DiceFacePips({
+  value,
+  rotation = [0, 0, 0]
+}: {
+  value: number;
+  rotation?: [number, number, number];
+}) {
   return (
-    <group>
+    <group rotation={rotation}>
       {(PIPS[value] ?? PIPS[1]).map(([gx, gz], index) => (
         <mesh key={index} position={[gx * 0.17, 0.365, gz * 0.17]}>
           <sphereGeometry args={[0.055, 12, 10]} />
@@ -431,6 +437,30 @@ function DiceTopPips({ value }: { value: number }) {
     </group>
   );
 }
+
+function DiceAllFacePips() {
+  return (
+    <group>
+      <DiceFacePips value={1} />
+      <DiceFacePips value={6} rotation={[Math.PI, 0, 0]} />
+      <DiceFacePips value={2} rotation={[Math.PI / 2, 0, 0]} />
+      <DiceFacePips value={5} rotation={[-Math.PI / 2, 0, 0]} />
+      <DiceFacePips value={3} rotation={[0, 0, -Math.PI / 2]} />
+      <DiceFacePips value={4} rotation={[0, 0, Math.PI / 2]} />
+    </group>
+  );
+}
+
+function settledDieRotation(value: number): [number, number, number] {
+  if (value === 6) return [Math.PI, 0, 0];
+  if (value === 2) return [-Math.PI / 2, 0, 0];
+  if (value === 5) return [Math.PI / 2, 0, 0];
+  if (value === 3) return [0, 0, Math.PI / 2];
+  if (value === 4) return [0, 0, -Math.PI / 2];
+  return [0, 0, 0];
+}
+
+const DICE_ROLL_SECONDS = 1.68;
 
 function WorldDie({
   value,
@@ -461,14 +491,15 @@ function WorldDie({
 
     if (!rolling) {
       group.current.position.set(...end);
-      group.current.rotation.set(0, index === 0 ? -0.14 : 0.13, 0);
+      const [rx, ry, rz] = settledDieRotation(value);
+      group.current.rotation.set(rx, ry, rz);
       return;
     }
 
     const now = clock.getElapsedTime();
     const started = startedAt.current ?? now;
     if (startedAt.current === null) startedAt.current = now;
-    const t = Math.min(1, (now - started) / 1.12);
+    const t = Math.min(1, (now - started) / DICE_ROLL_SECONDS);
     const eased = 1 - Math.pow(1 - t, 2.5);
     const lateral = Math.sin(t * Math.PI * 3 + index) * (1 - t) * 1.05;
     const bounce = Math.abs(Math.sin(t * Math.PI * 4.2)) * (1 - t) * 0.65;
@@ -512,7 +543,7 @@ function WorldDie({
           opacity={used ? 0.42 : 1}
         />
       </mesh>
-      <DiceTopPips value={value} />
+      <DiceAllFacePips />
     </group>
   );
 }
