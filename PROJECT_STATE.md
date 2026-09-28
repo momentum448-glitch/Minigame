@@ -522,7 +522,8 @@ Nguồn đối chiếu:
   - move thường dùng world positions qua geometry mapping;
   - fly/deploy/kick dùng horse mesh động trong world-space;
   - fly/kick có chiều cao thực trong trục Y;
-  - kick có spin + impact torus 3D.
+  - kick victim có spin + arc về yard + impact torus 3D;
+  - attacker có strike beat riêng khoảng **480 ms**: lùi lấy đà, surge về phía trước, nhô cao/tilt/scale nhẹ và vòng sáng dưới chân trước impact.
 - UX **Bỏ lượt**:
   - thêm engine helper `batchHasNoPlayableActions()` và `skipDeadBatch()`;
   - nếu toàn batch vô hiệu, người chơi bấm **Bỏ lượt** một lần;
@@ -573,10 +574,10 @@ Nguồn đối chiếu:
 - Roll animation 3D vẫn giữ nguyên.
 
 ### QC kỹ thuật
-- Deploy workflow **#71**: success.
-- Run ID: `36377864223`.
-- Deployed source commit: `f4a56ed255017b68bc7ad1ab4e7a8b0bfe7bcb64`.
-- Thay đổi #71: dice rolling render đủ 6 mặt 1–6 để không lộ kết quả trước khi settle; tăng thời lượng roll từ 1.12s lên 1.68s; không đổi engine/RNG/rules.
+- Deploy workflow **#72**: success.
+- Run ID: `36383476229`.
+- Deployed source commit: `ffd19fbe090ddc4fc5c01b9be8ea857713d8624a`.
+- Thay đổi #72: thêm attacker strike animation rõ trước khi victim bị đá bay; không đổi engine/rules.
 - Test suite: **76/76 pass**.
 - Cờ cá ngựa:
   - engine: **16 tests**;
@@ -593,6 +594,7 @@ Nguồn đối chiếu:
 - Material board: **gỗ sơn màu kiểu Cờ cá ngựa Việt Nam**, polish hiện đại.
 - Quân: **đầu ngựa stylized 3D**, phải quay đầu theo hướng di chuyển/đường đi thay vì giữ một hướng cố định theo màu.
 - Dice rolling: phải nhìn như xúc xắc 6 mặt thật; không được để người chơi suy ra kết quả engine khi dice còn đang lăn. Roll baseline khoảng **1.68 giây**.
+- Kick presentation: không chỉ victim bay; attacker phải có nhịp ra đòn riêng nhìn rõ trước impact.
 - Giả định làm việc cho “Bỏ lượt”: nếu toàn bộ dice hiện tại đều không có nước hợp lệ, thao tác Bỏ lượt **consume toàn bộ dice còn lại và hủy bonus chưa tung của lượt đó**, rồi chuyển người chơi. Nếu người dùng sửa quyết định này thì cập nhật engine/test tương ứng.
 
 ### v0.3 3D architecture direction
@@ -631,7 +633,7 @@ Nguồn đối chiếu:
 9. Bỏ lượt phải consume toàn batch và chuyển người chơi ngay, không yêu cầu bấm từng die.
 10. Move thường không teleport.
 11. Fly mặt 1 có chiều cao rõ trong 3D.
-12. Kick phải có impact + victim spin/arc về yard.
+12. Kick phải có attacker wind-up/surge rõ + impact + victim spin/arc về yard.
 13. AI không đi chồng animation.
 14. Mobile frame rate phải chấp nhận được, không nóng/lag rõ sau vài lượt.
 15. Local 2/3/4 và AI 1/2/3 không regress.
