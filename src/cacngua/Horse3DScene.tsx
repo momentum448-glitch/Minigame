@@ -81,6 +81,45 @@ function seatRotation(seat: HorseSeat) {
   return Math.PI / 2;
 }
 
+function facingAngle(from: BoardPoint, to: BoardPoint): number {
+  const dx = to.x - from.x;
+  const dz = to.y - from.y;
+  if (Math.abs(dx) < 0.001 && Math.abs(dz) < 0.001) return 0;
+  return Math.atan2(dx, dz);
+}
+
+function nearestTrackIndex(point: BoardPoint): number {
+  let bestIndex = 0;
+  let bestDistance = Number.POSITIVE_INFINITY;
+
+  TRACK_POINTS.forEach((candidate, index) => {
+    const distance = Math.hypot(candidate.x - point.x, candidate.y - point.y);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      bestIndex = index;
+    }
+  });
+
+  return bestIndex;
+}
+
+function horseFacingAngle(horse: HorsePiece, point: BoardPoint): number {
+  if (horse.zone === 'yard') {
+    return facingAngle(point, trackPoint(START_INDEX[horse.owner]));
+  }
+
+  if (horse.zone === 'home') {
+    const rank = horse.homeRank ?? 0;
+    const target = rank < 6
+      ? homeLanePoint(horse.owner, rank + 1)
+      : { x: BOARD_CENTER, y: BOARD_CENTER };
+    return facingAngle(point, target);
+  }
+
+  const currentIndex = nearestTrackIndex(point);
+  return facingAngle(point, trackPoint(currentIndex + 1));
+}
+
 function horsePoint(horse: HorsePiece): BoardPoint {
   if (horse.zone === 'track') {
     return trackPoint(trackIndexForHorse(horse) ?? START_INDEX[horse.owner]);
@@ -96,7 +135,7 @@ function CameraRig() {
   const { camera, size } = useThree();
 
   useEffect(() => {
-    camera.position.set(8.0, 12.4, 9.5);
+    camera.position.set(7.0, 14.2, 8.4);
     camera.lookAt(0, 0, 0);
     if (camera instanceof THREE.PerspectiveCamera) {
       camera.fov = size.width < 700 ? 48 : 39;
@@ -205,11 +244,13 @@ function HorseModel({
   seat,
   actionable = false,
   selected = false,
+  facingRotation,
   onPointerDown
 }: {
   seat: HorseSeat;
   actionable?: boolean;
   selected?: boolean;
+  facingRotation?: number;
   onPointerDown?: (event: ThreeEvent<PointerEvent>) => void;
 }) {
   const color = COLORS[seat];
@@ -217,7 +258,7 @@ function HorseModel({
 
   return (
     <group
-      rotation={[0, seatRotation(seat), 0]}
+      rotation={[0, facingRotation ?? seatRotation(seat), 0]}
       onPointerDown={onPointerDown}
     >
       {(actionable || selected) && (
@@ -291,6 +332,7 @@ function StaticHorse({
     <group position={[x, HORSE_Y, z]}>
       <HorseModel
         seat={horse.owner}
+        facingRotation={horseFacingAngle(horse, point)}
         actionable={actionable}
         selected={selected}
         onPointerDown={(event) => {
@@ -307,6 +349,10 @@ function MovingHorse({ motion }: { motion: HorseMotion3D }) {
   const startedAt = useRef<number | null>(null);
   const from = useMemo(() => toWorld(motion.from, HORSE_Y), [motion.from]);
   const to = useMemo(() => toWorld(motion.to, HORSE_Y), [motion.to]);
+  const travelFacing = useMemo(
+    () => facingAngle(motion.from, motion.to),
+    [motion.from, motion.to]
+  );
 
   useFrame(({ clock }) => {
     if (!group.current) return;
@@ -327,16 +373,16 @@ function MovingHorse({ motion }: { motion: HorseMotion3D }) {
     );
 
     if (motion.kind === 'kick') {
-      group.current.rotation.y = t * Math.PI * 4.5;
+      group.current.rotation.y = travelFacing + t * Math.PI * 4.5;
       group.current.rotation.z = Math.sin(t * Math.PI * 5) * 0.32;
     } else {
-      group.current.rotation.y = Math.sin(t * Math.PI) * 0.32;
+      group.current.rotation.y = travelFacing + Math.sin(t * Math.PI) * 0.14;
     }
   });
 
   return (
     <group ref={group} position={from}>
-      <HorseModel seat={motion.seat} />
+      <HorseModel seat={motion.seat} facingRotation={0} />
     </group>
   );
 }
@@ -546,7 +592,7 @@ export default function Horse3DScene(props: Horse3DSceneProps) {
       <Canvas
         shadows
         dpr={[1, 1.5]}
-        camera={{ position: [8.0, 12.4, 9.5], fov: 39, near: 0.1, far: 60 }}
+        camera={{ position: [7.0, 14.2, 8.4], fov: 39, near: 0.1, far: 60 }}
         gl={{ antialias: true, powerPreference: 'high-performance' }}
       >
         <SceneContent {...props} />
