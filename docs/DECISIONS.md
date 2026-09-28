@@ -506,3 +506,17 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Deploy #68 success, run `36329067282`, source commit `e5ae5bea9de900e32adb382f22d0a18a43de8ddd`.
 - Chưa có assistant-side browser/mobile QC vì Desktop Commander offline; cần user QC live WebGL.
 - Quyết định: CHỐT ngày 2026-09-27.
+
+
+## D-047 — Cờ cá ngựa camera + horse heading
+- Camera 3D giữ phong cách **3/4 isometric**, nhưng ưu tiên góc nhìn cao hơn để quân không che đường đi phía sau.
+- Mốc deploy #70 dùng camera position `[7.0, 14.2, 8.4]`.
+- Quân đầu ngựa không giữ hướng cố định theo màu:
+  - trên track quay về ô kế tiếp theo chiều chạy;
+  - trong home lane quay vào phía tâm;
+  - trong yard quay về cửa xuất phát;
+  - fly/deploy quay theo vector di chuyển;
+  - kick vẫn được phép spin để giữ hiệu ứng va chạm vui nhộn.
+- Đây là thay đổi presentation/UX, không đổi engine/ruleset D-037.
+- Deploy #70 success, run `36377031190`, source commit `871f7fc4672717ee78e66cdd64b043ac64e04e57`, 76/76 tests pass.
+- Quyết định: CHỐT ngày 2026-09-28.
