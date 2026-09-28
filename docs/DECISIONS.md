@@ -520,3 +520,13 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Đây là thay đổi presentation/UX, không đổi engine/ruleset D-037.
 - Deploy #70 success, run `36377031190`, source commit `871f7fc4672717ee78e66cdd64b043ac64e04e57`, 76/76 tests pass.
 - Quyết định: CHỐT ngày 2026-09-28.
+
+
+## D-048 — Cờ cá ngựa dice concealment + roll timing
+- Khi xúc xắc đang lăn trong WebGL, phải render đủ **6 mặt 1–6** như một viên xúc xắc thật; không được có 5 mặt trống + 1 mặt mang kết quả engine.
+- Visual rolling không được tiết lộ sớm kết quả RNG/engine. Giá trị engine chỉ được thể hiện chắc chắn khi animation kết thúc và dice **settle**.
+- Settled orientation phải đưa đúng giá trị engine lên mặt trên để người chơi đọc kết quả.
+- Thời lượng roll baseline tăng từ khoảng **1.12 giây lên 1.68 giây** (+50%).
+- Không thay RNG, bonus-six logic hay ruleset D-037; đây là presentation/UX.
+- Deploy #71 success, run `36377864223`, source commit `f4a56ed255017b68bc7ad1ab4e7a8b0bfe7bcb64`, 76/76 tests pass.
+- Quyết định: CHỐT ngày 2026-09-28.
