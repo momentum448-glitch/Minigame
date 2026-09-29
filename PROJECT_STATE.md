@@ -15,8 +15,9 @@ Xây một website chứa nhiều minigame theo mô hình **sảnh game đa danh
 6. **Bài Chòi** — Game 06, playable v0.4 pre-rendered voice-pack baseline.
 7. **Monster Chess** — Game 07, playable prototype v0.1.
 8. **Cờ cá ngựa** — Game 08, playable v0.3 3D.
+9. **Fanorona** — Game 09, playable v0.1.
 
-Mốc đang active: **QC Game 08 — Cờ cá ngựa v0.3 3D**. Monster Chess v0.1 và Bài Chòi v0.4 vẫn tạm dừng.
+Mốc đang active: **QC Game 09 — Fanorona v0.1**. Cờ cá ngựa v0.3 3D giữ nguyên mốc #73; Monster Chess v0.1 và Bài Chòi v0.4 vẫn tạm dừng.
 
 ## 2. Repo / Deploy
 
@@ -40,10 +41,10 @@ Mốc đang active: **QC Game 08 — Cờ cá ngựa v0.3 3D**. Monster Chess v0
 
 ### Danh mục nền tảng
 - `#/category/vietnamese-folk` — **Dân gian Việt Nam** — hiện có 7 game, gồm Cờ cá ngựa.
-- `#/category/world-folk` — **Dân gian thế giới** — đang chuẩn bị.
+- `#/category/world-folk` — **Dân gian thế giới** — hiện có Fanorona.
 - `#/category/modern` — **Game hiện đại** — hiện có Monster Chess.
 - `#/category/puzzle` — **Giải đố & Logic** — đang chuẩn bị.
-- `#/category/strategy` — **Chiến thuật** — hiện có Cờ Gánh, Cờ Hùm, Cờ Lúa Ngô, Monster Chess.
+- `#/category/strategy` — **Chiến thuật** — hiện có Cờ Gánh, Cờ Hùm, Cờ Lúa Ngô, Monster Chess, Fanorona.
 - `#/category/party` — **May rủi & Party** — hiện có Tam Cúc, Bài Chòi, Cờ cá ngựa.
 
 ### Route game giữ nguyên
@@ -55,6 +56,7 @@ Mốc đang active: **QC Game 08 — Cờ cá ngựa v0.3 3D**. Monster Chess v0
 - Bài Chòi: `#/bai-choi`.
 - Monster Chess: `#/monster-chess`.
 - Cờ cá ngựa: `#/co-ca-ngua`.
+- Fanorona: `#/fanorona`.
 - Giữ route cũ để không phá link/bookmark.
 - Khi mở game từ một danh mục trong cùng SPA, nút quay lại đưa về danh mục đó; nếu mở trực tiếp/reload route game thì fallback về Sảnh game.
 
@@ -611,41 +613,102 @@ Nguồn đối chiếu:
   - fly/kick animation chuyển sang world-space 3D.
 - Không tiếp tục đầu tư thêm vào renderer SVG v0.2 ngoài bugfix chặn việc bàn giao.
 
-## 12. NEXT ACTION — ưu tiên cao nhất
+## 12. Game 09 — Fanorona
+
+### Trạng thái
+- **Playable v0.1** trên route `#/fanorona`.
+- Game đầu tiên của danh mục **Dân gian thế giới**.
+- Đồng thời thuộc danh mục **Chiến thuật**.
+- Biến thể: **Fanoron-Tsivy 5×9** của Madagascar.
+- Rules chi tiết: `docs/FANORONA_RULES.md`.
+
+### Ruleset đã chốt
+- 2 người, bàn **5×9 = 45 giao điểm**.
+- **22 quân mỗi bên**, chỉ giao điểm chính giữa để trống; quân sáng đi trước.
+- Di chuyển một bước tới giao điểm trống liền kề theo đường kẻ.
+- Nếu có nước ăn ở bất kỳ đâu thì **bắt buộc phải ăn**; paika chỉ hợp lệ khi không có nước ăn.
+- Hai kiểu ăn:
+  - **Tiến ăn / approach**: đi về phía hàng quân địch và ăn toàn bộ dãy liên tiếp phía trước.
+  - **Lùi ăn / withdrawal**: đi ra xa hàng quân địch và ăn toàn bộ dãy liên tiếp phía sau.
+- Nếu một bước tạo cả approach và withdrawal, người chơi phải **chọn một kiểu**, không ăn cả hai phía cùng lúc.
+- Sau một lần ăn, cùng quân đó có thể tiếp tục chuỗi hoặc **dừng tự nguyện**.
+- Trong chuỗi:
+  - không được tới lại giao điểm đã đi qua trong chuỗi;
+  - không được đi hai bước capture liên tiếp cùng một hướng;
+  - mọi bước tiếp theo đều phải là bước ăn.
+- Quy ước số hóa v0.1:
+  - không còn nước hợp lệ = thua;
+  - cùng thế cờ + cùng người tới lượt lặp 3 lần = hòa.
+
+### Đã triển khai
+- Engine deterministic: `src/fanorona/engine.ts`.
+- Types: `src/fanorona/types.ts`.
+- AI: `src/fanorona/ai.ts`.
+- Tests: `src/fanorona/engine.test.ts`.
+- UI: `src/FanoronaGame.tsx`.
+- Local 2 người.
+- AI Dễ / Vừa / Khó:
+  - Dễ: lựa chọn ngẫu nhiên có kiểm soát;
+  - Vừa: heuristic ưu tiên capture/material/position;
+  - Khó: alpha-beta nông có cắt branching để bảo vệ mobile.
+- UX capture:
+  - chỉ quân có nước hợp lệ được highlight;
+  - khi bắt buộc ăn, các paika bị khóa;
+  - destination marker hiển thị số quân sẽ ăn;
+  - nếu cùng destination có cả approach/withdrawal, hiện lựa chọn riêng **Tiến ăn / Lùi ăn**;
+  - capture line pulse rồi biến mất;
+  - trong capture chain chỉ cùng quân đó tiếp tục;
+  - có nút **Dừng chuỗi**.
+- Visual v0.1:
+  - bàn **2.5D gỗ khắc**, không dùng WebGL;
+  - quân sáng dạng ivory/stone;
+  - quân tối dạng basalt/charcoal;
+  - board giữ toàn bộ orthogonal + diagonal connection rõ trên mobile.
+- Lobby:
+  - đăng ký vào **Dân gian thế giới** + **Chiến thuật**;
+  - Fanorona được đưa vào khu Game nổi bật.
+
+### QC kỹ thuật
+- Deploy workflow **#74**: success.
+- Run ID: `36522379950`.
+- Deployed source commit: `80d1286953b1c68f015e2e0b91a408aac0a72e09`.
+- Test suite: **85/85 pass**.
+- Test files: **11/11 pass**.
+- Fanorona engine: **9 regression tests**.
+- Production build: pass.
+- GitHub Pages deploy: pass.
+- Live: `https://momentum448-glitch.github.io/Minigame/#/fanorona`.
+- Chưa có mobile interaction QC thực tế sau deploy #74.
+
+## 13. NEXT ACTION — ưu tiên cao nhất
 
 ### Task
-**QC tương tác Cờ cá ngựa v0.3 3D trên mobile thực tế, rồi tune camera/performance/FX.**
+**QC tương tác Fanorona v0.1 trên mobile thực tế, rồi tune UX/AI nếu cần.**
 
-### Checklist QC v0.3
-1. Scene phải render được WebGL trên Android hiện tại, không blank/crash.
-2. Camera 3/4 mới từ deploy #73 phải nhìn trọn board, để lộ hai ô góc phía sau và giảm việc quân che track mà không làm board quá nhỏ.
-3. Board phải đọc ngay là Cờ cá ngựa Việt Nam dù chuyển sang 3D.
-4. Quân đầu ngựa phải dễ phân biệt màu, dễ tap và quay đúng hướng đường đi ở track/home lane.
-5. Quân có nước hợp lệ phải có ring sáng rõ.
-6. Hai dice phải:
-   - xuất hiện trong world-space;
-   - lăn/nảy/xoay qua vùng board khoảng 1.68 giây;
-   - trong lúc lăn nhìn thấy hệ mặt 1–6 đầy đủ, không lộ sớm kết quả engine;
-   - chỉ khi settle mới hiện đúng mặt kết quả engine;
-   - tap chọn được sau khi dừng.
-7. HUD result button và dice trên board phải sync selected state.
-8. Cả batch vô hiệu -> chỉ hiện một nút **Bỏ lượt**.
-9. Bỏ lượt phải consume toàn batch và chuyển người chơi ngay, không yêu cầu bấm từng die.
-10. Move thường không teleport.
-11. Fly mặt 1 có chiều cao rõ trong 3D.
-12. Kick phải có attacker wind-up/surge rõ + impact + victim spin/arc về yard.
-13. AI không đi chồng animation.
-14. Mobile frame rate phải chấp nhận được, không nóng/lag rõ sau vài lượt.
-15. Local 2/3/4 và AI 1/2/3 không regress.
+### Checklist QC Fanorona v0.1
+1. Route `#/fanorona` mở ổn trên Android, không layout overflow ngang.
+2. Bàn 5×9 và toàn bộ đường chéo/đường thẳng phải đọc rõ ở kích thước mobile.
+3. Initial setup hiển thị đúng 22 sáng + 22 tối + tâm trống.
+4. Khi có capture, paika phải bị khóa và chỉ các quân có nước ăn được highlight.
+5. **Tiến ăn** phải ăn đúng toàn bộ hàng liên tiếp phía trước.
+6. **Lùi ăn** phải ăn đúng toàn bộ hàng liên tiếp phía sau.
+7. Nếu một destination có cả hai kiểu ăn, UI phải hiện lựa chọn **Tiến ăn / Lùi ăn** rõ ràng.
+8. Capture animation phải cho thấy quân di chuyển trước, hàng bị ăn pulse rồi biến mất.
+9. Capture chain chỉ cho phép tiếp tục bằng cùng quân, không quay lại node cũ và không lặp cùng hướng.
+10. Nút **Dừng chuỗi** phải kết thúc lượt ngay và giữ trạng thái đúng.
+11. Local 2 người phải hoàn thành được ván.
+12. AI Dễ/Vừa/Khó phải đi hợp lệ; AI Khó không được làm treo/khựng mobile rõ rệt.
+13. Fanorona phải xuất hiện đúng ở **Dân gian thế giới** và **Chiến thuật**.
+14. Touch target, trạng thái selected/target và số quân capture phải dễ đọc trên màn hình nhỏ.
+15. Quy ước hết nước = thua và lặp thế 3 lần = hòa không được làm regress engine.
 
 ### Sau QC
-- Tune camera FOV/height nếu board quá nhỏ hoặc bị cắt.
-- Tune shadow/DPR nếu mobile chậm.
-- Tune dice trajectory để nhìn tự nhiên hơn.
-- Sau visual parity mới cân nhắc thêm rigid-body physics thật nếu cần; hiện v0.3 dùng world-space kinematic/hybrid roll để giữ kết quả engine deterministic.
-- Khi QC pass mới xóa hẳn code/CSS fallback v0.2 không còn dùng.
+- Tune kích thước quân/target marker nếu bàn quá dày trên mobile.
+- Tune animation MOVE_MS/CAPTURE_MS nếu chuỗi ăn quá nhanh hoặc quá chậm.
+- Nếu AI Khó gây khựng, giảm branch cap/depth trước khi tăng sức mạnh.
+- Sau khi gameplay/UX pass mới cân nhắc sound, tutorial minh họa approach/withdrawal và art polish cao hơn.
 
-## 13. Rủi ro / giả định
+## 14. Rủi ro / giả định
 
 - Cờ Lúa Ngô có dị bản và một số nguồn thay “Đỗ” bằng từ khác; dự án dùng chuỗi **Lúa · Ngô · Khoai · Sắn · Đỗ** theo Báo Nam Định và các nguồn giáo dục đối chiếu.
 - Nguồn không nói rõ việc quay lại node đã đi trong cùng lượt; v0.1 cấm lặp node để tránh backtracking vô hạn.
@@ -657,7 +720,7 @@ Nguồn đối chiếu:
 - Tên con Bài Chòi có dị bản địa phương; v0.1 khóa một bộ 27 tên theo nguồn Bình Định.
 - Hô thai thật là nghệ thuật ứng khẩu và có nhiều dị bản; v0.1 dùng câu minh họa mới, không coi là corpus truyền thống chuẩn.
 
-## 14. Việc chưa làm
+## 15. Việc chưa làm
 
 - Sound design.
 - Tutorial/onboarding hoàn chỉnh.
@@ -666,7 +729,7 @@ Nguồn đối chiếu:
 - Game 07.
 - QC nhiều thiết bị.
 
-## 15. Quy tắc cập nhật state
+## 16. Quy tắc cập nhật state
 
 Sau mỗi mốc:
 - cập nhật **Đã có**;
