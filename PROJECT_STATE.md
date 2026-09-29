@@ -493,7 +493,7 @@ Nguồn đối chiếu:
   - `@react-three/fiber`;
   - `@types/three`.
 - Scene chính: `src/cacngua/Horse3DScene.tsx`.
-- Camera **3/4 isometric cố định**; deploy #70 nâng thêm góc nhìn lên `[7.0, 14.2, 8.4]` để giảm che khuất track nhưng vẫn giữ cảm giác tabletop 3D.
+- Camera **3/4 isometric cố định**; deploy #73 nâng thêm từ `[7.0, 14.2, 8.4]` lên `[6.5, 15.4, 7.8]` sau QC mobile để lộ rõ hơn hai ô góc phía sau bàn.
 - Board thật 3D:
   - base gỗ có chiều dày;
   - top board gỗ sáng;
@@ -574,10 +574,10 @@ Nguồn đối chiếu:
 - Roll animation 3D vẫn giữ nguyên.
 
 ### QC kỹ thuật
-- Deploy workflow **#72**: success.
-- Run ID: `36383476229`.
-- Deployed source commit: `ffd19fbe090ddc4fc5c01b9be8ea857713d8624a`.
-- Thay đổi #72: thêm attacker strike animation rõ trước khi victim bị đá bay; không đổi engine/rules.
+- Deploy workflow **#73**: success.
+- Run ID: `36513480107`.
+- Deployed source commit: `d0e43194301842e8f29e53607627422d2a0442b1`.
+- Thay đổi #73: nâng camera thêm một nấc sau QC mobile để giảm che khuất hai ô góc phía sau bàn; không đổi FOV, engine hay rules.
 - Test suite: **76/76 pass**.
 - Cờ cá ngựa:
   - engine: **16 tests**;
@@ -618,7 +618,7 @@ Nguồn đối chiếu:
 
 ### Checklist QC v0.3
 1. Scene phải render được WebGL trên Android hiện tại, không blank/crash.
-2. Camera 3/4 mới từ deploy #70 phải nhìn trọn board, giảm việc quân che track phía sau và không cắt yard/track.
+2. Camera 3/4 mới từ deploy #73 phải nhìn trọn board, để lộ hai ô góc phía sau và giảm việc quân che track mà không làm board quá nhỏ.
 3. Board phải đọc ngay là Cờ cá ngựa Việt Nam dù chuyển sang 3D.
 4. Quân đầu ngựa phải dễ phân biệt màu, dễ tap và quay đúng hướng đường đi ở track/home lane.
 5. Quân có nước hợp lệ phải có ring sáng rõ.
