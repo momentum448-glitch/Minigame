@@ -135,7 +135,7 @@ function CameraRig() {
   const { camera, size } = useThree();
 
   useEffect(() => {
-    camera.position.set(7.0, 14.2, 8.4);
+    camera.position.set(6.5, 15.4, 7.8);
     camera.lookAt(0, 0, 0);
     if (camera instanceof THREE.PerspectiveCamera) {
       camera.fov = size.width < 700 ? 48 : 39;
@@ -672,7 +672,7 @@ export default function Horse3DScene(props: Horse3DSceneProps) {
       <Canvas
         shadows
         dpr={[1, 1.5]}
-        camera={{ position: [7.0, 14.2, 8.4], fov: 39, near: 0.1, far: 60 }}
+        camera={{ position: [6.5, 15.4, 7.8], fov: 39, near: 0.1, far: 60 }}
         gl={{ antialias: true, powerPreference: 'high-performance' }}
       >
         <SceneContent {...props} />
