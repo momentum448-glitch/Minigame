@@ -553,3 +553,46 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Không đổi engine/ruleset.
 - Deploy #73 success, run `36513480107`, source commit `d0e43194301842e8f29e53607627422d2a0442b1`, 76/76 tests pass.
 - Quyết định: CHỐT ngày 2026-09-29.
+
+
+## D-051 — Fanorona Game 09 ruleset
+- Game 09 mở danh mục **Dân gian thế giới** bằng **Fanorona / Fanoron-Tsivy** của Madagascar.
+- Board chuẩn dự án: **5×9 giao điểm**, 22 quân mỗi bên, tâm trống, quân sáng đi trước.
+- Capture là bắt buộc nếu có.
+- Hai kiểu capture:
+  - **approach / Tiến ăn**;
+  - **withdrawal / Lùi ăn**.
+- Một bước tạo cả hai kiểu capture thì người chơi chọn một, không ăn đồng thời hai phía.
+- Sau capture, cùng quân có thể tiếp tục chuỗi nhưng **được phép dừng tự nguyện**.
+- Chuỗi capture không được:
+  - tới lại điểm đã đi qua;
+  - đi hai bước capture liên tiếp cùng một hướng.
+- Quy ước số hóa v0.1:
+  - không còn nước hợp lệ = thua;
+  - lặp cùng position + same player to move 3 lần = hòa.
+- Modes: Local 2 người + AI Dễ/Vừa/Khó.
+- Visual: **2.5D bàn gỗ khắc + quân đá**, không dùng WebGL ở v0.1.
+- UX phải giải thích rõ dual capture và có nút **Dừng chuỗi**.
+- Chi tiết source-of-truth: `docs/FANORONA_RULES.md`.
+- Quyết định: CHỐT ngày 2026-09-29.
+
+## D-052 — Fanorona v0.1 playable
+- Fanorona playable tại `#/fanorona`.
+- Engine tách riêng tại `src/fanorona/`; UI tại `src/FanoronaGame.tsx`.
+- Engine deterministic triển khai mandatory capture, approach/withdrawal, dual-choice, optional chain stop, visited-node restriction, same-direction restriction, win/no-move/draw convention.
+- AI:
+  - Dễ random;
+  - Vừa heuristic;
+  - Khó alpha-beta nông với branch cap để giữ mobile responsiveness.
+- UI:
+  - legal-source highlight;
+  - target marker kèm số quân capture;
+  - dual approach/withdrawal choice;
+  - move + capture-line animation;
+  - `Dừng chuỗi`.
+- Fanorona thuộc cả **Dân gian thế giới** và **Chiến thuật**, đồng thời được đưa vào Game nổi bật.
+- Deploy #74 success, run `36522379950`, source commit `80d1286953b1c68f015e2e0b91a408aac0a72e09`.
+- 85/85 tests pass; riêng Fanorona có 9 regression tests.
+- Production build và GitHub Pages deploy pass.
+- Chưa có mobile interaction QC sau deploy; NEXT ACTION là QC Fanorona v0.1.
+- Quyết định: CHỐT ngày 2026-09-29.
