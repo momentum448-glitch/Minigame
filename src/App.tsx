@@ -7,6 +7,7 @@ import TamCucGame from './TamCucGame';
 import BaiChoiGame from './BaiChoiGame';
 import MonsterChessGame from './MonsterChessGame';
 import CoCaNguaGame from './CoCaNguaGame';
+import FanoronaGame from './FanoronaGame';
 
 type GameId =
   | 'o-an-quan'
@@ -16,7 +17,8 @@ type GameId =
   | 'tam-cuc'
   | 'bai-choi'
   | 'monster-chess'
-  | 'co-ca-ngua';
+  | 'co-ca-ngua'
+  | 'fanorona';
 
 type CategoryId =
   | 'vietnamese-folk'
@@ -100,6 +102,14 @@ const games: GameMeta[] = [
     eyebrow: 'Game mới'
   },
   {
+    id: 'fanorona',
+    title: 'Fanorona',
+    description: 'Cờ chiến thuật Madagascar: tiến để ăn, lùi để ăn và nối chuỗi bắt cả hàng quân.',
+    cta: 'Vào bàn Madagascar',
+    categories: ['world-folk', 'strategy'],
+    eyebrow: 'Game mới · Madagascar'
+  },
+  {
     id: 'monster-chess',
     title: 'Monster Chess',
     description: 'Draft đội quái bằng ngân sách sao, tiến hóa giữa trận và đấu chiến thuật trên bản đồ hex ngẫu nhiên.',
@@ -125,8 +135,8 @@ const categories: CategoryMeta[] = [
     title: 'Dân gian thế giới',
     description: 'Khám phá trò chơi truyền thống từ nhiều nền văn hóa và nhiều thời đại.',
     accent: 'world',
-    gameIds: [],
-    note: 'Đang chuẩn bị'
+    gameIds: games.filter((game) => game.categories.includes('world-folk')).map((game) => game.id),
+    note: `${games.filter((game) => game.categories.includes('world-folk')).length} game đang chơi được`
   },
   {
     id: 'modern',
@@ -271,6 +281,22 @@ function renderGameArt(id: GameId) {
     );
   }
 
+  if (id === 'fanorona') {
+    return (
+      <div className="game-art fanorona-art" aria-hidden="true">
+        <div className="fan-mini-board">
+          <span className="fan-mini-stone dark a" />
+          <span className="fan-mini-stone dark b" />
+          <span className="fan-mini-stone dark c" />
+          <span className="fan-mini-stone light d" />
+          <span className="fan-mini-stone light e" />
+          <span className="fan-mini-stone light f" />
+          <i>↔</i>
+        </div>
+      </div>
+    );
+  }
+
   if (id === 'monster-chess') {
     return (
       <div className="game-art monsterchess-art" aria-hidden="true">
@@ -342,6 +368,7 @@ export default function App() {
   if (route === 'bai-choi') return <BaiChoiGame onBack={returnFromGame} />;
   if (route === 'monster-chess') return <MonsterChessGame onBack={returnFromGame} />;
   if (route === 'co-ca-ngua') return <CoCaNguaGame onBack={returnFromGame} />;
+  if (route === 'fanorona') return <FanoronaGame onBack={returnFromGame} />;
 
   const currentCategoryId = route.startsWith('category/')
     ? route.slice('category/'.length) as CategoryId
@@ -419,7 +446,7 @@ export default function App() {
     );
   }
 
-  const featuredIds: GameId[] = ['co-ca-ngua', 'monster-chess', 'o-an-quan'];
+  const featuredIds: GameId[] = ['fanorona', 'co-ca-ngua', 'monster-chess'];
   const featuredGames = featuredIds.map((id) => gameById[id]);
   const playableCategories = categories.filter((category) => category.gameIds.length > 0);
 
