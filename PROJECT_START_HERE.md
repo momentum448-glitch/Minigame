@@ -23,5 +23,5 @@
 
 - Repo: https://github.com/momentum448-glitch/Minigame
 - Live: https://momentum448-glitch.github.io/Minigame/
-- Game playable: Ô ăn quan, Cờ Gánh, Cờ Hùm, Cờ Lúa Ngô, Tam Cúc, Bài Chòi, Monster Chess prototype v0.1, Cờ cá ngựa v0.3 3D
-- Mốc hiện tại: Cờ cá ngựa v0.3 3D đã deploy #73 với camera nâng thêm để lộ hai ô góc phía sau, quân quay theo hướng đi, dice không lộ kết quả khi lăn và attacker strike rõ; cần QC mobile WebGL, camera occlusion, dice 1.68s/settle, horse heading, horse picking, fly/kick
+- Game playable: Ô ăn quan, Cờ Gánh, Cờ Hùm, Cờ Lúa Ngô, Tam Cúc, Bài Chòi, Monster Chess prototype v0.1, Cờ cá ngựa v0.3 3D, Fanorona v0.1
+- Mốc hiện tại: Fanorona Game 09 v0.1 đã deploy #74; 85/85 tests pass. Cần QC mobile board 5×9, mandatory capture, approach/withdrawal, dual-choice, capture chain + Dừng chuỗi và AI Dễ/Vừa/Khó.
