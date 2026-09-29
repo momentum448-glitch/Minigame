@@ -543,3 +543,13 @@ Các quyết định trong file này được coi là đã chốt cho tới khi 
 - Không đổi engine, ruleset D-037 hay kết quả đá; đây là presentation/UX.
 - Deploy #72 success, run `36383476229`, source commit `ffd19fbe090ddc4fc5c01b9be8ea857713d8624a`, 76/76 tests pass.
 - Quyết định: CHỐT ngày 2026-09-28.
+
+
+## D-050 — Cờ cá ngựa mobile camera occlusion tune
+- QC mobile ngày 2026-09-29 cho thấy góc #70 vẫn để quân/sân che một phần **hai ô góc phía sau bàn**.
+- Camera giữ phong cách 3/4 isometric nhưng nâng thêm một nấc, từ `[7.0, 14.2, 8.4]` lên `[6.5, 15.4, 7.8]`.
+- Giữ nguyên FOV hiện tại để tránh làm board nhỏ đi quá nhiều trên mobile.
+- Mục tiêu: nhìn rõ hơn track phía sau quân mà vẫn giữ cảm giác tabletop 3D.
+- Không đổi engine/ruleset.
+- Deploy #73 success, run `36513480107`, source commit `d0e43194301842e8f29e53607627422d2a0442b1`, 76/76 tests pass.
+- Quyết định: CHỐT ngày 2026-09-29.
