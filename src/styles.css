@@ -4462,3 +4462,418 @@ button.game-tile {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+
+/* ===== Fanorona · Game 09 ===== */
+.fan-shell {
+  --fan-wood-dark: #4a2f20;
+  --fan-wood: #8b5b36;
+  --fan-wood-light: #c58b52;
+  --fan-ivory: #efe2c7;
+  --fan-basalt: #2a2b2b;
+  --fan-accent: #d99a4e;
+}
+.fan-hero {
+  background:
+    radial-gradient(circle at 82% 18%, rgba(231,177,99,.22), transparent 32%),
+    linear-gradient(135deg, #33271f, #1e2727 72%);
+}
+.fan-controls {
+  grid-template-columns: minmax(140px, 1fr) minmax(120px, .8fr) minmax(180px, 1.2fr);
+}
+.fan-rule-chip {
+  min-height: 46px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(81,58,38,.16);
+  background: rgba(115,75,42,.08);
+  color: #674425;
+  font-weight: 900;
+}
+.fan-rule-chip.capture-on {
+  border-color: rgba(154,69,42,.28);
+  background: rgba(176,74,44,.11);
+  color: #873b28;
+}
+.fan-scorebar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 10px;
+  align-items: stretch;
+  margin: 14px 0;
+}
+.fan-scorebar > div {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 12px;
+  align-items: center;
+  min-height: 76px;
+  padding: 12px 15px;
+  border: 1px solid rgba(65,48,33,.13);
+  border-radius: 16px;
+  background: rgba(255,250,236,.72);
+  box-shadow: inset 0 1px rgba(255,255,255,.75);
+}
+.fan-scorebar > div:last-child { text-align: right; }
+.fan-scorebar > div strong {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  font-size: 2rem;
+  line-height: 1;
+  color: #3d2d21;
+}
+.fan-scorebar > div span {
+  font-size: .82rem;
+  font-weight: 950;
+  color: #4c3525;
+}
+.fan-scorebar > div small {
+  color: #8a6b53;
+  font-weight: 700;
+}
+.fan-scorebar > div.active-player {
+  border-color: rgba(202,133,63,.62);
+  box-shadow: 0 0 0 3px rgba(213,143,68,.12), inset 0 1px rgba(255,255,255,.8);
+}
+.fan-scorebar > p {
+  align-self: center;
+  margin: 0;
+  color: #75583f;
+  font-size: .76rem;
+  font-weight: 900;
+}
+.fan-card {
+  position: relative;
+  overflow: visible;
+  background:
+    radial-gradient(circle at 50% 25%, rgba(255,248,224,.96), rgba(236,213,171,.90)),
+    #ead0a2;
+}
+.fan-status {
+  border-color: rgba(87,57,34,.15);
+  background: rgba(72,49,31,.88);
+  color: #fff2d8;
+}
+.fan-board-frame {
+  margin-top: 14px;
+  padding: 38px 40px;
+  border-radius: 22px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.08), transparent 34%),
+    linear-gradient(145deg, #6a4329, #3f291d);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,234,195,.13),
+    inset 0 -16px 34px rgba(37,20,11,.24),
+    0 14px 28px rgba(66,42,25,.16);
+}
+.fan-board {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  overflow: visible;
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,236,191,.34), transparent 28%),
+    repeating-linear-gradient(7deg, rgba(101,54,28,.035) 0 2px, transparent 2px 11px),
+    linear-gradient(145deg, #c89558, #b87d45);
+  box-shadow:
+    inset 0 0 0 2px rgba(77,43,24,.28),
+    inset 0 12px 24px rgba(255,232,184,.16),
+    inset 0 -12px 24px rgba(73,38,20,.10);
+}
+.fan-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.fan-lines line {
+  stroke: #51331f;
+  stroke-width: 1.15;
+  stroke-linecap: round;
+  opacity: .78;
+  vector-effect: non-scaling-stroke;
+}
+.fan-node {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  transform: translate(-50%, -50%);
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  overflow: visible;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 2;
+  touch-action: manipulation;
+}
+.fan-node:disabled { opacity: 1; cursor: default; }
+.fan-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4c301e;
+  box-shadow: 0 1px 0 rgba(255,225,177,.35);
+}
+.fan-piece {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  display: block;
+  border-radius: 50%;
+  border: 1px solid rgba(49,34,24,.36);
+  transform-origin: center;
+  transition: filter .16s ease, box-shadow .16s ease, scale .16s ease;
+}
+.fan-piece::after {
+  content: '';
+  position: absolute;
+  left: 20%;
+  top: 15%;
+  width: 34%;
+  height: 24%;
+  border-radius: 50%;
+  background: rgba(255,255,255,.28);
+  filter: blur(1px);
+}
+.fan-piece.light {
+  background:
+    radial-gradient(circle at 35% 27%, #fff9e8 0 14%, #ead8b9 42%, #c5a47b 76%, #987450 100%);
+  box-shadow:
+    inset -5px -7px 9px rgba(88,58,33,.18),
+    inset 4px 4px 7px rgba(255,255,255,.66),
+    0 5px 7px rgba(63,38,22,.28);
+}
+.fan-piece.dark {
+  background:
+    radial-gradient(circle at 34% 26%, #64615b 0 10%, #383a38 40%, #222523 72%, #111413 100%);
+  border-color: rgba(0,0,0,.58);
+  box-shadow:
+    inset -5px -7px 9px rgba(0,0,0,.36),
+    inset 4px 4px 6px rgba(255,255,255,.10),
+    0 5px 7px rgba(45,27,17,.32);
+}
+.fan-node.selectable:not(.selected) .fan-piece {
+  box-shadow:
+    0 0 0 3px rgba(239,185,89,.44),
+    0 0 16px rgba(224,146,60,.35),
+    inset -5px -7px 9px rgba(55,34,20,.18);
+  animation: fanSelectablePulse .9s ease-in-out infinite alternate;
+}
+.fan-node.selected .fan-piece {
+  scale: 1.14;
+  box-shadow:
+    0 0 0 4px #f5c864,
+    0 0 22px rgba(235,161,65,.65),
+    inset -4px -6px 8px rgba(52,31,18,.16);
+}
+@keyframes fanSelectablePulse {
+  to { transform: translateY(-2px); filter: brightness(1.08); }
+}
+.fan-target-ring {
+  position: absolute;
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 3px solid #f2c05f;
+  background: rgba(255,236,169,.30);
+  color: #613b1f;
+  font-size: .66rem;
+  font-weight: 950;
+  box-shadow: 0 0 0 4px rgba(245,190,80,.12), 0 0 16px rgba(231,150,55,.28);
+  animation: fanTargetPulse .72s ease-in-out infinite alternate;
+}
+.fan-node.dual-capture .fan-target-ring {
+  border-color: #cf6545;
+  background: rgba(213,88,53,.22);
+  color: #772d20;
+  box-shadow: 0 0 0 4px rgba(204,83,49,.12), 0 0 17px rgba(180,69,43,.30);
+}
+@keyframes fanTargetPulse {
+  to { scale: 1.10; }
+}
+.fan-piece.moving {
+  position: relative;
+  z-index: 9;
+  animation: fanStoneMove 300ms cubic-bezier(.2,.72,.22,1) forwards;
+}
+@keyframes fanStoneMove {
+  0% { transform: translate(0,0) scale(1); }
+  45% { transform: translate(calc(var(--fan-dx) * .48), calc(var(--fan-dy) * .48 - 8px)) scale(1.10); }
+  100% { transform: translate(var(--fan-dx), var(--fan-dy)) scale(1); }
+}
+.fan-node.capture-fx .fan-piece,
+.fan-piece.being-captured {
+  animation: fanCaptured 360ms cubic-bezier(.22,.7,.22,1) forwards;
+}
+@keyframes fanCaptured {
+  0% { transform: scale(1); filter: brightness(1); }
+  38% { transform: scale(1.18); filter: brightness(1.45) saturate(.5); }
+  100% { transform: scale(.12) rotate(18deg); opacity: .08; filter: brightness(1.8); }
+}
+.fan-action-strip {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(85,56,33,.12);
+  border-radius: 14px;
+  background: rgba(255,250,235,.62);
+}
+.fan-action-strip > div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+.fan-action-strip b {
+  color: #50351f;
+  font-size: .82rem;
+}
+.fan-action-strip span {
+  color: #87694e;
+  font-size: .72rem;
+}
+.fan-stop-chain {
+  flex: 0 0 auto;
+  min-height: 42px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #493328, #6d4932);
+  color: #fff0d2;
+  font-weight: 900;
+  cursor: pointer;
+}
+.fan-capture-choice {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: minmax(160px, 1.4fr) repeat(2, minmax(110px, .8fr)) auto;
+  gap: 8px;
+  align-items: stretch;
+  padding: 10px;
+  border: 1px solid rgba(136,66,38,.22);
+  border-radius: 15px;
+  background: rgba(75,48,31,.94);
+  color: #fff0d4;
+}
+.fan-capture-choice > div {
+  display: grid;
+  gap: 3px;
+  align-content: center;
+  padding: 4px 7px;
+}
+.fan-capture-choice > div span {
+  color: #efbf69;
+  font-size: .60rem;
+  font-weight: 950;
+  letter-spacing: .08em;
+}
+.fan-capture-choice > div b { font-size: .75rem; }
+.fan-capture-choice button {
+  min-height: 48px;
+  border: 1px solid rgba(255,229,178,.18);
+  border-radius: 11px;
+  background: rgba(255,239,205,.09);
+  color: #fff3dc;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  gap: 2px;
+}
+.fan-capture-choice button strong { font-size: .78rem; }
+.fan-capture-choice button small { color: #e7c388; font-size: .62rem; }
+.fan-capture-choice .fan-cancel-choice {
+  padding: 0 12px;
+  background: transparent;
+  color: #cdbca7;
+}
+.fan-rules strong { color: #603c22; }
+
+/* Fanorona lobby art */
+.fanorona-art {
+  background:
+    radial-gradient(circle at 68% 22%, rgba(242,201,124,.20), transparent 31%),
+    linear-gradient(145deg, #2c332f, #513823);
+}
+.fan-mini-board {
+  position: relative;
+  width: 78%;
+  aspect-ratio: 2 / 1;
+  border-radius: 8px;
+  background:
+    linear-gradient(45deg, transparent 48%, rgba(72,44,25,.55) 49% 51%, transparent 52%) 0 0/25% 50%,
+    linear-gradient(-45deg, transparent 48%, rgba(72,44,25,.55) 49% 51%, transparent 52%) 0 0/25% 50%,
+    repeating-linear-gradient(90deg, rgba(72,44,25,.55) 0 2px, transparent 2px 24.8%),
+    repeating-linear-gradient(0deg, rgba(72,44,25,.55) 0 2px, transparent 2px 49%),
+    linear-gradient(145deg, #c58b52, #a86c3b);
+  box-shadow: 0 10px 18px rgba(0,0,0,.24), inset 0 0 0 2px rgba(255,225,172,.18);
+}
+.fan-mini-stone {
+  position: absolute;
+  width: 18%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  box-shadow: 0 3px 5px rgba(0,0,0,.25);
+}
+.fan-mini-stone.dark { background: radial-gradient(circle at 35% 28%, #63625e, #242725 72%); }
+.fan-mini-stone.light { background: radial-gradient(circle at 35% 28%, #fff4d8, #c6a47b 72%); }
+.fan-mini-stone.a { left: 8%; top: 8%; }
+.fan-mini-stone.b { left: 40%; top: 8%; }
+.fan-mini-stone.c { right: 8%; top: 8%; }
+.fan-mini-stone.d { left: 15%; bottom: 8%; }
+.fan-mini-stone.e { left: 48%; bottom: 8%; }
+.fan-mini-stone.f { right: 4%; bottom: 8%; }
+.fan-mini-board i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  color: #4d2f1d;
+  font-size: 1.1rem;
+  font-weight: 950;
+  font-style: normal;
+}
+
+@media (max-width: 760px) {
+  .fan-controls { grid-template-columns: 1fr 1fr; }
+  .fan-rule-chip { grid-column: 1 / -1; }
+  .fan-board-frame { padding: 28px 25px; border-radius: 17px; }
+  .fan-node { width: 38px; height: 38px; }
+  .fan-piece { width: 30px; height: 30px; }
+  .fan-target-ring { width: 25px; height: 25px; }
+  .fan-capture-choice { grid-template-columns: 1fr 1fr; }
+  .fan-capture-choice > div { grid-column: 1 / -1; }
+  .fan-capture-choice .fan-cancel-choice { grid-column: 1 / -1; }
+}
+@media (max-width: 480px) {
+  .fan-scorebar { gap: 6px; }
+  .fan-scorebar > div { min-height: 66px; padding: 9px 10px; }
+  .fan-scorebar > div strong { font-size: 1.55rem; }
+  .fan-scorebar > p { font-size: .62rem; }
+  .fan-board-frame { padding: 23px 20px; }
+  .fan-node { width: 34px; height: 34px; }
+  .fan-piece { width: 27px; height: 27px; }
+  .fan-dot { width: 6px; height: 6px; }
+  .fan-target-ring { width: 22px; height: 22px; border-width: 2px; font-size: .58rem; }
+  .fan-action-strip { align-items: flex-start; flex-direction: column; }
+  .fan-stop-chain { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fan-node.selectable .fan-piece,
+  .fan-target-ring,
+  .fan-piece.moving,
+  .fan-node.capture-fx .fan-piece,
+  .fan-piece.being-captured {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
